@@ -1,7 +1,7 @@
 A modern, responsive portfolio website built with Next.js 14, Tailwind CSS, and Framer Motion featuring a stunning dark mode with animated stars background.
 
 
-Live Website: [https://achyutkatiyar.com](https://www.achyutkatiyar.com/)
+Live Website: [https://jainamkhara.vercel.app](https://jainamkhara.vercel.app)
 
 ## Table of Contents
 

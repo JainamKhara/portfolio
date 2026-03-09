@@ -73,7 +73,7 @@ export function Footer() {
               </li>
               <li>
                 <a 
-                  href="/resume.pdf" 
+                  href="/Jainam_Khara_Resume.pdf" 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"

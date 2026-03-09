@@ -13,7 +13,7 @@ export interface Education {
   export const education: Education[] = [
     {
       id: "deegre",
-      degree: "Master's in Computer Science",
+      degree: "Bachelor's in Computer Science",
       institution: "SAL Institute and Technologies and Engineering Research",
       university: "Gujarat Technological University",
       location: "Ahmedabad, Gujarat, India",
