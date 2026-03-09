@@ -15,10 +15,8 @@ import { Badge } from "@/components/ui/badge";
 import { projects } from "@/data/projects";
 import Link from "next/link";
 
-
 export function FeaturedProjects() {
-
-  const featuredProjects = projects.filter(project => project.featured);
+  const featuredProjects = projects.filter((project) => project.featured);
 
   return (
     <section id="projects" className="py-12 md:py-24 bg-muted/50">

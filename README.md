@@ -1,35 +1,31 @@
-# Achyut Katiyar Portfolio
-
 A modern, responsive portfolio website built with Next.js 14, Tailwind CSS, and Framer Motion featuring a stunning dark mode with animated stars background.
 
-![Portfolio Preview](https://via.placeholder.com/800x400?text=Portfolio+Preview)
 
 Live Website: [https://achyutkatiyar.com](https://www.achyutkatiyar.com/)
 
 ## Table of Contents
 
-- [Achyut Katiyar Portfolio](#achyut-katiyar-portfolio)
-  - [Table of Contents](#table-of-contents)
-  - [Overview](#overview)
-  - [Features](#features)
-  - [Technologies](#technologies)
-  - [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
-  - [Project Structure](#project-structure)
-  - [Customization](#customization)
-    - [Personal Information](#personal-information)
-    - [Styling](#styling)
-    - [Assets](#assets)
-  - [Using This Template](#using-this-template)
-    - [Attribution Requirements](#attribution-requirements)
-    - [What Not To Do](#what-not-to-do)
-    - [Example Attribution](#example-attribution)
-  - [Deployment](#deployment)
-    - [Deploying to Vercel](#deploying-to-vercel)
-    - [Deploying Elsewhere](#deploying-elsewhere)
-  - [Credits](#credits)
-  - [License](#license)
+- [Table of Contents](#table-of-contents)
+- [Overview](#overview)
+- [Features](#features)
+- [Technologies](#technologies)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Project Structure](#project-structure)
+- [Customization](#customization)
+  - [Personal Information](#personal-information)
+  - [Styling](#styling)
+  - [Assets](#assets)
+- [Using This Template](#using-this-template)
+  - [Attribution Requirements](#attribution-requirements)
+  - [What Not To Do](#what-not-to-do)
+  - [Example Attribution](#example-attribution)
+- [Deployment](#deployment)
+  - [Deploying to Vercel](#deploying-to-vercel)
+  - [Deploying Elsewhere](#deploying-elsewhere)
+- [Credits](#credits)
+- [License](#license)
 
 ## Overview
 

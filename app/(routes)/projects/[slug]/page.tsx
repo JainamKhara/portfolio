@@ -80,7 +80,7 @@ export default function ProjectPage() {
                   {project.longDescription || project.description}
                 </p>
 
-                <h2 className="text-2xl font-bold mb-4">Achievements</h2>
+                <h2 className="text-2xl font-bold mb-4">Functionality</h2>
                 <ul className="space-y-2 mb-6">
                   {project.functionality.map((functionality, i) => (
                     <li key={i} className="flex items-start">

@@ -15,11 +15,7 @@ interface ProjectDetailsProps {
 export function ProjectDetails({ project, onBack }: ProjectDetailsProps) {
   return (
     <div className="container px-4 md:px-6 mx-auto">
-      <Button
-        variant="ghost"
-        className="mb-6"
-        onClick={onBack}
-      >
+      <Button variant="ghost" className="mb-6" onClick={onBack}>
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back to Projects
       </Button>
@@ -56,14 +52,16 @@ export function ProjectDetails({ project, onBack }: ProjectDetailsProps) {
 
             <div className="prose max-w-none">
               <h2 className="text-2xl font-bold mb-4">Overview</h2>
-              <p className="mb-6">{project.longDescription || project.description}</p>
+              <p className="mb-6">
+                {project.longDescription || project.description}
+              </p>
 
-              <h2 className="text-2xl font-bold mb-4">Achievements</h2>
+              <h2 className="text-2xl font-bold mb-4">Functionality</h2>
               <ul className="space-y-2 mb-6">
-                {project.achievements.map((achievement, i) => (
+                {project.functionality.map((functionality, i) => (
                   <li key={i} className="flex items-start">
                     <span className="mr-2 font-bold">•</span>
-                    <span>{achievement}</span>
+                    <span>{functionality}</span>
                   </li>
                 ))}
               </ul>
