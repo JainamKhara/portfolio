@@ -18,9 +18,7 @@ Live Website: [https://achyutkatiyar.com](https://www.achyutkatiyar.com/)
   - [Styling](#styling)
   - [Assets](#assets)
 - [Using This Template](#using-this-template)
-  - [Attribution Requirements](#attribution-requirements)
   - [What Not To Do](#what-not-to-do)
-  - [Example Attribution](#example-attribution)
 - [Deployment](#deployment)
   - [Deploying to Vercel](#deploying-to-vercel)
   - [Deploying Elsewhere](#deploying-elsewhere)
@@ -157,39 +155,11 @@ Replace the following assets with your own:
 
 If you'd like to use this template for your own portfolio website, you are welcome to do so under the following conditions:
 
-### Attribution Requirements
-
-1. **Required Attribution**:
-   - You must maintain the original credit in the footer: "Original design by [Achyut Katiyar](https://github.com/achyut21)"
-   - Keep the attribution link in the README
-
-2. **GitHub Repository**:
-   - If you fork or clone this repository, please star the original repository
-   - Include a clear statement in your README indicating that your project is based on Achyut Katiyar's portfolio template
-
-3. **Customization Requirements**:
-   - Change the personal information to your own
-   - Modify at least the color scheme or layout to make it personal to you
-   - Replace all project, experience, and skill data with your own
-
 ### What Not To Do
 
 - Remove attribution and claim the design as entirely your own
 - Sell this template or any derivative work without explicit permission
 - Use my personal information, images, or project details in your version
-
-### Example Attribution
-
-For your README:
-```markdown
-This portfolio is based on [Achyut Katiyar's Portfolio Template](https://github.com/achyut21/portfolio-website), 
-customized with my personal information and projects.
-```
-
-For your website footer:
-```html
-Design inspired by <a href="https://github.com/achyut21" target="_blank" rel="noopener noreferrer">Achyut Katiyar</a>
-```
 
 ## Deployment
 

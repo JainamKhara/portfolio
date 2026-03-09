@@ -5,7 +5,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Jainam Khara | Full Stack Developer",
   description: "Full Stack Developer & Machine Learning Enthusiast with expertise in Next.js, React, and blockchain technologies.",
-  metadataBase: new URL("https://achyutkatiyar.com"),
+  
   
   // Basic metadata
   applicationName: "Jainam Khara Portfolio",
@@ -14,7 +14,6 @@ export const metadata: Metadata = {
   
   openGraph: {
     type: "website",
-    url: "https://achyutkatiyar.com",
     title: "Jainam Khara | Full Stack Developer",
     description: "Full Stack Developer & Blockchain and Machine Learning Enthusiast with expertise in Next.js, React, and blockchain technologies.",
     siteName: "Jainam Khara",
@@ -35,10 +34,6 @@ export const metadata: Metadata = {
       { url: "/icon.png", type: "image/png" },
     ],
     apple: { url: "/apple-touch-icon.png" },
-  },
-  
-  alternates: {
-    canonical: "https://achyutkatiyar.com",
   },
 };
 

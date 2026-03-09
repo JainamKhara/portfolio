@@ -44,20 +44,23 @@ export function TechIcon({
   }
 
   return (
-    <img
-      src={getIconUrl()}
-      alt={`${name} logo`}
-      className={`${className} object-contain`}
-      onError={(e) => {
-        const target = e.currentTarget;
-        // Try plain version as fallback
-        if (target.src !== getFallbackUrl()) {
-          target.src = getFallbackUrl();
-        } else {
-          // If both fail, show fallback element
-          setImageError(true);
-        }
-      }}
-    />
+    <>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={getIconUrl()}
+        alt={`${name} logo`}
+        className={`${className} object-contain`}
+        onError={(e) => {
+          const target = e.currentTarget;
+          // Try plain version as fallback
+          if (target.src !== getFallbackUrl()) {
+            target.src = getFallbackUrl();
+          } else {
+            // If both fail, show fallback element
+            setImageError(true);
+          }
+        }}
+      />
+    </>
   );
 }
