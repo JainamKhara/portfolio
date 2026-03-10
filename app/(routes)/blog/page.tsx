@@ -11,7 +11,7 @@ import { useState } from "react";
 export default function BlogPage() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Email submitted:", email);
@@ -31,14 +31,15 @@ export default function BlogPage() {
           <div className="inline-block p-2 bg-primary/10 rounded-full mb-4">
             <CalendarDays className="h-10 w-10 text-primary" />
           </div>
-          
+
           <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
             Blog Coming Soon
           </h1>
-          
+
           <p className="max-w-[700px] text-muted-foreground md:text-xl/relaxed">
-            I&apos;m working on some interesting articles about web development, blockchain technology, 
-            and machine learning. Stay tuned for insightful content!
+            I&apos;m working on some interesting articles about web development,
+            app development, and machine learning. Stay tuned for insightful
+            content!
           </p>
         </motion.div>
 
@@ -56,16 +57,16 @@ export default function BlogPage() {
                     <div className="h-48 rounded-md bg-muted/70 animate-pulse flex items-center justify-center">
                       <Clock className="h-8 w-8 text-muted-foreground/40" />
                     </div>
-                    
+
                     <div className="h-6 w-2/3 rounded-md bg-muted/70 animate-pulse"></div>
-                    
+
                     <div className="space-y-2">
                       <div className="h-4 rounded-md bg-muted/70 animate-pulse"></div>
                       <div className="h-4 rounded-md bg-muted/70 animate-pulse"></div>
                       <div className="h-4 w-4/5 rounded-md bg-muted/70 animate-pulse"></div>
                     </div>
                   </div>
-                  
+
                   <div className="mt-6 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="h-8 w-8 rounded-full bg-muted/70 animate-pulse"></div>
@@ -94,10 +95,11 @@ export default function BlogPage() {
               <p className="text-sm text-muted-foreground mb-4">
                 Subscribe to get notified when new blog posts are available.
               </p>
-              
+
               {submitted ? (
                 <div className="p-4 bg-primary/10 rounded-lg text-sm">
-                  Thanks for subscribing! I&apos;ll notify you when new content is available.
+                  Thanks for subscribing! I&apos;ll notify you when new content
+                  is available.
                 </div>
               ) : (
                 <form onSubmit={handleSubmit}>
@@ -110,9 +112,7 @@ export default function BlogPage() {
                       required
                       className="flex-1"
                     />
-                    <Button type="submit">
-                      Notify Me
-                    </Button>
+                    <Button type="submit">Notify Me</Button>
                   </div>
                 </form>
               )}
@@ -121,15 +121,28 @@ export default function BlogPage() {
         </motion.div>
 
         <Separator className="my-16" />
-        
+
         <div className="text-center text-muted-foreground">
           <p>Check back soon for articles on:</p>
           <div className="flex flex-wrap gap-2 justify-center mt-4">
-            <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs">Web Development</span>
-            <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs">Blockchain</span>
-            <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs">Next.js</span>
-            <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs">React</span>
-            <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs">Machine Learning</span>
+            <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs">
+              Web Development
+            </span>
+            <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs">
+              App Development
+            </span>
+            <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs">
+              Next.js
+            </span>
+            <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs">
+              React
+            </span>
+            <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs">
+              Android
+            </span>
+            <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs">
+              Machine Learning
+            </span>
           </div>
         </div>
       </div>

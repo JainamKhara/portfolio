@@ -2,7 +2,6 @@ import {
     Code, FileCode, Braces, FileJson, Type, Coffee, Database, Terminal,
     Globe, Layout, Server, PanelLeft, Palette, Tablet,
     BadgePlus, BarChart, Brain, LineChart, Sigma,
-    Coins, Boxes, Link, LockKeyhole, Wallet, FolderArchive,
     Cloud, CloudCog, Container, GitBranch, Layers, CircleDashed, UploadCloud,
     Cpu, Network, Bot, Share2, Settings, Zap, ShieldCheck,
     LucideIcon, LucideProps 
@@ -38,14 +37,6 @@ import {
       'brain': Brain,
       'line-chart': LineChart,
       'sigma': Sigma,
-      
-      // Blockchain
-      'coins': Coins,
-      'boxes': Boxes,
-      'link': Link,
-      'lock-keyhole': LockKeyhole,
-      'wallet': Wallet,
-      'folder-archive': FolderArchive,
       
       // Cloud/DevOps
       'cloud': Cloud,

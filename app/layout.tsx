@@ -4,18 +4,18 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Jainam Khara | Full Stack Developer",
-  description: "Full Stack Developer & Machine Learning Enthusiast with expertise in Next.js, React, and blockchain technologies.",
+  description: "Full Stack Developer & Machine Learning Enthusiast with expertise in Next.js, React and Android.",
   
   
   // Basic metadata
   applicationName: "Jainam Khara Portfolio",
   authors: [{ name: "Jainam Khara" }],
-  keywords: ["Full Stack Developer", "Web3", "Blockchain", "Next.js", "React", "Machine Learning"],
+  keywords: ["Full Stack Developer", "Next.js", "React", "Machine Learning", "Android"],
   
   openGraph: {
     type: "website",
     title: "Jainam Khara | Full Stack Developer",
-    description: "Full Stack Developer & Blockchain and Machine Learning Enthusiast with expertise in Next.js, React, and blockchain technologies.",
+    description: "Full Stack Developer and Machine Learning Enthusiast with expertise in Next.js, React, Android.",
     siteName: "Jainam Khara",
     locale: "en_US",
     images: [
