@@ -60,7 +60,7 @@ export const projects: Project[] = [
       // "Implemented role-based access and interactive features like community hubs, increasing session duration by 65%",
       // "Eliminated third-party dependencies and automated royalty payouts, reducing overhead and platform latency by 30%"
     ],
-    image: "/images/projects/vehiql/vehiql.jpg",
+    image: "/images/projects/vehiql/vehiql.png",
     github: "https://github.com/jainam116/vehiql",
     // liveUrl: "https://vehiql.com",
     featured: false
