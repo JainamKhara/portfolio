@@ -37,7 +37,8 @@ const formSchema = z.object({
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  
+  const [error, setError] = useState<string | null>(null);
+
   // Initialize form with validation
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,15 +51,31 @@ export function ContactForm() {
   });
 
   // Form submission handler
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    
-    setTimeout(() => {
-      console.log(values);
-      setIsSubmitting(false);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to send message");
+      }
+
       setIsSubmitted(true);
       form.reset();
-    }, 1500);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -94,7 +111,8 @@ export function ContactForm() {
             transition={{ delay: 0.5 }}
             className="text-center text-muted-foreground max-w-md"
           >
-            Thank you for reaching out. I&apos;ll get back to you as soon as possible.
+            Thank you for reaching out. I&apos;ll get back to you as soon as
+            possible.
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -120,6 +138,15 @@ export function ContactForm() {
         >
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="rounded-md bg-red-50 p-4 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-400"
+                >
+                  {error}
+                </motion.div>
+              )}
               <FormField
                 control={form.control}
                 name="name"
@@ -167,7 +194,7 @@ export function ContactForm() {
                     <FormLabel>Message</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="I&apos;d like to discuss a project opportunity..."
+                        placeholder="I'd like to discuss a project opportunity..."
                         className="min-h-32 resize-none"
                         {...field}
                       />
