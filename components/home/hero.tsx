@@ -1,7 +1,7 @@
 // components/home/hero.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
   ArrowRight,
@@ -10,6 +10,10 @@ import {
   Linkedin,
   Mail,
   Phone,
+  Code2,
+  Smartphone,
+  Package,
+  Brain,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -17,11 +21,26 @@ import { socialLinks } from "@/data/social";
 
 export function Hero() {
   const [currentSkillIndex, setCurrentSkillIndex] = useState(0);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const displayedSkills = [
-    "Website Development",
-    "Application Development",
-    "Full Stack Development",
-    "Machine Learning Practitioner",
+    {
+      title: "Website Development",
+      icon: Code2,
+    },
+    {
+      title: "Application Development",
+      icon: Smartphone,
+    },
+    {
+      title: "Full Stack Development",
+      icon: Package,
+    },
+    {
+      title: "Machine Learning Practitioner",
+      icon: Brain,
+    },
   ];
 
   // Parallax effect setup
@@ -34,9 +53,38 @@ export function Hero() {
       setCurrentSkillIndex(
         (prevIndex) => (prevIndex + 1) % displayedSkills.length,
       );
-    }, 3000);
+    }, 3500);
 
     return () => clearInterval(interval);
+  }, [displayedSkills.length]);
+
+  // Mouse movement parallax for background with throttling
+  useEffect(() => {
+    let animationFrameId: number;
+    let lastX = 0;
+    let lastY = 0;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      lastX = (e.clientX - rect.left) / rect.width;
+      lastY = (e.clientY - rect.top) / rect.height;
+
+      if (animationFrameId) return;
+      animationFrameId = requestAnimationFrame(() => {
+        setMousePosition({
+          x: lastX,
+          y: lastY,
+        });
+        animationFrameId = 0;
+      });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
   }, []);
 
   // Get icon component for social links
@@ -55,61 +103,122 @@ export function Hero() {
     }
   };
 
+  const currentSkill = displayedSkills[currentSkillIndex];
+  const CurrentIcon = currentSkill.icon;
+
   return (
-    <section className="relative py-12 md:py-24 overflow-hidden">
-      {/* Background elements with parallax effect */}
-      <motion.div
-        className="absolute inset-0 -z-10"
-        style={{ y: useTransform(scrollY, [0, 1000], [0, 300]) }}
-      >
-        <div className="absolute right-0 top-20 w-72 h-72 bg-primary/5 rounded-full blur-3xl opacity-70" />
-        <div className="absolute left-20 bottom-20 w-96 h-96 bg-secondary/10 rounded-full blur-3xl opacity-60" />
+    <section
+      ref={containerRef}
+      className="relative py-12 md:py-24 overflow-hidden"
+    >
+      {/* Enhanced Background with gradient animation and mouse tracking */}
+      <motion.div className="absolute inset-0 -z-10">
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-primary/5 to-transparent opacity-50" />
+
+        {/* Interactive gradient orbs */}
+        <motion.div
+          className="absolute right-0 top-20 w-72 h-72 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full blur-3xl"
+          animate={{
+            x: mousePosition.x * 50,
+            y: mousePosition.y * 50,
+          }}
+          transition={{ type: "spring", stiffness: 100, damping: 30 }}
+        />
+        <motion.div
+          className="absolute left-20 bottom-20 w-96 h-96 bg-gradient-to-tr from-secondary/15 to-secondary/5 rounded-full blur-3xl"
+          animate={{
+            x: -mousePosition.x * 30,
+            y: -mousePosition.y * 30,
+          }}
+          transition={{ type: "spring", stiffness: 100, damping: 30 }}
+        />
+
+        {/* Floating accent orbs */}
+        <motion.div
+          className="absolute top-1/3 left-1/4 w-40 h-40 bg-primary/10 rounded-full blur-2xl"
+          animate={{
+            y: [0, 20, 0],
+          }}
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.div
+          className="absolute bottom-1/3 right-1/4 w-48 h-48 bg-secondary/10 rounded-full blur-2xl"
+          animate={{
+            y: [0, -25, 0],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1,
+          }}
+        />
       </motion.div>
 
       <div className="container px-4 md:px-6 mx-auto">
-        <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
+        <div className="grid gap-8 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
           <motion.div
-            className="flex flex-col justify-center space-y-4"
+            className="flex flex-col justify-center space-y-6"
             style={{ y: y1 }}
           >
-            <div className="space-y-2">
+            <div className="space-y-4">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+                <h1 className="text-4xl font-bold tracking-tighter sm:text-6xl xl:text-7xl/none bg-clip-text bg-gradient-to-r from-foreground to-foreground/70">
                   Hi, I&apos;m Jainam Khara
                 </h1>
               </motion.div>
+
+              {/* Enhanced Skill Carousel */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
-                className="h-12"
+                className="h-20"
               >
-                <div className="relative overflow-hidden h-full flex items-center">
+                <div className="relative h-full">
                   {displayedSkills.map((skill, index) => (
-                    <div
-                      key={skill}
-                      className={`absolute transition-all duration-500 transform ${
+                    <motion.div
+                      key={skill.title}
+                      className={`absolute transition-all duration-700 ${
                         index === currentSkillIndex
-                          ? "translate-y-0 opacity-100"
-                          : "translate-y-8 opacity-0"
+                          ? "opacity-100 visible"
+                          : "opacity-0 invisible"
                       }`}
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={
+                        index === currentSkillIndex
+                          ? { y: 0, opacity: 1 }
+                          : { y: -20, opacity: 0 }
+                      }
+                      transition={{ duration: 0.5 }}
                     >
-                      <h2 className="text-2xl font-semibold text-primary sm:text-3xl">
-                        {skill}
-                      </h2>
-                    </div>
+                      <div className="flex items-center gap-3">
+                        <div className="p-3 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20">
+                          <CurrentIcon className="h-6 w-6 text-primary" />
+                        </div>
+                        <h2 className="text-3xl font-bold sm:text-4xl bg-clip-text bg-gradient-to-r from-primary to-primary/70">
+                          {skill.title}
+                        </h2>
+                      </div>
+                    </motion.div>
                   ))}
                 </div>
               </motion.div>
+
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="max-w-[600px] text-muted-foreground md:text-xl"
+                className="max-w-[600px] text-lg text-muted-foreground md:text-xl leading-relaxed"
               >
                 A passionate developer with expertise in Fullstack Web and App
                 Development. Currently pursuing a Bachelor&apos;s in Computer
@@ -117,50 +226,62 @@ export function Hero() {
               </motion.p>
             </div>
 
-            {/* Action Buttons */}
+            {/* Action Buttons with enhanced styling */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="flex flex-wrap gap-3"
+              className="flex flex-wrap gap-4 pt-2"
             >
-              <Button asChild size="lg" className="group">
-                <a href="#projects">
-                  View My Work
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </a>
-              </Button>
-              <Button variant="outline" size="lg" asChild>
-                <a
-                  href="/Jainam Khara Resume.pdf"
-                  download="Jainam Khara Resume.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
+              <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
+                <Button asChild size="lg" className="group shadow-lg">
+                  <a href="#projects">
+                    View My Work
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </a>
+                </Button>
+              </motion.div>
+              <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  asChild
+                  className="shadow-lg border-primary/20"
                 >
-                  <Download className="mr-2 h-4 w-4" />
-                  Resume
-                </a>
-              </Button>
+                  <a
+                    href="/Jainam Khara Resume.pdf"
+                    download="Jainam Khara Resume.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Resume
+                  </a>
+                </Button>
+              </motion.div>
             </motion.div>
 
-            {/* Social Links - Added here from navbar */}
+            {/* Enhanced Social Links */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="flex gap-3 pt-2"
+              className="flex gap-3 pt-4"
             >
-              {socialLinks.map((social) => (
+              {socialLinks.map((social, idx) => (
                 <motion.div
                   key={social.id}
-                  whileHover={{ y: -3, scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
+                  whileHover={{ y: -5, scale: 1.15 }}
+                  whileTap={{ scale: 0.95 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.5 + idx * 0.1 }}
                 >
                   <Button
                     variant="ghost"
                     size="icon"
                     asChild
-                    className="rounded-full bg-muted/50 hover:bg-primary/10"
+                    className="rounded-full bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 hover:border-primary/40 hover:bg-gradient-to-br hover:from-primary/20 hover:to-primary/10 transition-all shadow-md"
                   >
                     <a
                       href={social.url}
@@ -176,23 +297,78 @@ export function Hero() {
             </motion.div>
           </motion.div>
 
+          {/* Enhanced Profile Image Section */}
           <motion.div
             className="flex items-center justify-center"
             style={{ y: y2 }}
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            <div className="relative aspect-square w-full max-w-md overflow-hidden rounded-full">
-              <Image
-                src="/images/profile.jpg"
-                alt="Jainam Khara"
-                fill
-                className="object-cover"
-                priority
-                sizes="(max-width: 768px) 100vw, 400px"
+            <motion.div
+              className="relative aspect-square w-full max-w-md"
+              animate={{
+                y: [0, 10, 0],
+              }}
+              transition={{
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              {/* Animated border glow */}
+              <motion.div
+                className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/40 to-secondary/20 blur-xl opacity-50 -z-10"
+                animate={{
+                  scale: [1, 1.05, 1],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
               />
-            </div>
+
+              {/* Image container with border */}
+              <div className="relative h-full w-full overflow-hidden rounded-3xl border-2 border-primary/20 shadow-2xl">
+                <Image
+                  src="/images/profile.jpg"
+                  alt="Jainam Khara"
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="(max-width: 768px) 100vw, 400px"
+                />
+
+                {/* Overlay gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
+              </div>
+
+              {/* Floating accent elements */}
+              <motion.div
+                className="absolute -top-4 -right-4 w-12 h-12 rounded-full bg-primary/20 border border-primary/40 blur-sm"
+                animate={{
+                  y: [0, -8, 0],
+                }}
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+              <motion.div
+                className="absolute -bottom-4 -left-4 w-16 h-16 rounded-full bg-secondary/15 border border-secondary/30 blur-sm"
+                animate={{
+                  y: [0, 8, 0],
+                }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1,
+                }}
+              />
+            </motion.div>
           </motion.div>
         </div>
       </div>
