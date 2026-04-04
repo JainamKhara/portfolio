@@ -22,7 +22,18 @@ import { socialLinks } from "@/data/social";
 export function Hero() {
   const [currentSkillIndex, setCurrentSkillIndex] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Detect mobile on mount
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const displayedSkills = [
     {
@@ -43,10 +54,10 @@ export function Hero() {
     },
   ];
 
-  // Parallax effect setup
+  // Parallax effect setup - disabled on mobile
   const { scrollY } = useScroll();
-  const y1 = useTransform(scrollY, [0, 500], [0, 150]); // Text moves slower
-  const y2 = useTransform(scrollY, [0, 500], [0, 250]); // Image moves faster
+  const y1 = useTransform(scrollY, [0, 500], isMobile ? [0, 0] : [0, 150]);
+  const y2 = useTransform(scrollY, [0, 500], isMobile ? [0, 0] : [0, 250]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -58,8 +69,13 @@ export function Hero() {
     return () => clearInterval(interval);
   }, [displayedSkills.length]);
 
-  // Mouse movement parallax for background with throttling
+  // Mouse movement parallax for background with throttling - disabled on mobile
   useEffect(() => {
+    if (isMobile) {
+      setMousePosition({ x: 0, y: 0 });
+      return;
+    }
+
     let animationFrameId: number;
     let lastX = 0;
     let lastY = 0;
@@ -85,7 +101,7 @@ export function Hero() {
       window.removeEventListener("mousemove", handleMouseMove);
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [isMobile]);
 
   // Get icon component for social links
   const getIconComponent = (iconName: string) => {
@@ -116,48 +132,56 @@ export function Hero() {
         {/* Animated gradient background */}
         <div className="absolute inset-0 bg-gradient-to-br from-transparent via-primary/5 to-transparent opacity-50" />
 
-        {/* Interactive gradient orbs */}
-        <motion.div
-          className="absolute right-0 top-20 w-72 h-72 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full blur-3xl"
-          animate={{
-            x: mousePosition.x * 50,
-            y: mousePosition.y * 50,
-          }}
-          transition={{ type: "spring", stiffness: 100, damping: 30 }}
-        />
-        <motion.div
-          className="absolute left-20 bottom-20 w-96 h-96 bg-gradient-to-tr from-secondary/15 to-secondary/5 rounded-full blur-3xl"
-          animate={{
-            x: -mousePosition.x * 30,
-            y: -mousePosition.y * 30,
-          }}
-          transition={{ type: "spring", stiffness: 100, damping: 30 }}
-        />
+        {/* Interactive gradient orbs - disabled on mobile */}
+        {!isMobile && (
+          <>
+            <motion.div
+              className="absolute right-0 top-20 w-72 h-72 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full blur-3xl"
+              animate={{
+                x: mousePosition.x * 50,
+                y: mousePosition.y * 50,
+              }}
+              transition={{ type: "spring", stiffness: 100, damping: 30 }}
+            />
+            <motion.div
+              className="absolute left-20 bottom-20 w-96 h-96 bg-gradient-to-tr from-secondary/15 to-secondary/5 rounded-full blur-3xl"
+              animate={{
+                x: -mousePosition.x * 30,
+                y: -mousePosition.y * 30,
+              }}
+              transition={{ type: "spring", stiffness: 100, damping: 30 }}
+            />
+          </>
+        )}
 
-        {/* Floating accent orbs */}
-        <motion.div
-          className="absolute top-1/3 left-1/4 w-40 h-40 bg-primary/10 rounded-full blur-2xl"
-          animate={{
-            y: [0, 20, 0],
-          }}
-          transition={{
-            duration: 6,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-        <motion.div
-          className="absolute bottom-1/3 right-1/4 w-48 h-48 bg-secondary/10 rounded-full blur-2xl"
-          animate={{
-            y: [0, -25, 0],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1,
-          }}
-        />
+        {/* Floating accent orbs - simplified on mobile */}
+        {!isMobile && (
+          <>
+            <motion.div
+              className="absolute top-1/3 left-1/4 w-40 h-40 bg-primary/10 rounded-full blur-2xl"
+              animate={{
+                y: [0, 20, 0],
+              }}
+              transition={{
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+            <motion.div
+              className="absolute bottom-1/3 right-1/4 w-48 h-48 bg-secondary/10 rounded-full blur-2xl"
+              animate={{
+                y: [0, -25, 0],
+              }}
+              transition={{
+                duration: 8,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 1,
+              }}
+            />
+          </>
+        )}
       </motion.div>
 
       <div className="container px-4 md:px-6 mx-auto">
@@ -307,27 +331,41 @@ export function Hero() {
           >
             <motion.div
               className="relative aspect-square w-full max-w-md"
-              animate={{
-                y: [0, 10, 0],
-              }}
-              transition={{
-                duration: 6,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
+              animate={
+                isMobile
+                  ? { y: 0 }
+                  : {
+                      y: [0, 10, 0],
+                    }
+              }
+              transition={
+                isMobile
+                  ? { duration: 0 }
+                  : {
+                      duration: 6,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }
+              }
             >
               {/* Animated border glow */}
-              <motion.div
-                className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/40 to-secondary/20 blur-xl opacity-50 -z-10"
-                animate={{
-                  scale: [1, 1.05, 1],
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
+              {!isMobile && (
+                <motion.div
+                  className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/40 to-secondary/20 blur-xl opacity-50 -z-10"
+                  animate={{
+                    scale: [1, 1.05, 1],
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+              )}
+
+              {!isMobile && (
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/20 to-secondary/10 blur-2xl opacity-30 -z-10" />
+              )}
 
               {/* Image container with border */}
               <div className="relative h-full w-full overflow-hidden rounded-3xl border-2 border-primary/20 shadow-2xl">
@@ -344,30 +382,34 @@ export function Hero() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
               </div>
 
-              {/* Floating accent elements */}
-              <motion.div
-                className="absolute -top-4 -right-4 w-12 h-12 rounded-full bg-primary/20 border border-primary/40 blur-sm"
-                animate={{
-                  y: [0, -8, 0],
-                }}
-                transition={{
-                  duration: 5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
-              <motion.div
-                className="absolute -bottom-4 -left-4 w-16 h-16 rounded-full bg-secondary/15 border border-secondary/30 blur-sm"
-                animate={{
-                  y: [0, 8, 0],
-                }}
-                transition={{
-                  duration: 6,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 1,
-                }}
-              />
+              {/* Floating accent elements - disabled on mobile */}
+              {!isMobile && (
+                <>
+                  <motion.div
+                    className="absolute -top-4 -right-4 w-12 h-12 rounded-full bg-primary/20 border border-primary/40 blur-sm"
+                    animate={{
+                      y: [0, -8, 0],
+                    }}
+                    transition={{
+                      duration: 5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                  <motion.div
+                    className="absolute -bottom-4 -left-4 w-16 h-16 rounded-full bg-secondary/15 border border-secondary/30 blur-sm"
+                    animate={{
+                      y: [0, 8, 0],
+                    }}
+                    transition={{
+                      duration: 6,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: 1,
+                    }}
+                  />
+                </>
+              )}
             </motion.div>
           </motion.div>
         </div>
