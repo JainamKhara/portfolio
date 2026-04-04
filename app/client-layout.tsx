@@ -23,6 +23,10 @@ const BlackHoleVideo = dynamic(
     import("@/components/black-hole-video").then((mod) => mod.BlackHoleVideo),
   { ssr: false },
 );
+const CustomCursor = dynamic(
+  () => import("@/components/custom-cursor").then((mod) => mod.CustomCursor),
+  { ssr: false },
+);
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -72,6 +76,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
           enableSystem
           disableTransitionOnChange
         >
+          {mounted && <CustomCursor />}
           {mounted && (
             <>
               <StarsCanvas />
