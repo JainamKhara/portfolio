@@ -7,20 +7,20 @@ import { motion } from "framer-motion";
 export function BlackHoleVideo() {
   const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  
+
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
-  if (theme !== 'dark') return null;
+  const shouldRender = mounted && theme === "dark";
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      animate={{ opacity: shouldRender ? 1 : 0 }}
       transition={{ duration: 1 }}
       className="fixed inset-0 overflow-hidden z-[-2] pointer-events-none"
+      style={{ display: shouldRender ? "block" : "none" }}
     >
       <video
         src="/blackhole.webm"

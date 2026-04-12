@@ -56,8 +56,8 @@ export function Hero() {
 
   // Parallax effect setup - disabled on mobile
   const { scrollY } = useScroll();
-  const y1 = useTransform(scrollY, [0, 500], isMobile ? [0, 0] : [0, 150]);
-  const y2 = useTransform(scrollY, [0, 500], isMobile ? [0, 0] : [0, 250]);
+  const y1 = useTransform(scrollY, [0, 500], isMobile ? [0, 0] : [0, 80]);
+  const y2 = useTransform(scrollY, [0, 500], isMobile ? [0, 0] : [0, 120]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -79,9 +79,16 @@ export function Hero() {
     let animationFrameId: number;
     let lastX = 0;
     let lastY = 0;
+    let lastUpdate = 0;
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!containerRef.current) return;
+      const now = Date.now();
+
+      // Throttle to 30fps instead of 60fps
+      if (now - lastUpdate < 33) return;
+      lastUpdate = now;
+
       const rect = containerRef.current.getBoundingClientRect();
       lastX = (e.clientX - rect.left) / rect.width;
       lastY = (e.clientY - rect.top) / rect.height;
@@ -138,49 +145,35 @@ export function Hero() {
             <motion.div
               className="absolute right-0 top-20 w-72 h-72 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full blur-3xl"
               animate={{
-                x: mousePosition.x * 50,
-                y: mousePosition.y * 50,
+                x: mousePosition.x * 30,
+                y: mousePosition.y * 30,
               }}
-              transition={{ type: "spring", stiffness: 100, damping: 30 }}
+              transition={{ type: "tween", duration: 0.5 }}
             />
             <motion.div
               className="absolute left-20 bottom-20 w-96 h-96 bg-gradient-to-tr from-secondary/15 to-secondary/5 rounded-full blur-3xl"
               animate={{
-                x: -mousePosition.x * 30,
-                y: -mousePosition.y * 30,
+                x: -mousePosition.x * 20,
+                y: -mousePosition.y * 20,
               }}
-              transition={{ type: "spring", stiffness: 100, damping: 30 }}
+              transition={{ type: "tween", duration: 0.5 }}
             />
           </>
         )}
 
         {/* Floating accent orbs - simplified on mobile */}
         {!isMobile && (
-          <>
-            <motion.div
-              className="absolute top-1/3 left-1/4 w-40 h-40 bg-primary/10 rounded-full blur-2xl"
-              animate={{
-                y: [0, 20, 0],
-              }}
-              transition={{
-                duration: 6,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-            <motion.div
-              className="absolute bottom-1/3 right-1/4 w-48 h-48 bg-secondary/10 rounded-full blur-2xl"
-              animate={{
-                y: [0, -25, 0],
-              }}
-              transition={{
-                duration: 8,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 1,
-              }}
-            />
-          </>
+          <motion.div
+            className="absolute top-1/3 left-1/4 w-40 h-40 bg-primary/10 rounded-full blur-2xl"
+            animate={{
+              y: [0, 15, 0],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
         )}
       </motion.div>
 
@@ -330,19 +323,19 @@ export function Hero() {
             transition={{ duration: 0.5, delay: 0.4 }}
           >
             <motion.div
-              className="relative aspect-square w-full max-w-md"
+              className="relative aspect-square w-full max-w-md will-change-transform"
               animate={
                 isMobile
                   ? { y: 0 }
                   : {
-                      y: [0, 10, 0],
+                      y: [0, 8, 0],
                     }
               }
               transition={
                 isMobile
                   ? { duration: 0 }
                   : {
-                      duration: 6,
+                      duration: 8,
                       repeat: Infinity,
                       ease: "easeInOut",
                     }
@@ -351,12 +344,12 @@ export function Hero() {
               {/* Animated border glow */}
               {!isMobile && (
                 <motion.div
-                  className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/40 to-secondary/20 blur-xl opacity-50 -z-10"
+                  className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/30 to-secondary/15 blur-xl opacity-30 -z-10 will-change-transform"
                   animate={{
-                    scale: [1, 1.05, 1],
+                    scale: [1, 1.03, 1],
                   }}
                   transition={{
-                    duration: 4,
+                    duration: 6,
                     repeat: Infinity,
                     ease: "easeInOut",
                   }}
@@ -364,7 +357,7 @@ export function Hero() {
               )}
 
               {!isMobile && (
-                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/20 to-secondary/10 blur-2xl opacity-30 -z-10" />
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/10 to-secondary/5 blur-2xl opacity-20 -z-10" />
               )}
 
               {/* Image container with border */}
@@ -384,31 +377,17 @@ export function Hero() {
 
               {/* Floating accent elements - disabled on mobile */}
               {!isMobile && (
-                <>
-                  <motion.div
-                    className="absolute -top-4 -right-4 w-12 h-12 rounded-full bg-primary/20 border border-primary/40 blur-sm"
-                    animate={{
-                      y: [0, -8, 0],
-                    }}
-                    transition={{
-                      duration: 5,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  />
-                  <motion.div
-                    className="absolute -bottom-4 -left-4 w-16 h-16 rounded-full bg-secondary/15 border border-secondary/30 blur-sm"
-                    animate={{
-                      y: [0, 8, 0],
-                    }}
-                    transition={{
-                      duration: 6,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                      delay: 1,
-                    }}
-                  />
-                </>
+                <motion.div
+                  className="absolute -top-4 -right-4 w-12 h-12 rounded-full bg-primary/20 border border-primary/40 blur-sm will-change-transform"
+                  animate={{
+                    y: [0, -6, 0],
+                  }}
+                  transition={{
+                    duration: 6,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
               )}
             </motion.div>
           </motion.div>

@@ -77,12 +77,8 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
           disableTransitionOnChange
         >
           {mounted && <CustomCursor />}
-          {mounted && (
-            <>
-              <StarsCanvas />
-              <BlackHoleVideo />
-            </>
-          )}
+          {mounted && <StarsCanvas />}
+          {mounted && <BlackHoleVideo />}
           <SmoothScrollProvider>
             <div className="relative flex min-h-screen flex-col">
               <Navbar />
