@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Plus, Home, User, Briefcase, Code, BookOpen, Mail, Github, Linkedin, Phone, X } from "lucide-react";
+import { Plus, Home, User, Briefcase, Code, Mail, Github, Linkedin, Phone, X, Medal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
   DropdownMenu, 
@@ -21,7 +21,7 @@ const navItems = [
   { title: "About", href: "/about", icon: <User className="mr-2 h-4 w-4" /> },
   { title: "Experience", href: "/experience", icon: <Briefcase className="mr-2 h-4 w-4" /> },
   { title: "Projects", href: "/projects", icon: <Code className="mr-2 h-4 w-4" /> },
-  { title: "Blog", href: "/blog", icon: <BookOpen className="mr-2 h-4 w-4" /> },
+  { title: "Certificates", href: "/certificates", icon: <Medal className="mr-2 h-4 w-4" /> },
   { title: "Contact", href: "/contact", icon: <Mail className="mr-2 h-4 w-4" /> },
 ];
 

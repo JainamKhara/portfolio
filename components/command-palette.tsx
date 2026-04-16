@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, ArrowRight, Home, User, Briefcase, Code, BookOpen, Mail } from 'lucide-react';
+import { Search, ArrowRight, Home, User, Briefcase, Code, Mail, Medal } from 'lucide-react';
 import { 
   CommandDialog, 
   CommandInput, 
@@ -41,8 +41,8 @@ const getNavIcon = (href: string) => {
       return <Briefcase className="mr-2 h-4 w-4" />;
     case "/projects":
       return <Code className="mr-2 h-4 w-4" />;
-    case "/blog":
-      return <BookOpen className="mr-2 h-4 w-4" />;
+    case "/certificates":
+      return <Medal className="mr-2 h-4 w-4" />;
     case "/contact":
       return <Mail className="mr-2 h-4 w-4" />;
     default:
@@ -56,7 +56,7 @@ const navItems = [
   { title: "About", href: "/about" },
   { title: "Experience", href: "/experience" },
   { title: "Projects", href: "/projects" },
-  { title: "Blog", href: "/blog" },
+  { title: "Certificates", href: "/certificates" },
   { title: "Contact", href: "/contact" },
 ];
 

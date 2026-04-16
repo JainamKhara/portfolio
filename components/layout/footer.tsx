@@ -65,10 +65,10 @@ export function Footer() {
               </li>
               <li>
                 <Link 
-                  href="/blog" 
+                  href="/certificates" 
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Blog
+                  Certificates
                 </Link>
               </li>
               <li>

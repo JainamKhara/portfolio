@@ -94,7 +94,7 @@ This portfolio website showcases my projects, experience, and skills with a focu
 ├── app/                       # Next.js app directory
 │   ├── (routes)/              # Page routes
 │   │   ├── about/
-│   │   ├── blog/
+│   │   ├── certificates/
 │   │   ├── contact/
 │   │   ├── experience/
 │   │   └── projects/
