@@ -148,7 +148,7 @@ Replace the following assets with your own:
 
 - `/public/images/profile.jpg`: Your profile picture
 - `/public/images/projects/`: Project images
-- `/public/resume.pdf`: Your resume
+- `/public/CV.pdf`: Your CV
 - `/public/favicon.ico`: Site favicon
 
 ## Using This Template

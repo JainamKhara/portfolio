@@ -3,20 +3,24 @@ import { ClientLayout } from "./client-layout";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Jainam Khara | Full Stack Developer",
+  title: "Jainam Khara | Full Stack Developer & ML Enthusiast",
   description: "Full Stack Developer & Machine Learning Enthusiast with expertise in Next.js, React and Android.",
   
   
   // Basic metadata
   applicationName: "Jainam Khara Portfolio",
   authors: [{ name: "Jainam Khara" }],
-  keywords: ["Full Stack Developer", "Next.js", "React", "Machine Learning", "Android"],
-  
+  keywords: ["Full Stack Developer", "Next.js Developer", "React Developer", "Machine Learning", "Android Developer", "Portfolio", "Web Development", "App Development", "AI/ML Enthusiast"],
+  alternates: {
+    canonical: "https://jainamkhara.app", 
+  },
+
   openGraph: {
     type: "website",
-    title: "Jainam Khara | Full Stack Developer",
+    title: "Jainam Khara | Portfolio",
     description: "Full Stack Developer and Machine Learning Enthusiast with expertise in Next.js, React, Android.",
-    siteName: "Jainam Khara",
+    siteName: "Jainam Khara Portfolio",
+    url: "https://jainamkhara.app",
     locale: "en_US",
     images: [
       {
@@ -28,6 +32,13 @@ export const metadata: Metadata = {
     ],
   },
   
+  twitter: {
+    card: "summary_large_image",
+    title: "Jainam Khara | Portfolio",
+    description: "Full Stack Developer & Machine Learning Enthusiast.",
+    images: ["/images/og-image.png"],
+  },
+
   icons: {
     icon: [
       { url: "/favicon.ico" },

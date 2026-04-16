@@ -27,7 +27,7 @@ export const projects: Project[] = [
       "Built-in AI chatbot assistant and fully responsive mobile-first UI/UX across all pages."
     ],
     image: "/images/projects/drop-of-hope/drop-of-hope.png",
-    github: "https://github.com/jainam116/drop-of-hope",
+    github: "https://github.com/jainamKhara/drop-of-hope",
     liveUrl: "https://drop-of-hope.vercel.app",
     featured: true
   },
@@ -44,7 +44,7 @@ export const projects: Project[] = [
       "Responsive, themed user interface with polished Dark/Light mode toggle and animated game-over feedback."
     ],
     image: "/images/projects/skribbl-clone/skribbl-clone.jpg",
-    github: "https://github.com/Jainam116/skribbl-clone",
+    github: "https://github.com/JainamKhara/skribbl-clone",
     // liveUrl: "https://drop-of-hope.vercel.app",
     featured: true
   },
@@ -61,7 +61,7 @@ export const projects: Project[] = [
       // "Eliminated third-party dependencies and automated royalty payouts, reducing overhead and platform latency by 30%"
     ],
     image: "/images/projects/vehiql/vehiql.png",
-    github: "https://github.com/jainam116/vehiql",
+    github: "https://github.com/jainamKhara/vehiql",
     // liveUrl: "https://vehiql.com",
     featured: false
   },

@@ -73,12 +73,12 @@ export function Footer() {
               </li>
               <li>
                 <a 
-                  href="/Jainam_Khara_Resume.pdf" 
+                  href="/Jainam_Khara_CV.pdf" 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
                 >
-                  Resume <ExternalLink className="h-3 w-3" />
+                  CV <ExternalLink className="h-3 w-3" />
                 </a>
               </li>
             </ul>

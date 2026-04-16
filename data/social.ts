@@ -9,7 +9,7 @@ export interface SocialLink {
     {
       id: "github",
       name: "GitHub",
-      url: "https://github.com/Jainam116",
+      url: "https://github.com/JainamKhara",
       icon: "github"
     },
     {

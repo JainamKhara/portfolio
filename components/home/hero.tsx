@@ -266,13 +266,13 @@ export function Hero() {
                   className="shadow-lg border-primary/20"
                 >
                   <a
-                    href="/Jainam Khara Resume.pdf"
-                    download="Jainam Khara Resume.pdf"
+                    href="/Jainam_Khara_CV.pdf"
+                    download="Jainam Khara CV.pdf"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <Download className="mr-2 h-4 w-4" />
-                    Resume
+                    CV
                   </a>
                 </Button>
               </motion.div>
