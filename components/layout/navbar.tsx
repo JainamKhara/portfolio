@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { cn } from "@/lib/utils";
 
@@ -214,6 +214,12 @@ export function Navbar() {
                     </SheetTrigger>
                   </motion.div>
                   <SheetContent side="right" className="p-0">
+                    <SheetHeader className="sr-only">
+                      <SheetTitle>Navigation Menu</SheetTitle>
+                      <SheetDescription>
+                        Mobile navigation links for the portfolio website.
+                      </SheetDescription>
+                    </SheetHeader>
                     <div className="flex flex-col h-full">
                       <div className="p-6 flex justify-between items-center">
                         <Link

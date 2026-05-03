@@ -64,7 +64,7 @@ export default function ProjectPage() {
 
               {/* Project Image - Contained with max-width */}
               {project.image && (
-                <div className="mb-8 ml-20">
+                <div className="mb-8">
                   <div className="max-w-2xl rounded-lg overflow-hidden border-2 border-primary/20">
                     <Image
                       src={project.image}

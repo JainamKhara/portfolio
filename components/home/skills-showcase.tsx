@@ -42,7 +42,7 @@ export function SkillsShowcase() {
             onValueChange={(value) => setSelectedCategory(value as SkillCategory)}
             className="w-full">
             <div className="flex justify-center mb-8">
-              <TabsList className="flex flex-wrap gap-2 h-auto">
+              <TabsList className="flex flex-wrap gap-2 h-auto p-1 justify-center bg-muted/50">
                 {categories.map((category) => (
                   <TabsTrigger
                     key={category}

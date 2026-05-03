@@ -7,18 +7,35 @@ export function CustomCursor() {
   const ringRef = useRef<HTMLDivElement>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [ringPos, setRingPos] = useState({ x: 0, y: 0 });
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    const checkMobile = () => {
+      const isMobileDevice = 
+        window.innerWidth < 768 || 
+        window.matchMedia("(pointer: coarse)").matches ||
+        'ontouchstart' in window;
+      setIsVisible(!isMobileDevice);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
     const handleMouseMove = (e: MouseEvent) => {
       setMousePos({ x: e.clientX, y: e.clientY });
     };
 
     window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
   }, []);
 
   // Ring follows dot with delay using animation frame
   useEffect(() => {
+    if (!isVisible) return;
+    
     let animationFrameId: number;
     const speed = 0.15; // Lower = more delay, higher = less delay
 
@@ -32,7 +49,7 @@ export function CustomCursor() {
 
     animationFrameId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationFrameId);
-  }, [mousePos]);
+  }, [mousePos, isVisible]);
 
   // Update positions
   useEffect(() => {
@@ -45,6 +62,8 @@ export function CustomCursor() {
       ringRef.current.style.top = `${ringPos.y}px`;
     }
   }, [mousePos, ringPos]);
+
+  if (!isVisible) return null;
 
   return (
     <>

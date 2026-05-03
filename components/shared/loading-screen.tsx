@@ -48,11 +48,13 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
       mm.add(
         {
           desktop: "(min-width: 768px)",
+          mobile: "(max-width: 767px)",
           reducedMotion: "(prefers-reduced-motion: reduce)",
         },
         (context) => {
           const { desktop, reducedMotion } = context.conditions as {
             desktop: boolean;
+            mobile: boolean;
             reducedMotion: boolean;
           };
 

@@ -51,12 +51,16 @@ export function ExperienceTimeline() {
         </motion.div>
         
         <div className="flex justify-center mt-8">
-          <Tabs defaultValue="all" className="w-full max-w-md">
+          <Tabs 
+            value={activeTab} 
+            onValueChange={setActiveTab} 
+            className="w-full max-w-md"
+          >
             <TabsList className="grid grid-cols-4 w-full">
-              <TabsTrigger value="all" onClick={() => setActiveTab("all")}>All</TabsTrigger>
-              <TabsTrigger value="work" onClick={() => setActiveTab("work")}>Work</TabsTrigger>
-              <TabsTrigger value="leadership" onClick={() => setActiveTab("leadership")}>Leadership</TabsTrigger>
-              <TabsTrigger value="research" onClick={() => setActiveTab("research")}>Research</TabsTrigger>
+              <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="work">Work</TabsTrigger>
+              <TabsTrigger value="leadership">Leadership</TabsTrigger>
+              <TabsTrigger value="research">Research</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
