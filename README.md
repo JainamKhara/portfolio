@@ -68,8 +68,8 @@ This portfolio website showcases my projects, experience, and skills with a focu
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/portfolio-website.git
-   cd portfolio-website
+   git clone https://github.com/JainamKhara/portfolio.git
+   cd portfolio
    ```
 
 2. Install dependencies:
