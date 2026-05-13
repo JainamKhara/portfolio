@@ -1,133 +1,226 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ArrowRight, Github, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { projects } from "@/data/projects";
-import Link from "next/link";
+import { useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { gsap, useGSAP } from "@/lib/gsap";
 import Image from "next/image";
+import Link from "next/link";
+import { projects } from "@/data/projects";
+import { ArrowUpRight, ChevronDown } from "lucide-react";
+
+const featured = projects.filter((p) => p.featured);
 
 export function FeaturedProjects() {
-  const featuredProjects = projects.filter((project) => project.featured);
+  const sectionRef = useRef<HTMLElement>(null);
+  const [expanded, setExpanded] = useState<string | null>(null);
+
+  /* GSAP: section header */
+  useGSAP(() => {
+    const header = sectionRef.current?.querySelector(".section-header");
+    if (!header) return;
+    gsap.fromTo(header,
+      { opacity: 0, y: 36 },
+      { opacity: 1, y: 0, duration: 0.75, ease: "power3.out",
+        scrollTrigger: { trigger: sectionRef.current, start: "top 82%" } }
+    );
+  }, { scope: sectionRef });
+
+  /* GSAP: stagger rows */
+  useGSAP(() => {
+    const rows = sectionRef.current?.querySelectorAll(".proj-row");
+    if (!rows) return;
+    rows.forEach((row) => {
+      gsap.fromTo(row,
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: 0.55, ease: "power3.out",
+          scrollTrigger: { trigger: row, start: "top 91%" } }
+      );
+    });
+  }, { scope: sectionRef });
 
   return (
-    <section id="projects" className="py-12 md:py-24 bg-muted/50">
-      <div className="container px-4 md:px-6 mx-auto">
-        <div className="flex flex-col items-center justify-center space-y-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+    <section ref={sectionRef} className="relative border-t border-border bg-background">
+
+      {/* Header */}
+      <div className="section-header flex items-end justify-between px-8 md:px-14 lg:px-20 pt-20 pb-8">
+        <div>
+          <p className="section-label mb-3">02 / Selected Work</p>
+          <h2
+            className="font-display font-black leading-none tracking-tight"
+            style={{ fontSize: "clamp(2.8rem,7vw,5.5rem)" }}
           >
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-              Featured Projects
-            </h2>
-            <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              Check out some of my recent work
-            </p>
-          </motion.div>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 w-full">
-            {featuredProjects.map((project, index) => (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.1 * index }}
+            Projects
+          </h2>
+        </div>
+        <Link
+          href="/projects"
+          data-cursor="hover"
+          className="hidden md:inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors duration-300 mb-2"
+        >
+          All work <ArrowUpRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
+
+      <div className="mx-8 md:mx-14 lg:mx-20 h-px bg-border" />
+
+      {/* Rows */}
+      <div>
+        {featured.map((project, i) => {
+          const isOpen = expanded === project.id;
+
+          return (
+            <div key={project.id} className="proj-row border-b border-border" style={{ opacity: 0 }}>
+
+              {/* ── Clickable row header ── */}
+              <button
+                onClick={() => setExpanded(isOpen ? null : project.id)}
+                data-cursor="hover"
+                className="w-full group relative text-left"
               >
-                <Card className="h-full flex flex-col overflow-hidden border-2 transition-all hover:border-primary">
-                  {project.image && (
-                    <div className="aspect-video overflow-hidden">
-                      <Image
-                        src={project.image}
-                        alt={project.title}
-                        className="h-full w-full object-cover transition-transform hover:scale-105"
-                        width={600}
-                        height={400}
-                      />
-                    </div>
-                  )}
-                  <CardHeader>
-                    <CardTitle>{project.title}</CardTitle>
-                    <CardDescription>{project.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex-1">
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {project.technologies.slice(0, 4).map((tech) => (
-                        <Badge key={tech} variant="secondary">
-                          {tech}
-                        </Badge>
-                      ))}
-                      {project.technologies.length > 4 && (
-                        <Badge variant="outline">
-                          +{project.technologies.length - 4}
-                        </Badge>
-                      )}
-                    </div>
-                    <ul className="space-y-2 text-sm text-muted-foreground">
-                      {project.functionality
-                        .slice(0, 2)
-                        .map((functionality, i) => (
-                          <li key={i} className="flex items-start">
-                            <ArrowRight className="mr-2 h-4 w-4 text-primary mt-0.5" />
-                            <span>{functionality}</span>
-                          </li>
-                        ))}
-                    </ul>
-                  </CardContent>
-                  <CardFooter className="flex gap-2">
-                    <Button asChild variant="default" size="sm">
-                      <Link href={`/projects/${project.id}`}>
-                        View Details
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
-                    <div className="flex-1"></div>
-                    {project.github && (
-                      <Button asChild variant="ghost" size="icon">
-                        <a
-                          href={project.github}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label="GitHub"
+                {/* Hover / open bg */}
+                <div
+                  className="absolute inset-0 bg-card/70 transition-opacity duration-300 pointer-events-none"
+                  style={{ opacity: isOpen ? 1 : 0 }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.opacity = "1"; }}
+                  onMouseLeave={(e) => { if (!isOpen) (e.currentTarget as HTMLDivElement).style.opacity = "0"; }}
+                />
+
+                {/* Left accent */}
+                <div
+                  className="absolute left-0 top-0 bottom-0 w-[2px] bg-primary transition-transform duration-300 pointer-events-none origin-top"
+                  style={{ transform: isOpen ? "scaleY(1)" : "scaleY(0)" }}
+                />
+
+                <div className="relative z-10 px-8 md:px-14 lg:px-20 py-5 flex items-center gap-6">
+                  {/* Index */}
+                  <span className="font-mono text-[11px] text-muted-foreground/30 w-6 shrink-0">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+
+                  {/* Title */}
+                  <div className="flex-1">
+                    <h3
+                      className="font-display font-bold leading-tight transition-colors duration-300"
+                      style={{
+                        fontSize: "clamp(1.1rem,2.6vw,1.7rem)",
+                        color: isOpen ? "#6C47FF" : undefined,
+                      }}
+                    >
+                      {project.title}
+                    </h3>
+                  </div>
+
+                  {/* 3 tech badges — desktop */}
+                  <div className="hidden md:flex items-center gap-1.5 shrink-0">
+                    {project.technologies.slice(0, 3).map((t) => (
+                      <span
+                        key={t}
+                        className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 border border-border/60 text-muted-foreground/40"
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Chevron */}
+                  <motion.div
+                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    transition={{ duration: 0.28 }}
+                    className="shrink-0 text-muted-foreground/30"
+                  >
+                    <ChevronDown className="h-4 w-4" />
+                  </motion.div>
+                </div>
+              </button>
+
+              {/* ── Inline panel ── */}
+              <AnimatePresence initial={false}>
+                {isOpen && (
+                  <motion.div
+                    initial={{ height: 0 }}
+                    animate={{ height: "auto" }}
+                    exit={{ height: 0 }}
+                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    className="overflow-hidden"
+                  >
+                    <div className="px-8 md:px-14 lg:px-20 pt-2 pb-8">
+                      <div className="flex flex-col md:flex-row gap-6 items-start">
+
+                        {/* Project screenshot */}
+                        <div
+                          className="w-full md:w-80 lg:w-96 shrink-0 relative overflow-hidden border-[1.5px] border-primary/60 group/img"
+                          style={{ aspectRatio: "16/9" }}
                         >
-                          <Github className="h-4 w-4" />
-                        </a>
-                      </Button>
-                    )}
-                    {project.liveUrl && (
-                      <Button asChild variant="ghost" size="icon">
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label="Live Demo"
-                        >
-                          <ExternalLink className="h-4 w-4" />
-                        </a>
-                      </Button>
-                    )}
-                  </CardFooter>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-          <Button asChild variant="outline" className="mt-8">
-            <Link href="/projects">
-              View All Projects
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
+                          <Image
+                            src={project.image}
+                            alt={project.title}
+                            fill
+                            className="object-cover object-top transition-transform duration-700 group-hover/img:scale-105"
+                            sizes="(max-width: 768px) 100vw, 384px"
+                          />
+                          <div className="absolute inset-0 bg-primary/5 group-hover/img:bg-transparent transition-colors duration-300" />
+                        </div>
+
+                        {/* Right: essentials only */}
+                        <div className="flex flex-col gap-4 flex-1 pt-1">
+                          <p className="text-sm text-muted-foreground leading-relaxed max-w-[55ch]">
+                            {project.description}
+                          </p>
+
+                          {/* CTA */}
+                          <div className="flex items-center gap-3 mt-auto pt-2">
+                            <Link
+                              href={`/projects/${project.id}`}
+                              data-cursor="hover"
+                              className="inline-flex items-center gap-2 bg-primary text-white font-mono text-[9px] uppercase tracking-widest px-5 py-2.5 hover:bg-white hover:text-background transition-all duration-300 group"
+                            >
+                              Case Study
+                              <ArrowUpRight className="h-3 w-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
+                            </Link>
+                            {project.github && (
+                              <a
+                                href={project.github}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                data-cursor="hover"
+                                className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground/50 hover:text-primary transition-colors duration-200"
+                              >
+                                GitHub ↗
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
+
+        {/* Footer CTA */}
+        <Link
+          href="/projects"
+          data-cursor="hover"
+          className="group flex items-center justify-between px-8 md:px-14 lg:px-20 py-5 hover:bg-card/50 transition-colors duration-300"
+        >
+          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/35 group-hover:text-primary transition-colors duration-300">
+            See all projects
+          </span>
+          <ArrowUpRight className="h-4 w-4 text-muted-foreground/25 group-hover:text-primary transition-all duration-300" />
+        </Link>
+      </div>
+
+      {/* Tech marquee */}
+      <div className="h-9 border-t border-border flex items-center overflow-hidden bg-muted/10 select-none">
+        <div className="marquee-track font-mono text-[9px] uppercase tracking-widest text-muted-foreground/25 whitespace-nowrap">
+          {[0, 1].map((_, k) => (
+            <span key={k} className="px-6">
+              Next.js · React · TypeScript · Node.js · Python · TailwindCSS
+              · MongoDB · Firebase · Android · Machine Learning · GSAP · Framer Motion ·&nbsp;
+            </span>
+          ))}
         </div>
       </div>
     </section>

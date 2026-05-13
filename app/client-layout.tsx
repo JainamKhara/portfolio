@@ -1,7 +1,6 @@
 "use client";
 
-import { Inter as FontSans } from "next/font/google";
-import localFont from "next/font/local";
+import { Playfair_Display, DM_Sans, JetBrains_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
@@ -15,85 +14,65 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { LoadingScreen } from "@/components/shared/loading-screen";
 
-const StarsCanvas = dynamic(
-  () => import("@/components/star-background").then((mod) => mod.StarsCanvas),
-  { ssr: false },
-);
-const BlackHoleVideo = dynamic(
-  () =>
-    import("@/components/black-hole-video").then((mod) => mod.BlackHoleVideo),
-  { ssr: false },
-);
 const CustomCursor = dynamic(
   () => import("@/components/custom-cursor").then((mod) => mod.CustomCursor),
   { ssr: false },
 );
 
-const fontSans = FontSans({
+/* ── Fonts ── */
+const fontDisplay = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-display",
+  style: ["normal", "italic"],
+  weight: ["400", "700", "900"],
+});
+
+const fontSans = DM_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
 });
 
-const fontDisplay = localFont({
-  src: [
-    {
-      path: "../public/fonts/Satoshi-Regular.woff2",
-      weight: "400",
-      style: "normal",
-    },
-    {
-      path: "../public/fonts/Satoshi-Medium.woff2",
-      weight: "500",
-      style: "normal",
-    },
-    {
-      path: "../public/fonts/Satoshi-Bold.woff2",
-      weight: "700",
-      style: "normal",
-    },
-  ],
-  variable: "--font-display",
+const fontMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  weight: ["400", "700"],
 });
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const handleLoadingComplete = () => {
-    setLoading(false);
-  };
+  useEffect(() => { setMounted(true); }, []);
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="dark">
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
           fontSans.variable,
           fontDisplay.variable,
-          loading ? "overflow-hidden" : ""
+          fontMono.variable,
+          loading && "overflow-hidden",
         )}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {loading && <LoadingScreen onComplete={handleLoadingComplete} />}
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
+          {loading && <LoadingScreen onComplete={() => setLoading(false)} />}
+
+          {/* Grain texture */}
+          <div className="grain" aria-hidden="true" />
+
+          {/* Custom cursor (desktop only) */}
           {mounted && <CustomCursor />}
-          {mounted && <StarsCanvas />}
-          {mounted && <BlackHoleVideo />}
+
           <SmoothScrollProvider>
-            <div className={cn(
-              "relative flex min-h-screen flex-col transition-opacity duration-500",
-              loading ? "opacity-0" : "opacity-100"
-            )}>
+            <div
+              className={cn(
+                "relative flex min-h-screen flex-col transition-opacity duration-700",
+                loading ? "opacity-0 pointer-events-none" : "opacity-100",
+              )}
+            >
               <Navbar />
-              <main className="flex-1 pt-16">{children}</main>
+              <main className="flex-1">{children}</main>
               <Footer />
             </div>
             <ScrollToTop />

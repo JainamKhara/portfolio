@@ -1,116 +1,76 @@
 "use client";
 
-import { motion } from "framer-motion";
-// import { Trophy, Medal, Award, Code, Cpu, Gamepad, Zap, BookOpen } from "lucide-react";
-import { Code, BookOpen } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-// import { Badge } from "@/components/ui/badge";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import { Code, BookOpen, Cpu } from "lucide-react";
 
-interface Achievement {
-  icon: React.ReactNode;
-  title: string;
-  colorClass: string;
-}
-
-const achievements: Achievement[] = [
-  // {
-  //   icon: <Trophy className="h-6 w-6" />,
-  //   title: "",
-  //   colorClass: "text-yellow-600 dark:text-yellow-400",
-  // },
-  // {
-  //   icon: <Medal className="h-6 w-6" />,
-  //   title: "",
-  //   colorClass: "text-blue-600 dark:text-blue-400",
-  // },
-  // {
-  //   icon: <Award className="h-6 w-6" />,
-  //   title: "",
-  //   colorClass: "text-green-600 dark:text-green-400",
-  // },
-  // {
-  //   icon: <Trophy className="h-6 w-6" />,
-  //   title: "",
-  //   colorClass: "text-purple-600 dark:text-purple-400",
-  // },
-  {
-    icon: <BookOpen className="h-6 w-6" />,
-    title: "Solved 100+ Leetcode Questions.",
-    colorClass: "text-indigo-600 dark:text-indigo-400",
-  },
-  // {
-  //   icon: <Cpu className="h-6 w-6" />,
-  //   title: "",
-  //   colorClass: "text-red-600 dark:text-red-400",
-  // },
-  {
-    icon: <Code className="h-6 w-6" />,
-    title: "Completed 10+ Project.",
-    colorClass: "text-teal-600 dark:text-teal-400",
-  },
-  // {
-  //   icon: <Gamepad className="h-6 w-6" />,
-  //   title: "",
-  //   colorClass: "text-amber-600 dark:text-amber-400",
-  // },
-  // {
-  //   icon: <Zap className="h-6 w-6" />,
-  //   title: "",
-  //   colorClass: "text-cyan-600 dark:text-cyan-400",
-  // },
+const milestones = [
+  { icon: Code,     count: "10+",  label: "Projects Completed",       desc: "Fullstack apps, ML systems, and real-time platforms shipped." },
+  { icon: BookOpen, count: "100+", label: "LeetCode Problems",        desc: "Consistent algorithmic practice across arrays, graphs & DP." },
+  { icon: Cpu,      count: "3+",   label: "Years of Development",     desc: "From first HTML page to production-ready systems." },
 ];
 
 export function Achievements() {
+  const ref    = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-10%" });
+
   return (
-    <section className="py-12 md:py-24 bg-muted/30 relative overflow-hidden">
-      <div className="container px-4 md:px-6 mx-auto text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-            Achievements
-          </h2>
-          <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed mt-4">
-            Recognition and milestones from my technical journey
-          </p>
-        </motion.div>
-        
-        <div className="mt-12 flex flex-wrap gap-4 justify-center">
-          {achievements.map((achievement, index) => (
-            <motion.div 
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ 
-                duration: 0.5, 
-                delay: index * 0.1,
-                type: "spring", 
-                stiffness: 100,
-                damping: 15
-              }}
-              className="w-full sm:w-[calc(50%-0.5rem)] md:w-[calc(33.333%-0.75rem)]"
+    <section className="py-24 md:py-32 px-6 md:px-12 lg:px-20">
+      <div ref={ref} className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-16">
+          <motion.p
+            className="section-label mb-3"
+            initial={{ opacity: 0 }}
+            animate={inView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.6 }}
+          >
+            By the numbers
+          </motion.p>
+          <div className="overflow-hidden">
+            <motion.h2
+              className="font-display font-black text-5xl md:text-7xl leading-none"
+              initial={{ y: "110%" }}
+              animate={inView ? { y: "0%" } : {}}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
             >
-              <Card className="h-full border-2 hover:border-primary transition-all duration-300">
-                <CardContent className="p-4 flex items-center gap-3">
-                  <div className={`${achievement.colorClass} shrink-0`}>
-                    {achievement.icon}
-                  </div>
-                  <div className="text-left">
-                    <p className="font-medium">{achievement.title}</p>
-                  </div>
-                </CardContent>
-              </Card>
+              Milestones
+            </motion.h2>
+          </div>
+        </div>
+
+        <div className="glow-line mb-16" />
+
+        {/* Milestone cards — horizontal on desktop */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {milestones.map((m, i) => (
+            <motion.div
+              key={m.label}
+              initial={{ opacity: 0, y: 40 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.15 + i * 0.12 }}
+              className="group relative border border-border p-8 hover:border-primary/50 transition-colors duration-500 overflow-hidden"
+            >
+              {/* Background number watermark */}
+              <span
+                aria-hidden
+                className="absolute -bottom-4 -right-2 font-display font-black text-[7rem] leading-none text-foreground/[0.03] select-none pointer-events-none"
+              >
+                {String(i + 1).padStart(2, "0")}
+              </span>
+
+              <m.icon className="h-8 w-8 text-primary mb-6 group-hover:scale-110 transition-transform duration-500" />
+
+              <p className="font-display font-black text-5xl md:text-6xl text-primary tabular-nums mb-2">
+                {m.count}
+              </p>
+              <p className="font-semibold text-foreground mb-3">{m.label}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{m.desc}</p>
+
+              {/* Animated bottom gold bar */}
+              <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-primary group-hover:w-full transition-all duration-700" />
             </motion.div>
           ))}
-        </div>
-        
-        <div className="mt-10 inline-flex flex-wrap justify-center gap-2">
-          {/* <Badge variant="secondary" className="text-sm py-1.5 px-3">Technical Leadership</Badge>
-          <Badge variant="secondary" className="text-sm py-1.5 px-3">Hackathon Winner</Badge>
-          <Badge variant="secondary" className="text-sm py-1.5 px-3">Research</Badge>
-          <Badge variant="secondary" className="text-sm py-1.5 px-3">Gaming</Badge> */}
         </div>
       </div>
     </section>

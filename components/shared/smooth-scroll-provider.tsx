@@ -1,83 +1,52 @@
-// components/shared/smooth-scroll-provider.tsx
 "use client";
 
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useRef } from "react";
+import Lenis from "lenis";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+// import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 interface SmoothScrollProviderProps {
   children: ReactNode;
 }
 
-// Page transition variants
-const pageVariants = {
-  initial: { 
-    opacity: 0,
-  },
-  animate: { 
-    opacity: 1,
-    transition: { 
-      duration: 0.3,
-      ease: "easeInOut" 
-    }
-  },
-  exit: { 
-    opacity: 0, 
-    transition: { 
-      duration: 0.2,
-      ease: "easeInOut" 
-    } 
-  }
-};
-
 export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
   const pathname = usePathname();
+  const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    // Add smooth scrolling to the html element
-    document.documentElement.style.scrollBehavior = "smooth";
-    
-    // Set up intersection observer for scroll animations
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("in-view");
-          }
-        });
-      },
-      {
-        threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px"
-      }
-    );
-    
-    // Observe all data-scroll elements
-    const scrollElements = document.querySelectorAll("[data-scroll]");
-    scrollElements.forEach((el) => {
-      observer.observe(el);
+    // Initialize Lenis once
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
     });
-    
-    // Cleanup
-    return () => {
-      document.documentElement.style.scrollBehavior = "";
-      scrollElements.forEach((el) => {
-        observer.unobserve(el);
-      });
-    };
-  }, [pathname]); // Re-run when pathname changes
 
-  return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={pathname}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-        variants={pageVariants}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
-  );
+    lenisRef.current = lenis;
+
+    // Connect Lenis to GSAP ScrollTrigger
+    lenis.on('scroll', ScrollTrigger.update);
+
+    const raf = (time: number) => {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    };
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
+
+  // Scroll to top on route change
+  useEffect(() => {
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(0, { immediate: true });
+    }
+  }, [pathname]);
+
+  return <>{children}</>;
 }

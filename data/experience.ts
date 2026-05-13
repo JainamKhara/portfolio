@@ -9,6 +9,7 @@ export interface Experience {
     description: string;
     achievements: string[];
     type?: 'work' | 'research' | 'education' | 'leadership';
+    current?: boolean;
   }
   
   export const experiences: Experience[] = [

@@ -1,398 +1,349 @@
-// components/home/hero.tsx
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import {
-  ArrowRight,
-  Download,
-  Github,
-  Linkedin,
-  Mail,
-  Phone,
-  Code2,
-  Smartphone,
-  Package,
-  Brain,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useRef } from "react";
+import { motion } from "framer-motion";
+import { gsap, useGSAP } from "@/lib/gsap";
 import Image from "next/image";
-import { socialLinks } from "@/data/social";
+import Link from "next/link";
+import { CountUp } from "@/components/shared/count-up";
+
+const stats = [
+  { label: "Projects Built", value: 10, suffix: "+" },
+  { label: "LeetCode Solved", value: 100, suffix: "+" },
+  { label: "Years Coding", value: 3, suffix: "+" },
+];
+
+const tickerItems = [
+  "Full-Stack",
+  "·",
+  "Machine Learning",
+  "·",
+  "Next.js",
+  "·",
+  "React",
+  "·",
+  "TypeScript",
+  "·",
+  "Node.js",
+  "·",
+  "Python",
+  "·",
+  "TailwindCSS",
+  "·",
+  "GSAP",
+  "·",
+  "Framer Motion",
+  "·",
+  "Full-Stack",
+  "·",
+  "Machine Learning",
+  "·",
+  "Next.js",
+  "·",
+  "React",
+  "·",
+  "TypeScript",
+  "·",
+  "Node.js",
+  "·",
+  "Python",
+  "·",
+  "TailwindCSS",
+  "·",
+  "GSAP",
+  "·",
+  "Framer Motion",
+  "·",
+];
 
 export function Hero() {
-  const [currentSkillIndex, setCurrentSkillIndex] = useState(0);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isMobile, setIsMobile] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLElement>(null);
+  const photoRef = useRef<HTMLDivElement>(null);
+  const tickerRef = useRef<HTMLDivElement>(null);
+  const nameLineRef = useRef<HTMLDivElement>(null);
 
-  // Detect mobile on mount
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+  /* GSAP: Infinite Ticker */
+  useGSAP(
+    () => {
+      if (!tickerRef.current) return;
+      const ticker = tickerRef.current;
+      const totalWidth = ticker.scrollWidth / 2;
 
-  const displayedSkills = [
-    {
-      title: "Website Development",
-      icon: Code2,
-    },
-    {
-      title: "Application Development",
-      icon: Smartphone,
-    },
-    {
-      title: "Full Stack Development",
-      icon: Package,
-    },
-    {
-      title: "Machine Learning Practitioner",
-      icon: Brain,
-    },
-  ];
-
-  // Parallax effect setup - disabled on mobile
-  const { scrollY } = useScroll();
-  const y1 = useTransform(scrollY, [0, 500], isMobile ? [0, 0] : [0, 80]);
-  const y2 = useTransform(scrollY, [0, 500], isMobile ? [0, 0] : [0, 120]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSkillIndex(
-        (prevIndex) => (prevIndex + 1) % displayedSkills.length,
-      );
-    }, 3500);
-
-    return () => clearInterval(interval);
-  }, [displayedSkills.length]);
-
-  // Mouse movement parallax for background with throttling - disabled on mobile
-  useEffect(() => {
-    if (isMobile) {
-      setMousePosition({ x: 0, y: 0 });
-      return;
-    }
-
-    let animationFrameId: number;
-    let lastX = 0;
-    let lastY = 0;
-    let lastUpdate = 0;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current) return;
-      const now = Date.now();
-
-      // Throttle to 30fps instead of 60fps
-      if (now - lastUpdate < 33) return;
-      lastUpdate = now;
-
-      const rect = containerRef.current.getBoundingClientRect();
-      lastX = (e.clientX - rect.left) / rect.width;
-      lastY = (e.clientY - rect.top) / rect.height;
-
-      if (animationFrameId) return;
-      animationFrameId = requestAnimationFrame(() => {
-        setMousePosition({
-          x: lastX,
-          y: lastY,
-        });
-        animationFrameId = 0;
+      gsap.to(ticker, {
+        x: -totalWidth,
+        duration: 35,
+        ease: "none",
+        repeat: -1,
       });
-    };
+    },
+    { scope: containerRef },
+  );
 
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      if (animationFrameId) cancelAnimationFrame(animationFrameId);
-    };
-  }, [isMobile]);
+  /* GSAP: Rule expansion */
+  useGSAP(
+    () => {
+      if (!nameLineRef.current) return;
+      gsap.fromTo(
+        nameLineRef.current,
+        { scaleX: 0 },
+        { scaleX: 1, duration: 1.2, ease: "expo.out", delay: 0.8 },
+      );
+    },
+    { scope: containerRef },
+  );
 
-  // Get icon component for social links
-  const getIconComponent = (iconName: string) => {
-    switch (iconName) {
-      case "github":
-        return <Github className="h-5 w-5" />;
-      case "linkedin":
-        return <Linkedin className="h-5 w-5" />;
-      case "mail":
-        return <Mail className="h-5 w-5" />;
-      case "phone":
-        return <Phone className="h-5 w-5" />;
-      default:
-        return null;
-    }
-  };
-
-  const currentSkill = displayedSkills[currentSkillIndex];
-  const CurrentIcon = currentSkill.icon;
+  /* GSAP: Parallax for photo */
+  useGSAP(
+    () => {
+      if (!photoRef.current) return;
+      gsap.to(photoRef.current, {
+        yPercent: 15,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+    },
+    { scope: containerRef },
+  );
 
   return (
     <section
       ref={containerRef}
-      className="relative py-12 md:py-24 overflow-hidden"
+      className="relative w-full bg-background overflow-hidden pt-16"
     >
-      {/* Enhanced Background with gradient animation and mouse tracking */}
-      <motion.div className="absolute inset-0 -z-10">
-        {/* Animated gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-primary/5 to-transparent opacity-50" />
-
-        {/* Interactive gradient orbs - disabled on mobile */}
-        {!isMobile && (
-          <>
-            <motion.div
-              className="absolute right-0 top-20 w-72 h-72 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full blur-3xl"
-              animate={{
-                x: mousePosition.x * 30,
-                y: mousePosition.y * 30,
-              }}
-              transition={{ type: "tween", duration: 0.5 }}
-            />
-            <motion.div
-              className="absolute left-20 bottom-20 w-96 h-96 bg-gradient-to-tr from-secondary/15 to-secondary/5 rounded-full blur-3xl"
-              animate={{
-                x: -mousePosition.x * 20,
-                y: -mousePosition.y * 20,
-              }}
-              transition={{ type: "tween", duration: 0.5 }}
-            />
-          </>
-        )}
-
-        {/* Floating accent orbs - simplified on mobile */}
-        {!isMobile && (
+      <div className="container mx-auto px-8 md:px-14 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center min-h-[calc(100vh-80px)] py-12 md:py-20">
+        {/* Left: Content panel */}
+        <div className="lg:col-span-7 xl:col-span-8 order-2 lg:order-1 flex flex-col justify-center">
+          {/* Availability badge */}
           <motion.div
-            className="absolute top-1/3 left-1/4 w-40 h-40 bg-primary/10 rounded-full blur-2xl"
-            animate={{
-              y: [0, 15, 0],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        )}
-      </motion.div>
-
-      <div className="container px-4 md:px-6 mx-auto">
-        <div className="grid gap-8 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
-          <motion.div
-            className="flex flex-col justify-center space-y-6"
-            style={{ y: y1 }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex items-center gap-4 mb-10"
           >
-            <div className="space-y-4">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <h1 className="text-4xl font-bold tracking-tighter sm:text-6xl xl:text-7xl/none bg-clip-text bg-gradient-to-r from-foreground to-foreground/70">
-                  Hi, I&apos;m Jainam Khara
-                </h1>
-              </motion.div>
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary" />
+              </span>
+              <span className="section-label text-muted-foreground">
+                Available for work
+              </span>
+            </div>
+            <span className="h-3 w-px bg-border" />
+            <span className="section-label text-muted-foreground/50">
+              Ahmedabad · IN
+            </span>
+          </motion.div>
 
-              {/* Enhanced Skill Carousel */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                className="h-20"
+          {/* Giant name — THE centrepiece */}
+          <div className="relative mb-6">
+            {/* "JK" watermark */}
+            <div
+              aria-hidden
+              className="absolute -left-6 -top-6 select-none pointer-events-none"
+            >
+              <span
+                className="font-display font-black leading-none text-foreground/[0.018]"
+                style={{ fontSize: "clamp(8rem,18vw,16rem)" }}
               >
-                <div className="relative h-full">
-                  {displayedSkills.map((skill, index) => (
-                    <motion.div
-                      key={skill.title}
-                      className={`absolute transition-all duration-700 ${
-                        index === currentSkillIndex
-                          ? "opacity-100 visible"
-                          : "opacity-0 invisible"
-                      }`}
-                      initial={{ y: 20, opacity: 0 }}
-                      animate={
-                        index === currentSkillIndex
-                          ? { y: 0, opacity: 1 }
-                          : { y: -20, opacity: 0 }
-                      }
-                      transition={{ duration: 0.5 }}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="p-3 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20">
-                          <CurrentIcon className="h-6 w-6 text-primary" />
-                        </div>
-                        <h2 className="text-3xl font-bold sm:text-4xl bg-clip-text bg-gradient-to-r from-primary to-primary/70">
-                          {skill.title}
-                        </h2>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="max-w-[600px] text-lg text-muted-foreground md:text-xl leading-relaxed"
-              >
-                A passionate developer with expertise in Fullstack Web and App
-                Development. Currently pursuing a Bachelor&apos;s in Computer
-                Science at SAL Institute of Technology and Engineering Research.
-              </motion.p>
+                JK
+              </span>
             </div>
 
-            {/* Action Buttons with enhanced styling */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="flex flex-wrap gap-4 pt-2"
+            {/* Role label */}
+            <motion.p
+              initial={{ opacity: 0, x: -16 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="section-label mb-5"
             >
-              <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
-                <Button asChild size="lg" className="group shadow-lg">
-                  <a href="#projects">
-                    View My Work
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </a>
-                </Button>
-              </motion.div>
-              <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  asChild
-                  className="shadow-lg border-primary/20"
-                >
-                  <a
-                    href="/Jainam_Khara_CV.pdf"
-                    download="Jainam Khara CV.pdf"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    CV
-                  </a>
-                </Button>
-              </motion.div>
-            </motion.div>
+              Full-Stack Developer · ML Practitioner
+            </motion.p>
 
-            {/* Enhanced Social Links */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="flex gap-3 pt-4"
+            {/* "Jainam" */}
+            <div
+              className="overflow-hidden"
+              style={{ padding: "0.5em 0.2em", margin: "0 -0.2em" }}
             >
-              {socialLinks.map((social, idx) => (
-                <motion.div
-                  key={social.id}
-                  whileHover={{ y: -5, scale: 1.15 }}
-                  whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.5 + idx * 0.1 }}
-                >
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    asChild
-                    className="rounded-full bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 hover:border-primary/40 hover:bg-gradient-to-br hover:from-primary/20 hover:to-primary/10 transition-all shadow-md"
-                  >
-                    <a
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={social.name}
-                    >
-                      {getIconComponent(social.icon)}
-                    </a>
-                  </Button>
-                </motion.div>
-              ))}
-            </motion.div>
-          </motion.div>
+              <motion.h1
+                className="font-display font-black leading-[1.2] tracking-tight block"
+                style={{ fontSize: "clamp(4.5rem,12vw,10rem)" }}
+                initial={{ y: "108%" }}
+                animate={{ y: "0%" }}
+                transition={{
+                  duration: 0.85,
+                  ease: [0.22, 1, 0.36, 1],
+                  delay: 0.38,
+                }}
+              >
+                Jainam
+              </motion.h1>
+            </div>
 
-          {/* Enhanced Profile Image Section */}
+            {/* "Khara." — outline stroke */}
+            <div
+              className="overflow-hidden"
+              style={{ padding: "0.5em 0.2em", margin: "-0.45em -0.2em" }}
+            >
+              <motion.h1
+                className="font-display font-black italic leading-[1.2] tracking-tight block"
+                style={{
+                  fontSize: "clamp(4.5rem,12vw,10rem)",
+                  color: "transparent",
+                  WebkitTextStroke: "1.5px #6C47FF",
+                }}
+                initial={{ y: "108%" }}
+                animate={{ y: "0%" }}
+                transition={{
+                  duration: 0.85,
+                  ease: [0.22, 1, 0.36, 1],
+                  delay: 0.5,
+                }}
+              >
+                Khara.
+              </motion.h1>
+            </div>
+
+            {/* Rule */}
+            <div ref={nameLineRef} className="mt-5 h-px bg-primary" />
+          </div>
+
+          {/* Bio + CTAs */}
           <motion.div
-            className="flex items-center justify-center"
-            style={{ y: y2 }}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.7,
+              ease: [0.22, 1, 0.36, 1],
+              delay: 0.68,
+            }}
           >
-            <motion.div
-              className="relative aspect-square w-full max-w-md will-change-transform"
-              animate={
-                isMobile
-                  ? { y: 0 }
-                  : {
-                      y: [0, 8, 0],
-                    }
-              }
-              transition={
-                isMobile
-                  ? { duration: 0 }
-                  : {
-                      duration: 8,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }
-              }
-            >
-              {/* Animated border glow */}
-              {!isMobile && (
-                <motion.div
-                  className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/30 to-secondary/15 blur-xl opacity-30 -z-10 will-change-transform"
-                  animate={{
-                    scale: [1, 1.03, 1],
-                  }}
-                  transition={{
-                    duration: 6,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-              )}
+            <p className="text-muted-foreground text-sm leading-relaxed max-w-[38ch] mb-8">
+              Computer Science & Engineering student at SAL Institute. I engineer scalable fullstack
+              products and intelligent systems — with obsessive attention to
+              detail.
+            </p>
 
-              {!isMobile && (
-                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/10 to-secondary/5 blur-2xl opacity-20 -z-10" />
-              )}
-
-              {/* Image container with border */}
-              <div className="relative h-full w-full overflow-hidden rounded-3xl border-2 border-primary/20 shadow-2xl">
-                <Image
-                  src="/images/profile.jpg"
-                  alt="Jainam Khara"
-                  fill
-                  className="object-cover"
-                  priority
-                  sizes="(max-width: 768px) 100vw, 400px"
-                />
-
-                {/* Overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
-              </div>
-
-              {/* Floating accent elements - disabled on mobile */}
-              {!isMobile && (
-                <motion.div
-                  className="absolute -top-4 -right-4 w-12 h-12 rounded-full bg-primary/20 border border-primary/40 blur-sm will-change-transform"
-                  animate={{
-                    y: [0, -6, 0],
-                  }}
-                  transition={{
-                    duration: 6,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-              )}
-            </motion.div>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/projects"
+                data-cursor="hover"
+                className="inline-flex items-center gap-2.5 bg-primary text-white font-mono text-[10px] uppercase tracking-widest px-6 py-3.5 hover:bg-white hover:text-background transition-all duration-300 group"
+              >
+                View Work
+                <span className="group-hover:translate-x-1 transition-transform duration-300">
+                  →
+                </span>
+              </Link>
+              <a
+                href="/Jainam_Khara_CV.pdf"
+                download
+                data-cursor="hover"
+                className="inline-flex items-center gap-2 border border-border font-mono text-[10px] uppercase tracking-widest px-6 py-3.5 hover:border-primary hover:text-primary transition-all duration-300"
+              >
+                <b>CV ↗</b>
+              </a>
+            </div>
           </motion.div>
+
+          {/* Stats */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.9 }}
+            className="flex flex-wrap gap-8 mt-12 pt-6 border-t border-border"
+          >
+            {stats.map((s, i) => (
+              <div key={i}>
+                <span className="font-display font-black text-3xl text-primary tabular-nums">
+                  <CountUp to={s.value} suffix={s.suffix} />
+                </span>
+                <p className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground mt-1">
+                  {s.label}
+                </p>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Right: photo panel */}
+        <div className="lg:col-span-5 xl:col-span-4 order-1 lg:order-2 flex justify-center lg:justify-end">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+            className="relative group"
+          >
+            {/* Outline "Ghost" Frame (matches Khara style) */}
+            <div
+              className="absolute -right-4 -bottom-4 w-full h-full border-[1.5px] border-primary/40 z-0 transition-transform duration-500 group-hover:translate-x-1 group-hover:translate-y-1"
+              aria-hidden="true"
+            />
+
+            {/* Main Image Container */}
+            <div
+              ref={photoRef}
+              className="relative z-10 w-[280px] sm:w-[320px] md:w-[360px] aspect-[4/5] border-[1.5px] border-primary overflow-hidden bg-muted"
+            >
+              <Image
+                src="/images/profile.jpg"
+                alt="Jainam Khara"
+                fill
+                priority
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                style={{
+                  filter: "grayscale(100%) contrast(1.1) brightness(0.9)",
+                  objectPosition: "50% 18%",
+                }}
+                sizes="(max-width: 768px) 100vw, 360px"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
+
+              {/* Corner badge */}
+              <div className="absolute top-4 right-4 z-20">
+                <div className="bg-primary/10 backdrop-blur-md border border-primary/20 px-3 py-1">
+                  <p className="font-mono text-[9px] uppercase tracking-widest text-primary">
+                    Est. 2002
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Accent markers */}
+            <div className="absolute -top-2 -left-2 w-4 h-4 border-t-2 border-l-2 border-primary z-20" />
+            <div className="absolute bottom-6 -left-6 z-20 pointer-events-none">
+              <span className="font-mono text-[10px] text-foreground/30">
+                01 / JK
+              </span>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* ── Tech ticker strip ── */}
+      <div className="border-t border-border h-9 flex items-center overflow-hidden relative z-10 select-none bg-background">
+        <div ref={tickerRef} className="flex items-center whitespace-nowrap">
+          {tickerItems.map((item, i) => (
+            <span
+              key={i}
+              className={`inline-block px-3 font-mono text-[10px] tracking-widest ${
+                item === "·"
+                  ? "text-primary/30"
+                  : "text-muted-foreground/35 uppercase"
+              }`}
+            >
+              {item}
+            </span>
+          ))}
         </div>
       </div>
     </section>
   );
 }
+
+export { Hero as HeroSection };

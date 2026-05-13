@@ -1,155 +1,114 @@
-// components/layout/footer.tsx
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { Github, Linkedin, Mail, Phone, Copyright, ExternalLink, Heart } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { socialLinks } from "@/data/social";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
+import { Github, Linkedin, Mail } from "lucide-react";
+
+const links = [
+  { label: "Work",        href: "/projects"     },
+  { label: "About",       href: "/about"        },
+  { label: "Experience",  href: "/experience"   },
+  { label: "Contact",     href: "/contact"      },
+];
+
+const socials = [
+  { label: "GitHub",   href: "https://github.com/JainamKhara",                icon: Github   },
+  { label: "LinkedIn", href: "https://linkedin.com/in/jainam-khara-3864a7251", icon: Linkedin },
+  { label: "Email",    href: "mailto:kharajainam0@gmail.com",                  icon: Mail     },
+];
 
 export function Footer() {
-  // Get icon component for social links
-  const getIconComponent = (iconName: string) => {
-    switch (iconName) {
-      case "github":
-        return <Github className="h-5 w-5" />;
-      case "linkedin":
-        return <Linkedin className="h-5 w-5" />;
-      case "mail":
-        return <Mail className="h-5 w-5" />;
-      case "phone":
-        return <Phone className="h-5 w-5" />;
-      default:
-        return null;
-    }
-  };
+  const ref    = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-5%" });
 
   return (
-    <footer className="w-full pt-8 pb-4 border-t bg-background/60 backdrop-blur-sm">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        className="container px-4 md:px-6 mx-auto"
-      >
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {/* About Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-bold">Jainam Khara</h3>
-            <p className="text-sm text-muted-foreground max-w-xs">
-              Full Stack Developer & Machine Learning Enthusiast based in Ahmedabad-Gujarat-India,
-              specialized in creating modern websites and applications.
-            </p>
+    <footer className="border-t border-border bg-card">
+      <div ref={ref} className="max-w-7xl mx-auto">
+
+        {/* CTA section */}
+        <div className="px-6 md:px-12 lg:px-20 py-20 border-b border-border overflow-hidden">
+          <motion.p
+            className="section-label mb-4"
+            initial={{ opacity: 0 }}
+            animate={inView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.5 }}
+          >
+            Let&apos;s work together
+          </motion.p>
+
+          <div className="overflow-hidden" style={{ padding: "0.5em 0" }}>
+            <motion.h2
+              initial={{ y: "110%" }}
+              animate={inView ? { y: "0%" } : {}}
+              transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
+              className="font-display font-black italic text-[clamp(3rem,8vw,7rem)] leading-[1.2] tracking-tight text-foreground"
+            >
+              Build something{" "}
+              <span className="not-italic text-primary">great.</span>
+            </motion.h2>
           </div>
-          
-          {/* Quick Links */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-bold">Quick Links</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link 
-                  href="/about" 
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                >
-                  About Me
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/projects" 
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                >
-                  Projects
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/certificates" 
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                >
-                  Certificates
-                </Link>
-              </li>
-              <li>
-                <a 
-                  href="/Jainam_Khara_CV.pdf" 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
-                >
-                  CV <ExternalLink className="h-3 w-3" />
-                </a>
-              </li>
-            </ul>
-          </div>
-          
-          {/* Connect */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-bold">Connect</h3>
-            <div className="flex flex-wrap gap-2">
-              {socialLinks.map((social) => (
-                <Button
-                  key={social.id}
-                  variant="ghost"
-                  size="icon"
-                  asChild
-                  className="rounded-full bg-muted/50 hover:bg-primary/10"
-                >
-                  <a 
-                    href={social.url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    aria-label={social.name}
-                  >
-                    {getIconComponent(social.icon)}
-                  </a>
-                </Button>
-              ))}
-            </div>
-          </div>
-          
-          {/* Keyboard Shortcuts */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-bold">Keyboard Shortcuts</h3>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <div className="flex gap-1">
-                  <kbd className="px-2 py-1 bg-muted border rounded text-[10px] font-mono">⌘</kbd>
-                  <kbd className="px-2 py-1 bg-muted border rounded text-[10px] font-mono">K</kbd>
-                </div>
-                <span>Search</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <div className="flex gap-1">
-                  <kbd className="px-2 py-1 bg-muted border rounded text-[10px] font-mono">T</kbd>
-                </div>
-                <span>Toggle theme</span>
-              </div>
-            </div>
-          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="mt-10"
+          >
+            <Link
+              href="/contact"
+              data-cursor="hover"
+              className="inline-flex items-center gap-3 bg-primary text-white font-mono text-[11px] uppercase tracking-widest px-7 py-4 hover:bg-foreground transition-colors duration-400"
+            >
+              Get in touch
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                <path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </Link>
+          </motion.div>
         </div>
-        
-        <motion.div 
+
+        {/* Bottom bar */}
+        <motion.div
           initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-8 border-t pt-4"
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.7, delay: 0.4 }}
+          className="flex flex-col md:flex-row items-start md:items-center justify-between px-6 md:px-12 lg:px-20 py-8 gap-6"
         >
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center text-sm text-muted-foreground">
-              <Copyright className="mr-1 h-3.5 w-3.5" />
-              <span>{new Date().getFullYear()} Jainam Khara. All rights reserved.</span>
-            </div>
-            <div className="text-sm text-muted-foreground flex items-center gap-1.5">
-              <span>Built with</span>
-              <Heart className="h-3.5 w-3.5 fill-primary text-primary" />
-              <span>using Next.js & Tailwind</span>
-            </div>
+          <nav className="flex flex-wrap gap-6">
+            {links.map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                data-cursor="hover"
+                className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors duration-300"
+              >
+                {l.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-4">
+            {socials.map((s) => (
+              <a
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={s.label}
+                data-cursor="hover"
+                className="text-muted-foreground hover:text-primary transition-colors duration-300"
+              >
+                <s.icon className="h-4 w-4" />
+              </a>
+            ))}
           </div>
+
+          <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/60">
+            © {new Date().getFullYear()} Jainam Khara
+          </p>
         </motion.div>
-      </motion.div>
+      </div>
     </footer>
   );
 }

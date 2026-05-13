@@ -1,149 +1,171 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ArrowRight, MapPin, Microscope, Briefcase, GraduationCap, Users } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { useRef, useEffect } from "react";
+import { motion, useInView } from "framer-motion";
 import { experiences } from "@/data/experience";
-import { useState } from "react";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { gsap } from "@/lib/gsap";
+import { scrambleText } from "@/lib/animations";
+import { MapPin, ArrowRight, Briefcase, Cpu, Users } from "lucide-react";
 
-export function ExperienceTimeline() {
-  const [activeTab, setActiveTab] = useState<string>("all");
-  
-  // Filter experiences based on active tab
-  const filteredExperiences = activeTab === "all" 
-    ? experiences 
-    : experiences.filter(exp => exp.type === activeTab);
+const ICONS: Record<string, React.ReactNode> = {
+  work:       <Briefcase className="h-4 w-4" />,
+  research:   <Cpu className="h-4 w-4" />,
+  leadership: <Users className="h-4 w-4" />,
+};
 
-  // Function to get icon based on experience type
-  const getExperienceIcon = (type: string | undefined) => {
-    switch(type) {
-      case 'research':
-        return <Microscope className="h-5 w-5" />;
-      case 'work':
-        return <Briefcase className="h-5 w-5" />;
-      case 'leadership':
-        return <Users className="h-5 w-5" />;
-      case 'education':
-        return <GraduationCap className="h-5 w-5" />;
-      default:
-        return <Briefcase className="h-5 w-5" />;
-    }
-  };
+function TimelineItem({
+  exp,
+  index,
+}: {
+  exp: (typeof experiences)[0];
+  index: number;
+}) {
+  const ref    = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-8%" });
+  const lineRef= useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!inView || !lineRef.current) return;
+    gsap.fromTo(lineRef.current,
+      { scaleY: 0, transformOrigin: "top" },
+      { scaleY: 1, duration: 0.8, ease: "power3.out", delay: 0.3 }
+    );
+  }, [inView]);
+
+  const isLeft = index % 2 === 0;
 
   return (
-    <section className="py-12 md:py-24">
-      <div className="container px-4 md:px-6 mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex flex-col items-center justify-center space-y-4 text-center"
-        >
-          <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-            Experience
-          </h1>
-          <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-            My professional journey in development and research
-          </p>
-        </motion.div>
-        
-        <div className="flex justify-center mt-8">
-          <Tabs 
-            value={activeTab} 
-            onValueChange={setActiveTab} 
-            className="w-full max-w-md"
+    <div ref={ref} className="relative grid grid-cols-[1fr_auto_1fr] gap-0 mb-16">
+      {/* Left content */}
+      <div className={`pr-12 ${isLeft ? "block" : "invisible"}`}>
+        {isLeft && (
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+            className="group border border-border p-6 hover:border-primary/50 transition-all duration-500 ml-auto max-w-sm"
           >
-            <TabsList className="grid grid-cols-4 w-full">
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="work">Work</TabsTrigger>
-              <TabsTrigger value="leadership">Leadership</TabsTrigger>
-              <TabsTrigger value="research">Research</TabsTrigger>
-            </TabsList>
-          </Tabs>
+            <ExperienceCard exp={exp} />
+          </motion.div>
+        )}
+      </div>
+
+      {/* Centre spine */}
+      <div className="flex flex-col items-center w-10">
+        {/* Dot */}
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={inView ? { scale: 1, opacity: 1 } : {}}
+          transition={{ duration: 0.5, type: "spring", delay: 0.05 }}
+          className="relative flex-shrink-0 w-10 h-10 border-2 border-primary flex items-center justify-center bg-background z-10"
+        >
+          <span className="text-primary">
+            {ICONS[exp.type || "work"]}
+          </span>
+          {/* Ping */}
+          <span className="absolute inset-0 border-2 border-primary animate-ping opacity-20 rounded-none" />
+        </motion.div>
+
+        {/* Connecting line */}
+        <div
+          ref={lineRef}
+          className="flex-1 w-[1px] bg-gradient-to-b from-primary/50 to-transparent mt-2"
+          style={{ transformOrigin: "top" }}
+        />
+      </div>
+
+      {/* Right content */}
+      <div className={`pl-12 ${!isLeft ? "block" : "invisible"}`}>
+        {!isLeft && (
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+            className="group border border-border p-6 hover:border-primary/50 transition-all duration-500 max-w-sm"
+          >
+            <ExperienceCard exp={exp} />
+          </motion.div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ExperienceCard({ exp }: { exp: (typeof experiences)[0] }) {
+  return (
+    <>
+      <div className="flex items-start justify-between gap-4 mb-4">
+        <div>
+          <h3 className="font-display font-bold text-lg leading-tight group-hover:text-primary transition-colors">
+            {exp.title}
+          </h3>
+          <p className="font-mono text-[10px] uppercase tracking-widest text-primary mt-1">
+            {exp.company}
+          </p>
         </div>
+        <span className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground bg-muted px-2 py-1 shrink-0">
+          {exp.startDate.split(" ").pop()} – {exp.endDate.split(" ").pop()}
+        </span>
+      </div>
 
-        <div className="mx-auto max-w-3xl mt-12">
-          <div className="relative mx-auto">
-            {/* Timeline Line */}
-            <div className="absolute left-1/2 h-full w-[2px] -translate-x-1/2 bg-border" />
+      <div className="flex items-center gap-1 text-muted-foreground mb-4">
+        <MapPin className="h-3 w-3 shrink-0" />
+        <span className="font-mono text-[10px]">{exp.location}</span>
+      </div>
 
-            {/* Timeline Items */}
-            {filteredExperiences.map((experience, index) => (
-              <motion.div
-                key={experience.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="relative mb-12 flex flex-col md:flex-row"
-              >
-                {/* Simple timeline dot */}
-                <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary h-3 w-3 rounded-full" />
+      <p className="text-sm text-muted-foreground leading-relaxed mb-4">{exp.description}</p>
 
-                {/* Desktop Icon - shown only on desktop and positioned correctly */}
-                <div 
-                  className={`hidden md:block absolute -translate-y-6 ${
-                    index % 2 === 0 
-                      ? "right-[calc(50%+12px)]" // Right of timeline if card is on left
-                      : "left-[calc(50%+12px)]"  // Left of timeline if card is on right
-                  } text-primary`}
-                >
-                  {getExperienceIcon(experience.type)}
-                </div>
-                
-                {/* Mobile Icon - shown only on mobile */}
-                <div 
-                  className={`md:hidden absolute -translate-y-6 ${
-                    index % 2 === 0 
-                      ? "left-[calc(50%+12px)]"  // Right of timeline 
-                      : "right-[calc(50%+12px)]" // Left of timeline
-                  } text-primary`}
-                >
-                  {getExperienceIcon(experience.type)}
-                </div>
-
-                {/* Content Card */}
-                <div className={`mx-5 md:w-1/2 ${index % 2 === 0 ? "md:mr-auto" : "md:ml-auto"}`}>
-                  <Card className="overflow-hidden border border-border hover:border-primary/50 transition-colors">
-                    <CardHeader className="bg-muted/50 p-4">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <CardTitle>
-                            <h3 className="text-xl font-bold">{experience.title}</h3>
-                            <p className="text-sm text-muted-foreground mt-1">{experience.company}</p>
-                          </CardTitle>
-                        </div>
-                        <Badge variant="outline" className="shrink-0">
-                          {experience.startDate} - {experience.endDate}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center text-sm text-muted-foreground mt-2">
-                        <MapPin className="mr-1 h-4 w-4" />
-                        {experience.location}
-                      </div>
-                    </CardHeader>
-                    <CardContent className="p-4">
-                      <p className="mb-4 text-sm">{experience.description}</p>
-                      <Separator className="my-4" />
-                      <h4 className="font-medium mb-2 text-sm">Key Achievements:</h4>
-                      <ul className="space-y-2">
-                        {experience.achievements.map((achievement, i) => (
-                          <li key={i} className="flex items-start">
-                            <ArrowRight className="mr-2 h-4 w-4 text-primary mt-0.5 shrink-0" />
-                            <span className="text-sm">{achievement}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
-                </div>
-              </motion.div>
-            ))}
+      <div className="space-y-2 border-t border-border pt-4">
+        {exp.achievements.slice(0, 2).map((a, i) => (
+          <div key={i} className="flex items-start gap-2">
+            <ArrowRight className="h-3 w-3 text-primary shrink-0 mt-1" />
+            <span className="text-xs text-muted-foreground leading-relaxed">{a}</span>
           </div>
+        ))}
+      </div>
+
+      {/* Bottom gold sweep */}
+      <div className="mt-5 h-[1px] w-0 bg-primary group-hover:w-full transition-all duration-700" />
+    </>
+  );
+}
+
+export function ExperienceTimeline() {
+  const titleRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (titleRef.current) scrambleText(titleRef.current, "EXPERIENCE", 1100);
+    }, 200);
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <div className="min-h-screen">
+      {/* Page Hero */}
+      <div className="relative min-h-[40vh] flex flex-col justify-end pt-28 pb-16 px-6 md:px-12 lg:px-20 border-b border-border overflow-hidden">
+        <div aria-hidden className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <span className="font-display font-black text-[16vw] text-foreground/[0.02] uppercase leading-none">
+            WORK
+          </span>
+        </div>
+        <motion.p className="section-label mb-4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}>
+          Professional Journey
+        </motion.p>
+        <h1 ref={titleRef} className="font-display font-black text-[clamp(3rem,9vw,7rem)] leading-none tracking-tight mb-8">
+          ██████████
+        </h1>
+        <div className="glow-line" />
+      </div>
+
+      {/* Timeline */}
+      <div className="px-6 md:px-12 lg:px-20 py-24">
+        <div className="relative max-w-4xl mx-auto">
+          {experiences.map((exp, i) => (
+            <TimelineItem key={exp.id} exp={exp} index={i} />
+          ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 }
