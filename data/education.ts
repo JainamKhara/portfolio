@@ -10,17 +10,7 @@ export interface Education {
     description?: string;
   }
   
-  export const education: Education[] = [
-    {
-      id: "deegre",
-      degree: "Bachelor's in Computer Science",
-      institution: "SAL Institute and Technologies and Engineering Research",
-      university: "Gujarat Technological University",
-      location: "Ahmedabad, Gujarat, India",
-      startDate: "2024",
-      endDate: "2027",
-      cgpa: "8.13/10.00"
-    },
+export const education: Education[] = [
     {
       id: "diploma",
       degree: "Diploma in Computer Engineering",
@@ -30,5 +20,15 @@ export interface Education {
       startDate: "2021",
       endDate: "2024",
       cgpa: "8.09/10.00"
+    },
+    {
+      id: "deegre",
+      degree: "Bachelor's in Computer Science",
+      institution: "SAL Institute and Technologies and Engineering Research",
+      university: "Gujarat Technological University",
+      location: "Ahmedabad, Gujarat, India",
+      startDate: "2024",
+      endDate: "2027",
+      cgpa: "8.13/10.00"
     }
   ];

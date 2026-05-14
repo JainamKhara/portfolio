@@ -187,7 +187,7 @@ export function Hero() {
                   delay: 0.5,
                 }}
               >
-                Khara.
+                Khara
               </motion.h1>
             </div>
 
@@ -206,9 +206,9 @@ export function Hero() {
             }}
           >
             <p className="text-muted-foreground text-sm leading-relaxed max-w-[38ch] mb-8">
-              Computer Science & Engineering student at SAL Institute. I engineer scalable fullstack
-              products and intelligent systems — with obsessive attention to
-              detail.
+              Computer Science & Engineering student at SAL Institute of Technology and Engineering Research.<br></br>
+              I engineer scalable fullstack products and intelligent systems —
+              with obsessive attention to detail.
             </p>
 
             <div className="flex flex-wrap gap-3">

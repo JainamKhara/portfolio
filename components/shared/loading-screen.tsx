@@ -5,8 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { gsap } from "@/lib/gsap";
 import { getTextPoints } from "@/lib/canvas-utils";
 
-const PARTICLE_COUNT = 2500; // Even more particles for high-density text
-
 type Stage = "BOOT" | "COALESCE" | "IDENTITY" | "REVEAL";
 
 class Particle {
@@ -32,13 +30,15 @@ class Particle {
     this.targetY = this.y;
     this.vx = (Math.random() - 0.5) * 3;
     this.vy = (Math.random() - 0.5) * 3;
-    this.size = Math.random() * 2.5 + 1.2; // Increased size
+    this.size = Math.random() * 2.0 + 0.8; // Slightly smaller for crisper text
     this.color = "#8A66FF"; // Brighter purple
   }
 
   update(stage: Stage, laserY: number, mouseX: number, mouseY: number) {
     if (stage === "BOOT") {
-      if (Math.abs(this.y - laserY) < 100) { // Increased trigger zone
+      // Activate anything above the laser (plus a small buffer)
+      // This prevents particles at the top from being skipped if the animation drops frames initially
+      if (this.y < laserY + 100) { 
         this.active = true;
         this.alpha = 1; // Instant visibility
       }
@@ -107,28 +107,29 @@ export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
 
     const resize = () => {
       canvas.width = window.innerWidth;
-      canvas.height = document.documentElement.clientHeight;
+      // Use visualViewport if available for mobile address bar stability
+      canvas.height = window.visualViewport ? window.visualViewport.height : document.documentElement.clientHeight;
     };
     window.addEventListener("resize", resize);
     resize();
 
-    // Initialize particles
+    // Initialize particles across the full height
     const particles: Particle[] = [];
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
+    const isDesktop = window.innerWidth > 768;
+    const dynamicParticleCount = isDesktop ? 7000 : 3500; // Much denser on desktop
+    for (let i = 0; i < dynamicParticleCount; i++) {
       particles.push(new Particle(canvas.width, canvas.height));
     }
     particlesRef.current = particles;
 
     // Wait for fonts to be ready before calculating text points
     const init = async () => {
-      // Small delay to ensure the browser has fully calculated layout/fonts
       await new Promise(r => setTimeout(r, 200));
       await document.fonts.ready;
       
       const textPoints = getTextPoints(
         "JAINAM",
-        Math.min(canvas.width * 0.18, 220),
-        "Arial", 
+        Math.min(canvas.width * 0.22, 260), // Increased font size for better readability
         canvas.width,
         canvas.height,
         2
@@ -137,8 +138,9 @@ export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
       if (textPoints.length > 0) {
         particles.forEach((p, i) => {
           const pt = textPoints[i % textPoints.length];
-          p.targetX = pt.x;
-          p.targetY = pt.y;
+          // Position relative to screen center
+          p.targetX = (canvas.width / 2) + pt.x;
+          p.targetY = (canvas.height / 2) + pt.y;
         });
       }
     };
@@ -166,7 +168,7 @@ export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
         onStart: () => setStage("COALESCE"),
       })
       .to({}, {
-        duration: 1.0,
+        duration: 1.2, // Slightly longer to allow settle
         onStart: () => setStage("IDENTITY"),
       })
       .to(irisSizeRef, {

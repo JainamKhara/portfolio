@@ -123,48 +123,55 @@ export function IDCard() {
     lastPointerAt: 0,
   });
 
-  const getTransformOrigin = useCallback((sim: SimulationModel, layout: LayoutModel) => {
-    if (!sim.dragging) {
+  const getTransformOrigin = useCallback(
+    (sim: SimulationModel, layout: LayoutModel) => {
+      if (!sim.dragging) {
+        return {
+          x: layout.cardWidth / 2,
+          y: ATTACHMENT_OFFSET_Y,
+        };
+      }
+
       return {
-        x: layout.cardWidth / 2,
-        y: ATTACHMENT_OFFSET_Y,
+        x: sim.grabPointX,
+        y: sim.grabPointY,
       };
-    }
+    },
+    [],
+  );
 
-    return {
-      x: sim.grabPointX,
-      y: sim.grabPointY,
-    };
-  }, []);
+  const getAttachmentPoint = useCallback(
+    (sim: SimulationModel, layout: LayoutModel) => {
+      const attachmentLocalX = layout.cardWidth / 2;
+      const attachmentLocalY = ATTACHMENT_OFFSET_Y;
+      const origin = getTransformOrigin(sim, layout);
 
-  const getAttachmentPoint = useCallback((
-    sim: SimulationModel,
-    layout: LayoutModel,
-  ) => {
-    const attachmentLocalX = layout.cardWidth / 2;
-    const attachmentLocalY = ATTACHMENT_OFFSET_Y;
-    const origin = getTransformOrigin(sim, layout);
+      if (Math.abs(sim.angle) < 0.001) {
+        return {
+          x: sim.x + attachmentLocalX,
+          y: sim.y + attachmentLocalY,
+        };
+      }
 
-    if (Math.abs(sim.angle) < 0.001) {
+      const radians = (sim.angle * Math.PI) / 180;
+      const relativeX = attachmentLocalX - origin.x;
+      const relativeY = attachmentLocalY - origin.y;
+      const rotatedX =
+        origin.x +
+        relativeX * Math.cos(radians) -
+        relativeY * Math.sin(radians);
+      const rotatedY =
+        origin.y +
+        relativeX * Math.sin(radians) +
+        relativeY * Math.cos(radians);
+
       return {
-        x: sim.x + attachmentLocalX,
-        y: sim.y + attachmentLocalY,
+        x: sim.x + rotatedX,
+        y: sim.y + rotatedY,
       };
-    }
-
-    const radians = (sim.angle * Math.PI) / 180;
-    const relativeX = attachmentLocalX - origin.x;
-    const relativeY = attachmentLocalY - origin.y;
-    const rotatedX =
-      origin.x + relativeX * Math.cos(radians) - relativeY * Math.sin(radians);
-    const rotatedY =
-      origin.y + relativeX * Math.sin(radians) + relativeY * Math.cos(radians);
-
-    return {
-      x: sim.x + rotatedX,
-      y: sim.y + rotatedY,
-    };
-  }, [getTransformOrigin]);
+    },
+    [getTransformOrigin],
+  );
 
   const renderScene = useCallback(() => {
     const card = cardRef.current;
@@ -203,7 +210,8 @@ export function IDCard() {
     const control2Y = attachY - Math.max(78, bow * 0.55 + dy * 0.06);
     const path = `M ${layout.anchorX} ${layout.anchorY} C ${control1X} ${control1Y}, ${control2X} ${control2Y}, ${attachX} ${attachY}`;
     const mountTilt = clamp(
-      (Math.atan2(control1Y - layout.anchorY, control1X - layout.anchorX) * 180) /
+      (Math.atan2(control1Y - layout.anchorY, control1X - layout.anchorX) *
+        180) /
         Math.PI -
         90,
       -24,
@@ -255,7 +263,9 @@ export function IDCard() {
       if (!stageWidth || !stageHeight) return;
 
       const widthRatio = stageWidth < 400 ? 0.82 : 0.64;
-      const nextCardWidth = Math.round(clamp(stageWidth * widthRatio, 248, 312));
+      const nextCardWidth = Math.round(
+        clamp(stageWidth * widthRatio, 248, 312),
+      );
       const cardHeight = card.offsetHeight;
       const anchorX = stageWidth / 2;
       const anchorY = ANCHOR_Y;
@@ -267,9 +277,11 @@ export function IDCard() {
         stageHeight - cardHeight - BOTTOM_PADDING,
       );
       const minX = -stageRect.left + SIDE_ALLOWANCE;
-      const maxX = window.innerWidth - stageRect.left - nextCardWidth - SIDE_ALLOWANCE;
+      const maxX =
+        window.innerWidth - stageRect.left - nextCardWidth - SIDE_ALLOWANCE;
       const minY = -stageRect.top + SIDE_ALLOWANCE;
-      const maxY = window.innerHeight - stageRect.top - cardHeight - SIDE_ALLOWANCE;
+      const maxY =
+        window.innerHeight - stageRect.top - cardHeight - SIDE_ALLOWANCE;
 
       layoutRef.current = {
         stageWidth,
@@ -287,7 +299,9 @@ export function IDCard() {
         strapLength,
       };
 
-      setCardWidth((current) => (current !== nextCardWidth ? nextCardWidth : current));
+      setCardWidth((current) =>
+        current !== nextCardWidth ? nextCardWidth : current,
+      );
       setLayoutState((current) => {
         if (
           current.stageWidth === stageWidth &&
@@ -360,9 +374,15 @@ export function IDCard() {
           const hangingY =
             layout.anchorY +
             Math.sqrt(
-              Math.max(layout.strapLength * layout.strapLength - swingDx * swingDx, 0),
+              Math.max(
+                layout.strapLength * layout.strapLength - swingDx * swingDx,
+                0,
+              ),
             );
-          const desiredY = Math.max(layout.minY, hangingY - ATTACHMENT_OFFSET_Y);
+          const desiredY = Math.max(
+            layout.minY,
+            hangingY - ATTACHMENT_OFFSET_Y,
+          );
           const restingInfluence = reducedMotionRef.current ? 0.015 : 0.026;
 
           if (!reducedMotionRef.current) {
@@ -463,7 +483,9 @@ export function IDCard() {
       endDrag();
     };
 
-    window.addEventListener("pointermove", handlePointerMove, { passive: false });
+    window.addEventListener("pointermove", handlePointerMove, {
+      passive: false,
+    });
     window.addEventListener("pointerup", handlePointerEnd);
     window.addEventListener("pointercancel", handlePointerEnd);
 
@@ -525,20 +547,37 @@ export function IDCard() {
             <stop offset="26%" stopColor="rgba(219,205,255,0.12)" />
             <stop offset="100%" stopColor="rgba(255,255,255,0)" />
           </linearGradient>
-          <linearGradient id={`${gradientId}-inner`} x1="0%" y1="0%" x2="0%" y2="100%">
+          <linearGradient
+            id={`${gradientId}-inner`}
+            x1="0%"
+            y1="0%"
+            x2="0%"
+            y2="100%"
+          >
             <stop offset="0%" stopColor="rgba(255,255,255,0.16)" />
             <stop offset="18%" stopColor="rgba(255,255,255,0.03)" />
             <stop offset="50%" stopColor="rgba(255,255,255,0)" />
             <stop offset="84%" stopColor="rgba(10,7,18,0.08)" />
             <stop offset="100%" stopColor="rgba(4,4,8,0.12)" />
           </linearGradient>
-          <linearGradient id={`${gradientId}-lane`} x1="0%" y1="0%" x2="0%" y2="100%">
+          <linearGradient
+            id={`${gradientId}-lane`}
+            x1="0%"
+            y1="0%"
+            x2="0%"
+            y2="100%"
+          >
             <stop offset="0%" stopColor="rgba(23,16,34,0.95)" />
             <stop offset="45%" stopColor="rgba(31,20,48,0.94)" />
             <stop offset="100%" stopColor="rgba(14,10,22,0.96)" />
           </linearGradient>
           <filter id={glowId} x="-45%" y="-30%" width="190%" height="190%">
-            <feDropShadow dx="0" dy="5" stdDeviation="3.6" floodColor="rgba(2,2,6,0.28)" />
+            <feDropShadow
+              dx="0"
+              dy="5"
+              stdDeviation="3.6"
+              floodColor="rgba(2,2,6,0.28)"
+            />
             <feGaussianBlur stdDeviation="0.32" result="blur" />
             <feColorMatrix
               in="blur"
@@ -551,7 +590,11 @@ export function IDCard() {
 
         <path
           fill="none"
-          d={layoutState.stageWidth ? `M ${layoutState.anchorX} ${layoutState.anchorY} L ${layoutState.anchorX} ${layoutState.stageHeight}` : ""}
+          d={
+            layoutState.stageWidth
+              ? `M ${layoutState.anchorX} ${layoutState.anchorY} L ${layoutState.anchorX} ${layoutState.stageHeight}`
+              : ""
+          }
           stroke="rgba(8,8,12,0.45)"
           strokeWidth="42"
           strokeLinecap="round"
@@ -578,7 +621,11 @@ export function IDCard() {
         />
         <path
           fill="none"
-          d={layoutState.stageWidth ? `M ${layoutState.anchorX} ${layoutState.anchorY} L ${layoutState.anchorX} ${layoutState.stageHeight}` : ""}
+          d={
+            layoutState.stageWidth
+              ? `M ${layoutState.anchorX} ${layoutState.anchorY} L ${layoutState.anchorX} ${layoutState.stageHeight}`
+              : ""
+          }
           stroke={`url(#${gradientId}-inner)`}
           strokeWidth="10"
           strokeLinecap="round"
@@ -586,7 +633,11 @@ export function IDCard() {
         />
         <path
           fill="none"
-          d={layoutState.stageWidth ? `M ${layoutState.anchorX} ${layoutState.anchorY} L ${layoutState.anchorX} ${layoutState.stageHeight}` : ""}
+          d={
+            layoutState.stageWidth
+              ? `M ${layoutState.anchorX} ${layoutState.anchorY} L ${layoutState.anchorX} ${layoutState.stageHeight}`
+              : ""
+          }
           stroke={`url(#${gradientId}-lane)`}
           strokeWidth="9.8"
           strokeLinecap="round"
@@ -621,7 +672,11 @@ export function IDCard() {
         />
         <path
           fill="none"
-          d={layoutState.stageWidth ? `M ${layoutState.anchorX} ${layoutState.anchorY} L ${layoutState.anchorX} ${layoutState.stageHeight}` : ""}
+          d={
+            layoutState.stageWidth
+              ? `M ${layoutState.anchorX} ${layoutState.anchorY} L ${layoutState.anchorX} ${layoutState.stageHeight}`
+              : ""
+          }
           stroke="rgba(12,8,18,0.24)"
           strokeWidth="28"
           strokeLinecap="round"
@@ -638,8 +693,15 @@ export function IDCard() {
           letterSpacing="1.3"
           opacity="0.98"
         >
-          <textPath href={`#${strapPathId}`} startOffset="50%" textAnchor="middle">
-            JAINAM KHARA • JAINAM KHARA • JAINAM KHARA
+          <textPath
+            href={`#${strapPathId}`}
+            startOffset="50%"
+            textAnchor="middle"
+          >
+            JAINAM KHARA • JAINAM KHARA • JAINAM KHARA • JAINAM KHARA • JAINAM
+            KHARA • JAINAM KHARA • JAINAM KHARA • JAINAM KHARA • JAINAM KHARA •
+            JAINAM KHARA • JAINAM KHARA • JAINAM KHARA • JAINAM KHARA • JAINAM
+            KHARA • JAINAM KHARA
           </textPath>
         </text>
       </svg>

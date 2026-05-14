@@ -39,10 +39,12 @@ export function FeaturedProjects() {
   }, { scope: sectionRef });
 
   return (
-    <section ref={sectionRef} className="relative border-t border-border bg-background">
+    <section ref={sectionRef} className="relative border-t border-border bg-background pt-24 md:pt-32">
+      <div className="px-6 md:px-12 lg:px-20">
+        <div className="max-w-7xl mx-auto">
 
       {/* Header */}
-      <div className="section-header flex items-end justify-between px-8 md:px-14 lg:px-20 pt-20 pb-8">
+      <div className="section-header flex items-end justify-between pb-12 md:pb-16">
         <div>
           <p className="section-label mb-3">02 / Selected Work</p>
           <h2
@@ -61,10 +63,10 @@ export function FeaturedProjects() {
         </Link>
       </div>
 
-      <div className="mx-8 md:mx-14 lg:mx-20 h-px bg-border" />
+      <div className="w-full h-px bg-border" />
 
       {/* Rows */}
-      <div>
+      <div className="pb-4 md:pb-8">
         {featured.map((project, i) => {
           const isOpen = expanded === project.id;
 
@@ -91,7 +93,7 @@ export function FeaturedProjects() {
                   style={{ transform: isOpen ? "scaleY(1)" : "scaleY(0)" }}
                 />
 
-                <div className="relative z-10 px-8 md:px-14 lg:px-20 py-5 flex items-center gap-6">
+                <div className="relative z-10 py-6 flex items-center gap-4 md:gap-6">
                   {/* Index */}
                   <span className="font-mono text-[11px] text-muted-foreground/30 w-6 shrink-0">
                     {String(i + 1).padStart(2, "0")}
@@ -143,7 +145,7 @@ export function FeaturedProjects() {
                     transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                     className="overflow-hidden"
                   >
-                    <div className="px-8 md:px-14 lg:px-20 pt-2 pb-8">
+                    <div className="pt-2 pb-8">
                       <div className="flex flex-col md:flex-row gap-6 items-start">
 
                         {/* Project screenshot */}
@@ -203,13 +205,15 @@ export function FeaturedProjects() {
         <Link
           href="/projects"
           data-cursor="hover"
-          className="group flex items-center justify-between px-8 md:px-14 lg:px-20 py-5 hover:bg-card/50 transition-colors duration-300"
+          className="group flex items-center justify-between py-6 hover:bg-card/50 transition-colors duration-300"
         >
           <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/35 group-hover:text-primary transition-colors duration-300">
             See all projects
           </span>
           <ArrowUpRight className="h-4 w-4 text-muted-foreground/25 group-hover:text-primary transition-all duration-300" />
         </Link>
+      </div>
+      </div>
       </div>
 
       {/* Tech marquee */}

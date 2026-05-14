@@ -98,7 +98,7 @@ export default function AboutPage() {
         <div className="px-6 md:px-12 lg:px-16 py-16 border-r border-border">
           <p className="reveal-line text-2xl md:text-3xl font-display font-bold leading-tight mb-8">
             I'm a Computer Science student at{" "}
-            <span className="text-primary italic">SAL Institute of Technology</span>,
+            <span className="text-primary italic">SAL Institute of Technology and Engineering Research</span>,
             Ahmedabad — building things that matter.
           </p>
 
