@@ -99,7 +99,7 @@ export function Hero() {
     >
       <div className="container mx-auto px-8 md:px-14 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center min-h-[calc(100vh-80px)] py-12 md:py-20">
         {/* Left: Content panel */}
-        <div className="lg:col-span-7 xl:col-span-8 order-2 lg:order-1 flex flex-col justify-center">
+        <div className="lg:col-span-7 xl:col-span-8 order-1 lg:order-1 flex flex-col justify-center">
           {/* Availability badge */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -254,8 +254,8 @@ export function Hero() {
         </div>
 
         {/* Right: hanging ID card */}
-        <div className="lg:col-span-5 xl:col-span-4 order-1 lg:order-2 flex justify-center lg:justify-end self-start">
-          <div className="relative w-full max-w-[33rem] h-[36rem] sm:h-[41rem] lg:h-[49rem] lg:-mt-24 xl:-mt-28 overflow-visible">
+        <div className="lg:col-span-5 xl:col-span-4 order-2 lg:order-2 flex justify-center lg:justify-end self-start">
+          <div className="relative w-full max-w-[33rem] h-[38rem] sm:h-[41rem] lg:h-[49rem] lg:-mt-24 xl:-mt-28 overflow-visible">
             <IDCard />
           </div>
         </div>

@@ -71,7 +71,17 @@ export function IDCard() {
   const mountSwingRef = useRef<HTMLDivElement>(null);
 
   const [isDragging, setIsDragging] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [cardWidth, setCardWidth] = useState(282);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
   const [layoutState, setLayoutState] = useState<LayoutState>({
     stageWidth: 0,
     stageHeight: 0,
@@ -249,7 +259,7 @@ export function IDCard() {
       const cardHeight = card.offsetHeight;
       const anchorX = stageWidth / 2;
       const anchorY = ANCHOR_Y;
-      const strapLength = clamp(stageHeight * 0.46, 210, 276);
+      const strapLength = isMobile ? 180 : clamp(stageHeight * 0.46, 210, 276);
       const stageRect = stage.getBoundingClientRect();
       const restX = anchorX - nextCardWidth / 2;
       const restY = Math.min(
@@ -317,7 +327,7 @@ export function IDCard() {
     syncLayout();
 
     return () => resizeObserver.disconnect();
-  }, [getAttachmentPoint, renderScene]);
+  }, [getAttachmentPoint, renderScene, isMobile]);
 
   useEffect(() => {
     let frameId = 0;
@@ -331,7 +341,15 @@ export function IDCard() {
       const sim = simRef.current;
 
       if (sim.ready && layout.cardHeight) {
-        if (!sim.dragging) {
+        if (isMobile) {
+          // Keep at rest position on mobile
+          sim.vx = 0;
+          sim.vy = 0;
+          sim.angularVelocity = 0;
+          sim.x = layout.restX;
+          sim.y = layout.restY;
+          sim.angle = 0;
+        } else if (!sim.dragging) {
           const attachmentPoint = getAttachmentPoint(sim, layout);
           const attachX = attachmentPoint.x;
           const swingDx = clamp(
@@ -387,7 +405,7 @@ export function IDCard() {
 
     frameId = window.requestAnimationFrame(loop);
     return () => window.cancelAnimationFrame(frameId);
-  }, [getAttachmentPoint, renderScene]);
+  }, [getAttachmentPoint, renderScene, isMobile]);
 
   const getPointFromClient = useCallback((clientX: number, clientY: number) => {
     const rect = stageRef.current?.getBoundingClientRect();
@@ -457,7 +475,7 @@ export function IDCard() {
   }, [endDrag, getPointFromClient, renderScene]);
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (!event.isPrimary) return;
+    if (isMobile || !event.isPrimary) return;
 
     const sim = simRef.current;
     const layout = layoutRef.current;
