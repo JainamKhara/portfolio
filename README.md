@@ -1,193 +1,238 @@
-A modern, responsive portfolio website built with Next.js 14, Tailwind CSS, and Framer Motion featuring a stunning dark mode with animated stars background.
+# Jainam Khara Portfolio
 
+A cinematic developer portfolio built with Next.js 15, React 19, Tailwind CSS 4, Framer Motion, GSAP, and a custom interactive hero badge/lanyard experience.
 
-Live Website: [https://jainamkhara.vercel.app](https://jainamkhara.vercel.app)
-
-## Table of Contents
-
-- [Table of Contents](#table-of-contents)
-- [Overview](#overview)
-- [Features](#features)
-- [Technologies](#technologies)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Project Structure](#project-structure)
-- [Customization](#customization)
-  - [Personal Information](#personal-information)
-  - [Styling](#styling)
-  - [Assets](#assets)
-- [Using This Template](#using-this-template)
-  - [What Not To Do](#what-not-to-do)
-- [Deployment](#deployment)
-  - [Deploying to Vercel](#deploying-to-vercel)
-  - [Deploying Elsewhere](#deploying-elsewhere)
-- [Credits](#credits)
-- [License](#license)
+Live website: [https://jainamkhara.vercel.app](https://jainamkhara.vercel.app)
 
 ## Overview
 
-This portfolio website showcases my projects, experience, and skills with a focus on modern web development and innovative UI/UX. The site features smooth animations, a unique dark mode experience with Three.js stars animation, and a responsive design that works across all devices.
+This project is a personal portfolio for showcasing projects, experience, certificates, skills, and contact information with a strong editorial dark theme. The current build includes a custom animated loading flow, smooth scrolling, a command-palette-driven navigation layer, a bespoke draggable hero ID card, and a contact form backed by a Next.js API route and Resend.
 
 ## Features
 
-- **Modern UI/UX**: Clean, minimal design with custom animations
-- **Responsive**: Fully responsive across mobile, tablet, and desktop
-- **Dark/Light Mode**: Toggle between themes with a beautiful starry background in dark mode
-- **Command Palette (⌘K)**: Keyboard-driven navigation inspired by power user tools
-- **Interactive Components**:
-  - Floating glassmorphic navbar
-  - Animated project cards
-  - Timeline-based experience section
-  - Achievement showcase
-  - Testimonials/recommendations
-- **Performance Optimized**: Fast load times and smooth animations
-- **Accessibility**: ARIA-compliant components and keyboard navigation
-- **SEO Friendly**: Proper metadata and semantic HTML
+- Editorial dark-mode-first UI with custom typography, grain texture, and subtle motion
+- Interactive homepage hero with a draggable hanging ID card and animated lanyard strap
+- Scroll progress indicator, scroll-to-top control, and smooth scrolling via Lenis
+- Command palette navigation for fast keyboard-driven movement across the site
+- Custom desktop cursor treatment
+- Loading screen transition before the main layout appears
+- Dedicated pages for:
+  - About
+  - Projects
+  - Experience
+  - Certificates
+  - Contact
+- Dynamic detail pages for projects and certificates
+- Contact form with:
+  - `zod` validation
+  - `react-hook-form` integration
+  - API submission to `/api/contact`
+  - Resend-powered email delivery
+  - success and error states
+- Analytics and performance instrumentation via Vercel Analytics and Speed Insights
+- Responsive layout tuned for desktop, tablet, and mobile
 
-## Technologies
+## Tech Stack
 
-- **Framework**: Next.js 14 (App Router)
-- **Styling**: Tailwind CSS v4
-- **Animations**: 
+- Framework: Next.js 15 App Router
+- Runtime: React 19
+- Styling: Tailwind CSS 4
+- Motion:
   - Framer Motion
-  - Three.js (for starry background)
-- **UI Components**: shadcn/ui
-- **State Management**: React Hooks
-- **Icons**: Lucide React
-- **Fonts**: Inter (variable) and custom fonts
+  - GSAP
+  - Lenis
+- 3D / canvas:
+  - Three.js
+  - React Three Fiber
+  - Drei
+- Forms and validation:
+  - react-hook-form
+  - zod
+  - @hookform/resolvers
+- UI primitives: Radix UI + custom `shadcn/ui` components
+- Email delivery: Resend
+- Analytics: `@vercel/analytics`, `@vercel/speed-insights`
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18.17.0 or later
-- npm or yarn
+- Node.js 18.18+ recommended
+- npm
 
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/JainamKhara/portfolio.git
    cd portfolio
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
-   # or
-   yarn install
    ```
 
-3. Run the development server:
+3. Create `.env.local` in the project root with:
+
+   ```bash
+   RESEND_API_KEY=your_resend_api_key
+   ```
+
+4. Start the dev server:
+
    ```bash
    npm run dev
-   # or
-   yarn dev
    ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+5. Open [http://localhost:3000](http://localhost:3000).
+
+## Available Scripts
+
+- `npm run dev` - start the development server with Turbopack
+- `npm run build` - create a production build
+- `npm run start` - run the production server
+- `npm run lint` - run lint checks
+
+## Environment Variables
+
+The contact form API route uses Resend. Set:
+
+```bash
+RESEND_API_KEY=your_resend_api_key
+```
+
+Without this value, the contact API returns a configuration error instead of attempting delivery.
 
 ## Project Structure
 
-```
-├── app/                       # Next.js app directory
-│   ├── (routes)/              # Page routes
+```text
+├── app/
+│   ├── (routes)/
 │   │   ├── about/
 │   │   ├── certificates/
 │   │   ├── contact/
 │   │   ├── experience/
 │   │   └── projects/
-│   ├── globals.css            # Global styles
-│   └── layout.tsx             # Root layout
-├── components/                # React components
-│   ├── home/                  # Homepage components
-│   ├── layout/                # Layout components (navbar, footer)
-│   ├── projects/              # Project related components
-│   ├── shared/                # Shared components
-│   ├── ui/                    # UI components (shadcn)
-│   ├── 3d-card.tsx           # 3D hover effect card
-│   ├── black-hole-video.tsx   # Black hole video component
-│   └── star-background.tsx    # Star background component
-├── data/                      # Static data files
-│   ├── projects.ts            # Projects data
-│   ├── experience.ts          # Experience data
-│   ├── skills.ts              # Skills data
-│   └── social.ts              # Social links data
-├── lib/                       # Utility functions
-│   └── utils.ts               # Helper functions
-├── public/                    # Static assets
-│   ├── fonts/                 # Custom fonts
-│   ├── images/                # Images
-│   └── blackhole.webm         # Black hole video for dark mode
-└── package.json               # Project dependencies
+│   ├── api/
+│   │   └── contact/
+│   ├── client-layout.tsx
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── metadata.ts
+│   └── page.tsx
+├── components/
+│   ├── certificates/
+│   ├── contact/
+│   ├── experience/
+│   ├── home/
+│   │   ├── hero.tsx
+│   │   ├── id-card.tsx
+│   │   ├── id-card-ui.tsx
+│   │   ├── achievements.tsx
+│   │   ├── featured-projects.tsx
+│   │   ├── skills-showcase.tsx
+│   │   └── testimonials.tsx
+│   ├── layout/
+│   ├── projects/
+│   ├── shared/
+│   └── ui/
+├── data/
+│   ├── certificates.ts
+│   ├── education.ts
+│   ├── experience.ts
+│   ├── projects.ts
+│   ├── skills.ts
+│   └── social.ts
+├── lib/
+│   ├── animations.ts
+│   ├── gsap.ts
+│   └── utils.ts
+├── public/
+│   ├── fonts/
+│   ├── images/
+│   ├── Jainam_Khara_CV.pdf
+│   └── blackhole.webm
+└── package.json
 ```
+
+## Key Implementation Notes
+
+- The hero ID card is a custom DOM/SVG interaction, not a generic draggable card.
+- The lanyard physics are implemented in the hero component layer and tuned for release swing + return-to-rest motion.
+- The star background canvas still uses React Three Fiber / Drei.
+- The root client layout sets the site to dark mode by default and disables system theme switching.
+- The contact flow is server-backed through `app/api/contact/route.ts`.
 
 ## Customization
 
-### Personal Information
+### Content
 
-Edit the following files to update with your information:
+Update these files to change portfolio content:
 
-- `data/projects.ts`: Add your projects
-- `data/experience.ts`: Add your work and research experience
-- `data/skills.ts`: Update your technical skills
-- `data/social.ts`: Update your social media links
+- `data/projects.ts`
+- `data/experience.ts`
+- `data/certificates.ts`
+- `data/skills.ts`
+- `data/social.ts`
+- `data/education.ts`
+
+### Hero / Branding
+
+If you want to rework the main visual identity:
+
+- `components/home/hero.tsx` controls the homepage hero composition
+- `components/home/id-card.tsx` controls the lanyard behavior and strap visuals
+- `components/home/id-card-ui.tsx` controls the badge face
+
+### Contact
+
+To change contact delivery behavior:
+
+- `components/contact/contact-form.tsx` controls client-side UX
+- `app/api/contact/route.ts` controls server-side validation and Resend delivery
 
 ### Styling
 
-The site uses Tailwind CSS for styling. You can customize:
+Core theme and layout styling live in:
 
-1. **Colors**: Edit the theme colors in `globals.css` or `tailwind.config.mjs`
-2. **Fonts**: Replace fonts in the `/public/fonts` directory and update references in `app/layout.tsx`
-3. **Components**: Modify shadcn components in the `components/ui` directory
-
-### Assets
-
-Replace the following assets with your own:
-
-- `/public/images/profile.jpg`: Your profile picture
-- `/public/images/projects/`: Project images
-- `/public/CV.pdf`: Your CV
-- `/public/favicon.ico`: Site favicon
-
-## Using This Template
-
-If you'd like to use this template for your own portfolio website, you are welcome to do so under the following conditions:
-
-### What Not To Do
-
-- Remove attribution and claim the design as entirely your own
-- Sell this template or any derivative work without explicit permission
-- Use my personal information, images, or project details in your version
+- `app/globals.css`
+- `tailwind.config.js`
+- `components/ui/*`
 
 ## Deployment
 
-This portfolio is optimized for deployment on [Vercel](https://vercel.com), but can be deployed to any platform that supports Next.js.
+The project is optimized for Vercel, but it can run anywhere that supports Next.js.
 
-### Deploying to Vercel
+### Vercel
 
-1. Push your code to a GitHub repository
-2. Import the repository in Vercel
-3. Set any required environment variables
-4. Deploy!
+1. Push the repository to GitHub.
+2. Import the project in Vercel.
+3. Add `RESEND_API_KEY` in the project environment settings.
+4. Deploy.
 
-Vercel will automatically detect that it's a Next.js project and configure the build settings accordingly.
+### Other Platforms
 
-### Deploying Elsewhere
+Build and run with:
 
-For other platforms, refer to the [Next.js deployment documentation](https://nextjs.org/docs/deployment).
+```bash
+npm run build
+npm run start
+```
+
+Refer to the official [Next.js deployment docs](https://nextjs.org/docs/app/building-your-application/deploying).
 
 ## Credits
 
-- UI Components: [shadcn/ui](https://ui.shadcn.com/)
-- Icons: [Lucide React](https://lucide.dev/)
-- Animation: [Framer Motion](https://www.framer.com/motion/)
-- 3D Starfield: [Three.js](https://threejs.org/) and [React Three Fiber](https://docs.pmnd.rs/react-three-fiber)
+- UI primitives: [Radix UI](https://www.radix-ui.com/)
+- Component patterns: [shadcn/ui](https://ui.shadcn.com/)
+- Motion: [Framer Motion](https://www.framer.com/motion/) and [GSAP](https://gsap.com/)
+- Smooth scrolling: [Lenis](https://lenis.darkroom.engineering/)
+- 3D background: [Three.js](https://threejs.org/), [React Three Fiber](https://r3f.docs.pmnd.rs/), and [Drei](https://github.com/pmndrs/drei)
+- Email delivery: [Resend](https://resend.com/)
 
 ## License
 
-This project is available for personal and educational use with required attribution as detailed in the [Using This Template](#using-this-template) section.
-
----
-
+This repository is available for personal and educational reference. If you reuse it, replace personal content and branding with your own.

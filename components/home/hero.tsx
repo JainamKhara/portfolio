@@ -3,9 +3,9 @@
 import { useRef } from "react";
 import { motion } from "framer-motion";
 import { gsap, useGSAP } from "@/lib/gsap";
-import Image from "next/image";
 import Link from "next/link";
 import { CountUp } from "@/components/shared/count-up";
+import { IDCard } from "@/components/home/id-card";
 
 const stats = [
   { label: "Projects Built", value: 10, suffix: "+" },
@@ -58,7 +58,6 @@ const tickerItems = [
 
 export function Hero() {
   const containerRef = useRef<HTMLElement>(null);
-  const photoRef = useRef<HTMLDivElement>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
   const nameLineRef = useRef<HTMLDivElement>(null);
 
@@ -92,23 +91,6 @@ export function Hero() {
     { scope: containerRef },
   );
 
-  /* GSAP: Parallax for photo */
-  useGSAP(
-    () => {
-      if (!photoRef.current) return;
-      gsap.to(photoRef.current, {
-        yPercent: 15,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
-    },
-    { scope: containerRef },
-  );
 
   return (
     <section
@@ -271,57 +253,11 @@ export function Hero() {
           </motion.div>
         </div>
 
-        {/* Right: photo panel */}
-        <div className="lg:col-span-5 xl:col-span-4 order-1 lg:order-2 flex justify-center lg:justify-end">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-            className="relative group"
-          >
-            {/* Outline "Ghost" Frame (matches Khara style) */}
-            <div
-              className="absolute -right-4 -bottom-4 w-full h-full border-[1.5px] border-primary/40 z-0 transition-transform duration-500 group-hover:translate-x-1 group-hover:translate-y-1"
-              aria-hidden="true"
-            />
-
-            {/* Main Image Container */}
-            <div
-              ref={photoRef}
-              className="relative z-10 w-[280px] sm:w-[320px] md:w-[360px] aspect-[4/5] border-[1.5px] border-primary overflow-hidden bg-muted"
-            >
-              <Image
-                src="/images/profile.jpg"
-                alt="Jainam Khara"
-                fill
-                priority
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-                style={{
-                  filter: "grayscale(100%) contrast(1.1) brightness(0.9)",
-                  objectPosition: "50% 18%",
-                }}
-                sizes="(max-width: 768px) 100vw, 360px"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
-
-              {/* Corner badge */}
-              <div className="absolute top-4 right-4 z-20">
-                <div className="bg-primary/10 backdrop-blur-md border border-primary/20 px-3 py-1">
-                  <p className="font-mono text-[9px] uppercase tracking-widest text-primary">
-                    Est. 2002
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Accent markers */}
-            <div className="absolute -top-2 -left-2 w-4 h-4 border-t-2 border-l-2 border-primary z-20" />
-            <div className="absolute bottom-6 -left-6 z-20 pointer-events-none">
-              <span className="font-mono text-[10px] text-foreground/30">
-                01 / JK
-              </span>
-            </div>
-          </motion.div>
+        {/* Right: hanging ID card */}
+        <div className="lg:col-span-5 xl:col-span-4 order-1 lg:order-2 flex justify-center lg:justify-end self-start">
+          <div className="relative w-full max-w-[33rem] h-[36rem] sm:h-[41rem] lg:h-[49rem] lg:-mt-24 xl:-mt-28 overflow-visible">
+            <IDCard />
+          </div>
         </div>
       </div>
 
