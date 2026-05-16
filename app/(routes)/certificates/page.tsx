@@ -49,7 +49,7 @@ export default function CertificatesPage() {
   return (
     <div className="min-h-screen">
       {/* ── Page Hero ── */}
-      <div className="relative min-h-[40vh] flex flex-col justify-end pt-28 pb-16 px-6 md:px-12 lg:px-20 border-b border-border overflow-hidden">
+      <div className="relative pt-28 pb-16 px-6 md:px-12 lg:px-20 border-b border-border overflow-hidden">
         <div aria-hidden className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <span className="font-display font-black text-[20vw] text-foreground/[0.015] uppercase leading-none">
             CERTS
@@ -60,7 +60,7 @@ export default function CertificatesPage() {
           Credentials
         </motion.p>
         <h1 ref={titleRef} className="font-display font-black text-[clamp(4rem,12vw,10rem)] leading-none tracking-tight mb-8">
-          ████████████
+          CERTIFICATES
         </h1>
         <div className="glow-line" />
       </div>

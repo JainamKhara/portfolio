@@ -106,7 +106,7 @@ export default function ExperiencePage() {
           </motion.p>
           <h1 ref={titleRef}
             className="font-display font-black text-[clamp(4rem,12vw,10rem)] leading-none tracking-tight mb-6">
-            ██████████
+            EXPERIENCE
           </h1>
           <div className="glow-line" />
         </div>

@@ -84,7 +84,7 @@ export default function AboutPage() {
 
           <h1 ref={titleRef}
             className="font-display font-black text-[clamp(4rem,12vw,10rem)] leading-none tracking-tight mb-8">
-            ████
+            ABOUT
           </h1>
 
           <div className="glow-line" />
@@ -96,36 +96,36 @@ export default function AboutPage() {
 
         {/* Left — bio text */}
         <div className="px-6 md:px-12 lg:px-16 py-16 border-r border-border">
-          <p className="reveal-line text-2xl md:text-3xl font-display font-bold leading-tight mb-8">
-            I'm a Computer Science student at{" "}
+          <p className="reveal-line text-2xl md:text-4xl font-display font-black leading-[1.1] tracking-tight mb-8">
+            I&apos;m a Computer Science student at{" "}
             <span className="text-primary italic">SAL Institute of Technology and Engineering Research</span>,
             Ahmedabad — building things that matter.
           </p>
 
-          <p className="reveal-line text-muted-foreground leading-relaxed mb-6">
+          <p className="reveal-line text-lg text-muted-foreground leading-relaxed mb-6 font-medium">
             My engineering philosophy is simple: every line of code should serve a purpose,
             and every interface should feel inevitable. I work at the intersection of
             design and engineering — obsessive about performance, accessibility, and
-            the kind of detail that users feel but can't quite name.
+            the kind of detail that users feel but can&apos;t quite name.
           </p>
 
-          <p className="reveal-line text-muted-foreground leading-relaxed mb-6">
-            When I'm not building products, I'm solving algorithmic challenges on LeetCode,
+          <p className="reveal-line text-lg text-muted-foreground leading-relaxed mb-6 font-medium">
+            When I&apos;m not building products, I&apos;m solving algorithmic challenges on LeetCode,
             training ML models, or contributing to open-source. I believe the best
             engineers are relentlessly curious — I try to build something new every week.
           </p>
 
-          <p className="reveal-line text-muted-foreground leading-relaxed">
+          <p className="reveal-line text-lg text-muted-foreground leading-relaxed font-medium">
             Currently seeking a Full-Stack or ML role where craft and ambition collide.
           </p>
 
           {/* Amber accent block */}
-          <div className="reveal-line mt-10 border-l-2 border-amber-500 pl-5 py-1">
-            <p className="font-mono text-[11px] uppercase tracking-widest text-amber-500/80">
+          <div className="reveal-line mt-12 border-l border-primary/30 pl-6 py-2">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary/80">
               Core principle
             </p>
-            <p className="text-sm mt-1 text-muted-foreground/80 italic">
-              "Build with intent. Ship with conviction."
+            <p className="text-xl mt-2 text-foreground font-display font-bold italic tracking-tight">
+              &quot;Build with intent. Ship with conviction.&quot;
             </p>
           </div>
         </div>
@@ -137,15 +137,15 @@ export default function AboutPage() {
               src="/images/profile.jpg"
               alt="Jainam Khara"
               fill
-              className="object-cover object-top"
+              className="object-cover object-top grayscale hover:grayscale-0 transition-all duration-1000"
               sizes="400px"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
           </div>
 
           {/* Name overlay at bottom */}
-          <div className="absolute bottom-0 inset-x-0 p-6 z-10">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-foreground/40">
+          <div className="absolute bottom-0 inset-x-0 p-8 z-10">
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-foreground/40">
               Jainam Khara · CS Student · Developer
             </p>
           </div>

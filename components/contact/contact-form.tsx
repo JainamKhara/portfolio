@@ -101,7 +101,7 @@ export function ContactForm() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-2xl font-semibold"
+            className="text-3xl font-display font-black uppercase tracking-tighter"
           >
             Message Sent!
           </motion.h3>
@@ -109,7 +109,7 @@ export function ContactForm() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="text-center text-muted-foreground max-w-md"
+            className="text-center text-muted-foreground max-w-md font-medium"
           >
             Thank you for reaching out. I&apos;ll get back to you as soon as
             possible.
@@ -122,7 +122,7 @@ export function ContactForm() {
             <Button
               variant="outline"
               onClick={() => setIsSubmitted(false)}
-              className="mt-4"
+              className="mt-6 font-mono text-[10px] uppercase tracking-widest h-12 px-8 border-border hover:border-primary hover:bg-primary/5 transition-all"
             >
               Send Another Message
             </Button>
@@ -137,12 +137,12 @@ export function ContactForm() {
           transition={{ duration: 0.3 }}
         >
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               {error && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="rounded-md bg-red-50 p-4 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-400"
+                  className="rounded-none bg-red-50 p-4 text-[10px] font-mono uppercase tracking-widest text-red-700 dark:bg-red-900/20 dark:text-red-400 border border-red-200 dark:border-red-800"
                 >
                   {error}
                 </motion.div>
@@ -152,11 +152,15 @@ export function ContactForm() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="John Doe" {...field} />
+                      <Input 
+                        placeholder="JOHN DOE" 
+                        className="rounded-none border-t-0 border-x-0 border-b border-border bg-transparent px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-muted-foreground/30 font-display font-bold uppercase tracking-tight"
+                        {...field} 
+                      />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="font-mono text-[9px] uppercase tracking-widest" />
                   </FormItem>
                 )}
               />
@@ -165,11 +169,15 @@ export function ContactForm() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="john@example.com" {...field} />
+                      <Input 
+                        placeholder="HELLO@EXAMPLE.COM" 
+                        className="rounded-none border-t-0 border-x-0 border-b border-border bg-transparent px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-muted-foreground/30 font-display font-bold uppercase tracking-tight"
+                        {...field} 
+                      />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="font-mono text-[9px] uppercase tracking-widest" />
                   </FormItem>
                 )}
               />
@@ -178,11 +186,15 @@ export function ContactForm() {
                 name="subject"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Subject</FormLabel>
+                    <FormLabel className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Subject</FormLabel>
                     <FormControl>
-                      <Input placeholder="Project Inquiry" {...field} />
+                      <Input 
+                        placeholder="PROJECT INQUIRY" 
+                        className="rounded-none border-t-0 border-x-0 border-b border-border bg-transparent px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-muted-foreground/30 font-display font-bold uppercase tracking-tight"
+                        {...field} 
+                      />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="font-mono text-[9px] uppercase tracking-widest" />
                   </FormItem>
                 )}
               />
@@ -191,19 +203,19 @@ export function ContactForm() {
                 name="message"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Message</FormLabel>
+                    <FormLabel className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Message</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="I'd like to discuss a project opportunity..."
-                        className="min-h-32 resize-none"
+                        placeholder="I'D LIKE TO DISCUSS..."
+                        className="min-h-32 rounded-none border border-border bg-card/30 p-4 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-muted-foreground/30 font-medium resize-none"
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="font-mono text-[9px] uppercase tracking-widest" />
                   </FormItem>
                 )}
               />
-              <Button type="submit" disabled={isSubmitting} className="w-full">
+              <Button type="submit" disabled={isSubmitting} className="w-full h-14 font-mono text-[11px] uppercase tracking-[0.3em] bg-foreground text-background hover:bg-primary transition-all duration-500">
                 {isSubmitting ? (
                   <motion.div
                     initial={{ opacity: 0 }}

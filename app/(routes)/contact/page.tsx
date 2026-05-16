@@ -30,7 +30,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen">
       {/* ── Page Hero ── */}
-      <div className="relative min-h-[50vh] flex flex-col justify-end pt-28 pb-16 px-6 md:px-12 lg:px-20 border-b border-border overflow-hidden">
+      <div className="relative pt-28 pb-16 px-6 md:px-12 lg:px-20 border-b border-border overflow-hidden">
         {/* Ambient glow */}
         <div
           aria-hidden
@@ -57,7 +57,7 @@ export default function ContactPage() {
         </motion.p>
 
         <h1 ref={titleRef} className="font-display font-black text-[clamp(4rem,12vw,10rem)] leading-none tracking-tight mb-8">
-          ███████
+          CONTACT
         </h1>
 
         <div className="glow-line" />
@@ -84,7 +84,7 @@ export default function ContactPage() {
           className="p-8 md:p-16 flex flex-col justify-between"
         >
           <div>
-            <p className="section-label mb-8">Or reach out directly</p>
+            <p className="section-label mb-10 text-primary">Or reach out directly</p>
 
             <div className="space-y-4">
               {socialLinks.map((social, i) => (
@@ -97,34 +97,34 @@ export default function ContactPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.3 + i * 0.1 }}
-                  className="group flex items-center justify-between border border-border p-4 hover:border-primary/50 hover:bg-primary/5 transition-all duration-400"
+                  className="group flex items-center justify-between border border-border p-6 hover:border-primary/50 hover:bg-primary/5 transition-all duration-400 relative overflow-hidden"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="text-primary">{iconMap[social.icon]}</div>
+                  <div className="flex items-center gap-6 relative z-10">
+                    <div className="text-primary group-hover:scale-110 transition-transform duration-500">{iconMap[social.icon]}</div>
                     <div>
-                      <p className="font-semibold text-sm group-hover:text-primary transition-colors">{social.name}</p>
-                      <p className="font-mono text-[10px] text-muted-foreground mt-0.5">
+                      <p className="font-display font-bold text-lg group-hover:text-primary transition-colors tracking-tight uppercase">{social.name}</p>
+                      <p className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground mt-1">
                         {social.url.replace(/(mailto:|tel:|https:\/\/)/g, "")}
                       </p>
                     </div>
                   </div>
-                  <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                  <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 group-hover:-translate-y-1 transition-all relative z-10" />
                 </motion.a>
               ))}
             </div>
           </div>
 
-          <div className="mt-12 pt-8 border-t border-border">
-            <p className="section-label mb-3 text-muted-foreground">Location</p>
-            <p className="font-display font-bold text-2xl">Ahmedabad, Gujarat</p>
-            <p className="text-muted-foreground text-sm mt-1">India · GMT+5:30</p>
+          <div className="mt-16 pt-10 border-t border-border">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-4">Location</p>
+            <p className="font-display font-black text-3xl uppercase tracking-tighter">Ahmedabad, Gujarat</p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mt-2">India · GMT+5:30</p>
 
-            <div className="mt-6 flex items-center gap-2">
-              <span className="relative flex h-2 w-2">
+            <div className="mt-10 flex items-center gap-3">
+              <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
               </span>
-              <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/80">
                 Available for freelance &amp; internships
               </span>
             </div>

@@ -10,46 +10,10 @@ import { useLoading } from "@/lib/loading-context";
 
 
 const tickerItems = [
-  "Full-Stack",
-  "·",
-  "Machine Learning",
-  "·",
-  "Next.js",
-  "·",
-  "React",
-  "·",
-  "TypeScript",
-  "·",
-  "Node.js",
-  "·",
-  "Python",
-  "·",
-  "TailwindCSS",
-  "·",
-  "GSAP",
-  "·",
-  "Framer Motion",
-  "·",
-  "Full-Stack",
-  "·",
-  "Machine Learning",
-  "·",
-  "Next.js",
-  "·",
-  "React",
-  "·",
-  "TypeScript",
-  "·",
-  "Node.js",
-  "·",
-  "Python",
-  "·",
-  "TailwindCSS",
-  "·",
-  "GSAP",
-  "·",
-  "Framer Motion",
-  "·",
+  "Full-Stack", "·", "Machine Learning", "·", "Next.js", "·", "React", "·", 
+  "TypeScript", "·", "Node.js", "·", "Python", "·", "TailwindCSS", "·", 
+  "GSAP", "·", "Framer Motion", "·", "Three.js", "·", "PostgreSQL", "·", 
+  "Docker", "·", "Cloud Native", "·", "Git", "·", "System Design", "·"
 ];
 
 export function Hero() {
@@ -63,11 +27,12 @@ export function Hero() {
     () => {
       if (!tickerRef.current || isLoading) return;
       const ticker = tickerRef.current;
-      const totalWidth = ticker.scrollWidth / 2;
+      // Use 1/3 since we render 3 sets
+      const scrollWidth = ticker.scrollWidth / 3;
 
       gsap.to(ticker, {
-        x: -totalWidth,
-        duration: 35,
+        x: -scrollWidth,
+        duration: 40,
         ease: "none",
         repeat: -1,
       });
@@ -244,7 +209,7 @@ export function Hero() {
       {/* ── Tech ticker strip ── */}
       <div className="border-t border-border h-9 flex items-center overflow-hidden relative z-10 select-none bg-background">
         <div ref={tickerRef} className="flex items-center whitespace-nowrap">
-          {tickerItems.map((item, i) => (
+          {[...tickerItems, ...tickerItems, ...tickerItems].map((item, i) => (
             <span
               key={i}
               className={`inline-block px-3 font-mono text-[10px] tracking-widest ${
@@ -258,6 +223,7 @@ export function Hero() {
           ))}
         </div>
       </div>
+
     </section>
   );
 }

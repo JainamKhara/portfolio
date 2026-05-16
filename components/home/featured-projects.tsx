@@ -219,10 +219,10 @@ export function FeaturedProjects() {
       {/* Tech marquee */}
       <div className="h-9 border-t border-border flex items-center overflow-hidden bg-muted/10 select-none">
         <div className="marquee-track font-mono text-[9px] uppercase tracking-widest text-muted-foreground/70 whitespace-nowrap">
-          {[0, 1].map((_, k) => (
-            <span key={k} className="px-6">
+          {[0, 1, 2, 3].map((_, k) => (
+            <span key={k} className="px-3">
               Next.js · React · TypeScript · Node.js · Python · TailwindCSS
-              · MongoDB · Firebase · Android · Machine Learning · GSAP · Framer Motion ·&nbsp;
+              · MongoDB · Firebase · Android · Machine Learning · GSAP · Framer Motion · Three.js · PostgreSQL · Docker · Cloud Native · Git · System Design ·&nbsp;
             </span>
           ))}
         </div>
