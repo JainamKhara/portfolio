@@ -95,7 +95,7 @@ export function FeaturedProjects() {
 
                 <div className="relative z-10 py-6 flex items-center gap-4 md:gap-6">
                   {/* Index */}
-                  <span className="font-mono text-[11px] text-muted-foreground/30 w-6 shrink-0">
+                  <span className="font-mono text-[11px] text-muted-foreground/70 w-6 shrink-0">
                     {String(i + 1).padStart(2, "0")}
                   </span>
 
@@ -105,7 +105,7 @@ export function FeaturedProjects() {
                       className="font-display font-bold leading-tight transition-colors duration-300"
                       style={{
                         fontSize: "clamp(1.1rem,2.6vw,1.7rem)",
-                        color: isOpen ? "#6C47FF" : undefined,
+                        color: isOpen ? "#D9281C" : undefined,
                       }}
                     >
                       {project.title}
@@ -117,7 +117,7 @@ export function FeaturedProjects() {
                     {project.technologies.slice(0, 3).map((t) => (
                       <span
                         key={t}
-                        className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 border border-border/60 text-muted-foreground/40"
+                        className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 border border-border text-muted-foreground/80"
                       >
                         {t}
                       </span>
@@ -128,7 +128,7 @@ export function FeaturedProjects() {
                   <motion.div
                     animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.28 }}
-                    className="shrink-0 text-muted-foreground/30"
+                    className="shrink-0 text-muted-foreground/60"
                   >
                     <ChevronDown className="h-4 w-4" />
                   </motion.div>
@@ -185,7 +185,7 @@ export function FeaturedProjects() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 data-cursor="hover"
-                                className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground/50 hover:text-primary transition-colors duration-200"
+                                className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors duration-200"
                               >
                                 GitHub ↗
                               </a>
@@ -207,10 +207,10 @@ export function FeaturedProjects() {
           data-cursor="hover"
           className="group flex items-center justify-between py-6 hover:bg-card/50 transition-colors duration-300"
         >
-          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/35 group-hover:text-primary transition-colors duration-300">
+          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/80 group-hover:text-primary transition-colors duration-300">
             See all projects
           </span>
-          <ArrowUpRight className="h-4 w-4 text-muted-foreground/25 group-hover:text-primary transition-all duration-300" />
+          <ArrowUpRight className="h-4 w-4 text-muted-foreground/80 group-hover:text-primary transition-all duration-300" />
         </Link>
       </div>
       </div>
@@ -218,7 +218,7 @@ export function FeaturedProjects() {
 
       {/* Tech marquee */}
       <div className="h-9 border-t border-border flex items-center overflow-hidden bg-muted/10 select-none">
-        <div className="marquee-track font-mono text-[9px] uppercase tracking-widest text-muted-foreground/25 whitespace-nowrap">
+        <div className="marquee-track font-mono text-[9px] uppercase tracking-widest text-muted-foreground/70 whitespace-nowrap">
           {[0, 1].map((_, k) => (
             <span key={k} className="px-6">
               Next.js · React · TypeScript · Node.js · Python · TailwindCSS

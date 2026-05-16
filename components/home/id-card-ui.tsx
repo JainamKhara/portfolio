@@ -2,6 +2,7 @@
 
 import type { Ref } from "react";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 interface IDCardUIProps {
   isDragging?: boolean;
@@ -12,30 +13,32 @@ export function IDCardUI({ isDragging, innerRef }: IDCardUIProps) {
   return (
     <div
       ref={innerRef}
-      className="relative select-none overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#0c0c10] pointer-events-auto"
+      className={cn(
+        "relative select-none overflow-hidden rounded-[1.5rem] pointer-events-auto transition-colors duration-500",
+        "border border-border bg-card",
+        "bg-gradient-to-br from-card via-card/95 to-background",
+        isDragging 
+          ? "shadow-[0_30px_66px_rgba(0,0,0,0.15),0_0_0_1px_var(--border),inset_0_1px_0_rgba(255,255,255,0.4),inset_0_-16px_28px_rgba(0,0,0,0.05)] dark:shadow-[0_30px_66px_rgba(0,0,0,0.74),0_0_0_1px_rgba(255,255,255,0.02),inset_0_1px_0_rgba(255,255,255,0.08),inset_0_-16px_28px_rgba(0,0,0,0.22)]" 
+          : "shadow-[0_24px_50px_rgba(0,0,0,0.1),0_0_0_1px_var(--border),inset_0_1px_0_rgba(255,255,255,0.3),inset_0_-14px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_24px_50px_rgba(0,0,0,0.66),0_0_0_1px_rgba(255,255,255,0.02),inset_0_1px_0_rgba(255,255,255,0.06),inset_0_-14px_24px_rgba(0,0,0,0.18)]"
+      )}
       style={{
-        background:
-          "linear-gradient(160deg, rgba(18,18,24,0.98) 0%, rgba(10,10,14,0.995) 58%, rgba(17,14,24,0.985) 100%)",
-        boxShadow: isDragging
-          ? "0 30px 66px rgba(0,0,0,0.74), 0 0 0 1px rgba(255,255,255,0.02), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -16px 28px rgba(0,0,0,0.22)"
-          : "0 24px 50px rgba(0,0,0,0.66), 0 0 0 1px rgba(255,255,255,0.02), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -14px 24px rgba(0,0,0,0.18)",
         cursor: isDragging ? "grabbing" : "grab",
         transformStyle: "preserve-3d",
       }}
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),transparent_70%)]" />
-      <div className="pointer-events-none absolute inset-0 rounded-[1.5rem] border border-white/[0.03]" />
-      <div className="pointer-events-none absolute inset-0 rounded-[1.5rem] shadow-[inset_0_0_0_1px_rgba(108,71,255,0.06)]" />
-      <div className="pointer-events-none absolute inset-y-8 left-0 w-px bg-white/6" />
-      <div className="pointer-events-none absolute inset-y-8 right-0 w-px bg-black/50" />
-      <div className="pointer-events-none absolute left-3 right-3 top-3 h-7 rounded-full bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0))]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-[linear-gradient(180deg,rgba(0,0,0,0.03),transparent_70%)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-0 rounded-[1.5rem] border border-foreground/[0.05] dark:border-white/[0.03]" />
+      <div className="pointer-events-none absolute inset-0 rounded-[1.5rem] shadow-[inset_0_0_0_1px_rgba(217,40,28,0.06)]" />
+      <div className="pointer-events-none absolute inset-y-8 left-0 w-px bg-foreground/[0.04] dark:bg-white/6" />
+      <div className="pointer-events-none absolute inset-y-8 right-0 w-px bg-foreground/[0.04] dark:bg-black/50" />
+      <div className="pointer-events-none absolute left-3 right-3 top-3 h-7 rounded-full bg-[linear-gradient(180deg,rgba(0,0,0,0.02),rgba(0,0,0,0))] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0))]" />
 
       <div
         aria-hidden
-        className="absolute left-1/2 top-4 z-20 h-6 w-6 -translate-x-1/2 rounded-full border border-white/14 bg-[linear-gradient(180deg,rgba(245,242,255,0.95)_0%,rgba(177,150,243,0.88)_36%,rgba(78,56,146,0.96)_100%)] shadow-[0_8px_18px_rgba(0,0,0,0.36)]"
+        className="absolute left-1/2 top-4 z-20 h-6 w-6 -translate-x-1/2 rounded-full border border-foreground/10 dark:border-white/14 bg-[linear-gradient(180deg,rgba(250,240,240,0.95)_0%,rgba(230,180,180,0.88)_36%,rgba(217,40,28,0.4)_100%)] dark:bg-[linear-gradient(180deg,rgba(255,240,240,0.95)_0%,rgba(220,100,100,0.88)_36%,rgba(150,20,20,0.96)_100%)] shadow-[0_8px_18px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_18px_rgba(0,0,0,0.36)]"
       >
         <div className="absolute inset-x-[3px] top-[3px] h-[2px] rounded-full bg-white/75" />
-        <div className="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#09090c] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]" />
+        <div className="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-background dark:bg-[#09090c] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]" />
       </div>
 
       <div className="relative px-4 pb-4 pt-12">
@@ -44,26 +47,26 @@ export function IDCardUI({ isDragging, innerRef }: IDCardUIProps) {
             <p className="font-mono text-[8px] uppercase tracking-[0.28em] text-primary/90">
               Identity Card
             </p>
-            <p className="mt-1 font-mono text-[7px] uppercase tracking-[0.24em] text-muted-foreground/55">
+            <p className="mt-1 font-mono text-[7px] uppercase tracking-[0.24em] text-muted-foreground">
               Corporate Access
             </p>
           </div>
-          <div className="rounded-full border border-white/8 bg-white/[0.03] px-2.5 py-1">
-            <span className="font-mono text-[7px] uppercase tracking-[0.22em] text-foreground/65">
+          <div className="rounded-full border border-foreground/10 dark:border-white/8 bg-foreground/5 dark:bg-white/[0.03] px-2.5 py-1">
+            <span className="font-mono text-[7px] uppercase tracking-[0.22em] text-foreground/80 dark:text-foreground/65">
               JK / 2026
             </span>
           </div>
         </div>
 
-        <div className="relative overflow-hidden rounded-[1.15rem] border border-white/10 bg-black shadow-[inset_0_0_0_1px_rgba(255,255,255,0.03),0_18px_26px_rgba(0,0,0,0.24)]">
-          <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-background/72 via-transparent to-transparent" />
-          <div className="pointer-events-none absolute inset-0 z-10 bg-[linear-gradient(112deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.04)_24%,transparent_46%,transparent_70%,rgba(255,255,255,0.07)_100%)]" />
-          <div className="pointer-events-none absolute inset-0 z-10 opacity-[0.045] mix-blend-screen" style={{
+        <div className="relative overflow-hidden rounded-[1.15rem] border border-foreground/10 dark:border-white/10 bg-foreground/5 dark:bg-black shadow-[inset_0_0_0_1px_rgba(0,0,0,0.05),0_18px_26px_rgba(0,0,0,0.08)] dark:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.03),0_18px_26px_rgba(0,0,0,0.24)]">
+          <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-card/72 via-transparent to-transparent" />
+          <div className="pointer-events-none absolute inset-0 z-10 bg-[linear-gradient(112deg,rgba(0,0,0,0.04)_0%,rgba(0,0,0,0.01)_24%,transparent_46%,transparent_70%,rgba(0,0,0,0.02)_100%)] dark:bg-[linear-gradient(112deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.04)_24%,transparent_46%,transparent_70%,rgba(255,255,255,0.07)_100%)]" />
+          <div className="pointer-events-none absolute inset-0 z-10 opacity-[0.03] dark:opacity-[0.045] mix-blend-multiply dark:mix-blend-screen" style={{
             backgroundImage:
               "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
           }} />
-          <div className="pointer-events-none absolute inset-x-3 top-3 z-10 h-[1px] bg-white/22" />
-          <div className="pointer-events-none absolute inset-x-3 bottom-3 z-10 h-[1px] bg-black/28" />
+          <div className="pointer-events-none absolute inset-x-3 top-3 z-10 h-[1px] bg-foreground/5 dark:bg-white/22" />
+          <div className="pointer-events-none absolute inset-x-3 bottom-3 z-10 h-[1px] bg-foreground/10 dark:bg-black/28" />
 
           <div className="relative aspect-[4/5]">
             <Image
@@ -90,19 +93,19 @@ export function IDCardUI({ isDragging, innerRef }: IDCardUIProps) {
           </p>
         </div>
 
-        <div className="my-4 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+        <div className="my-4 h-px bg-gradient-to-r from-transparent via-foreground/10 dark:via-white/10 to-transparent" />
 
         <div className="grid grid-cols-2 gap-2.5">
-          <div className="rounded-[0.85rem] border border-white/7 bg-white/[0.02] px-3 py-2.5">
-            <p className="font-mono text-[7px] uppercase tracking-[0.28em] text-muted-foreground/55">
+          <div className="rounded-[0.85rem] border border-border bg-foreground/[0.02] dark:bg-white/[0.02] px-3 py-2.5">
+            <p className="font-mono text-[7px] uppercase tracking-[0.28em] text-muted-foreground">
               Location
             </p>
-            <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.2em] text-foreground/76">
+            <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.2em] text-foreground">
               Ahmedabad, India
             </p>
           </div>
-          <div className="rounded-[0.85rem] border border-white/7 bg-white/[0.02] px-3 py-2.5 text-right">
-            <p className="font-mono text-[7px] uppercase tracking-[0.28em] text-muted-foreground/55">
+          <div className="rounded-[0.85rem] border border-border bg-foreground/[0.02] dark:bg-white/[0.02] px-3 py-2.5 text-right">
+            <p className="font-mono text-[7px] uppercase tracking-[0.28em] text-muted-foreground">
               Status
             </p>
             <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.2em] text-primary">
@@ -112,7 +115,7 @@ export function IDCardUI({ isDragging, innerRef }: IDCardUIProps) {
         </div>
       </div>
 
-      <div className="pointer-events-none absolute inset-x-5 bottom-0 h-6 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,0.16))]" />
+      <div className="pointer-events-none absolute inset-x-5 bottom-0 h-6 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,0.04))] dark:bg-[linear-gradient(180deg,transparent,rgba(0,0,0,0.16))]" />
     </div>
   );
 }

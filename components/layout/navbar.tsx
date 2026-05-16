@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import gsap from "gsap";
+import { ThemeSwitch } from "@/components/theme-switch";
 
 const NAV = [
   { label: "Work",        href: "/projects"     },
@@ -94,8 +95,9 @@ export function Navbar() {
           ))}
         </nav>
 
-        {/* Hire me CTA */}
-        <div className="hidden md:block">
+        {/* Actions (Desktop) */}
+        <div className="hidden md:flex items-center gap-4">
+          <ThemeSwitch />
           <Link
             href="/contact"
             data-cursor="hover"
@@ -105,16 +107,19 @@ export function Navbar() {
           </Link>
         </div>
 
-        {/* Mobile burger */}
-        <button
-          className="md:hidden flex flex-col gap-1.5 p-2 z-50"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle menu"
-        >
-          <motion.span animate={{ rotate: menuOpen ? 45 : 0, y: menuOpen ? 8 : 0 }} transition={{ duration: 0.3 }} className="block w-6 h-[1.5px] bg-foreground" />
-          <motion.span animate={{ opacity: menuOpen ? 0 : 1, scaleX: menuOpen ? 0 : 1 }} transition={{ duration: 0.2 }} className="block w-6 h-[1.5px] bg-foreground" />
-          <motion.span animate={{ rotate: menuOpen ? -45 : 0, y: menuOpen ? -8 : 0 }} transition={{ duration: 0.3 }} className="block w-6 h-[1.5px] bg-foreground" />
-        </button>
+        {/* Mobile controls */}
+        <div className="md:hidden flex items-center gap-4">
+          <ThemeSwitch />
+          <button
+            className="flex flex-col gap-1.5 p-2 z-50"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
+          >
+            <motion.span animate={{ rotate: menuOpen ? 45 : 0, y: menuOpen ? 8 : 0 }} transition={{ duration: 0.3 }} className="block w-6 h-[1.5px] bg-foreground" />
+            <motion.span animate={{ opacity: menuOpen ? 0 : 1, scaleX: menuOpen ? 0 : 1 }} transition={{ duration: 0.2 }} className="block w-6 h-[1.5px] bg-foreground" />
+            <motion.span animate={{ rotate: menuOpen ? -45 : 0, y: menuOpen ? -8 : 0 }} transition={{ duration: 0.3 }} className="block w-6 h-[1.5px] bg-foreground" />
+          </button>
+        </div>
       </motion.header>
 
       {/* Mobile overlay */}

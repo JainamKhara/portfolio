@@ -49,13 +49,13 @@ export function CustomCursor() {
       height:        "7px",
       marginLeft:    "-3.5px",
       marginTop:     "-3.5px",
-      background:    "#6C47FF",
+      background:    "#D9281C",
       borderRadius:  "50%",
       pointerEvents: "none",
       zIndex:        "99999",
       opacity:       "0",
       willChange:    "transform, opacity",
-      boxShadow:     "0 0 8px rgba(108,71,255,0.5)",
+      boxShadow:     "0 0 8px rgba(217, 40, 28, 0.5)",
     } as CSSStyleDeclaration);
 
     /* ── Initialise ring ── */
@@ -67,7 +67,7 @@ export function CustomCursor() {
       height:        "30px",
       marginLeft:    "-15px",
       marginTop:     "-15px",
-      border:        "1.5px solid rgba(108,71,255,0.7)",
+      border:        "1.5px solid rgba(217, 40, 28, 0.7)",
       borderRadius:  "50%",
       background:    "transparent",
       pointerEvents: "none",
@@ -85,7 +85,7 @@ export function CustomCursor() {
         Object.assign(ring.style, {
           width: "48px", height: "48px",
           marginLeft: "-24px", marginTop: "-24px",
-          background: "rgba(108,71,255,0.08)",
+          background: "rgba(217, 40, 28, 0.08)",
         });
       } else {
         Object.assign(ring.style, {

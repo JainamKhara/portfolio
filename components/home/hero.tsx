@@ -177,7 +177,7 @@ export function Hero() {
                 style={{
                   fontSize: "clamp(4.5rem,12vw,10rem)",
                   color: "transparent",
-                  WebkitTextStroke: "1.5px #6C47FF",
+                  WebkitTextStroke: "1.5px #D9281C",
                 }}
                 initial={{ y: "108%" }}
                 animate={{ y: "0%" }}
@@ -270,7 +270,7 @@ export function Hero() {
               className={`inline-block px-3 font-mono text-[10px] tracking-widest ${
                 item === "·"
                   ? "text-primary/30"
-                  : "text-muted-foreground/35 uppercase"
+                  : "text-muted-foreground/70 uppercase"
               }`}
             >
               {item}

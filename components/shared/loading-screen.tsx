@@ -31,7 +31,7 @@ class Particle {
     this.vx = (Math.random() - 0.5) * 3;
     this.vy = (Math.random() - 0.5) * 3;
     this.size = Math.random() * 2.0 + 0.8; // Slightly smaller for crisper text
-    this.color = "#8A66FF"; // Brighter purple
+    this.color = "#D9281C"; // Vermilion
   }
 
   update(stage: Stage, laserY: number, mouseX: number, mouseY: number) {
@@ -223,7 +223,7 @@ export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
         
         // Laser glow
         ctx.shadowBlur = 15;
-        ctx.shadowColor = "#6C47FF";
+        ctx.shadowColor = "#D9281C";
         ctx.stroke();
         ctx.shadowBlur = 0;
       }
@@ -294,7 +294,7 @@ export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
               <div className="max-w-xs">
                 <div className="h-1.5 w-64 bg-white/10 overflow-hidden rounded-full mb-3">
                   <motion.div 
-                    className="h-full bg-primary shadow-[0_0_10px_rgba(108,71,255,0.8)]"
+                    className="h-full bg-primary shadow-[0_0_10px_rgba(217,40,28,0.8)]"
                     animate={{ width: `${progress}%` }}
                   />
                 </div>

@@ -536,15 +536,15 @@ export function IDCard() {
       >
         <defs>
           <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#2a1d47" />
-            <stop offset="20%" stopColor="#412b69" />
-            <stop offset="52%" stopColor="#6147c0" />
-            <stop offset="80%" stopColor="#39265f" />
-            <stop offset="100%" stopColor="#21162f" />
+            <stop offset="0%" stopColor="#4A0B09" />
+            <stop offset="20%" stopColor="#8A1310" />
+            <stop offset="52%" stopColor="#D9281C" />
+            <stop offset="80%" stopColor="#A31C14" />
+            <stop offset="100%" stopColor="#4A0B09" />
           </linearGradient>
           <linearGradient id={edgeGradientId} x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="rgba(250,247,255,0.38)" />
-            <stop offset="26%" stopColor="rgba(219,205,255,0.12)" />
+            <stop offset="0%" stopColor="rgba(255,230,230,0.38)" />
+            <stop offset="26%" stopColor="rgba(255,200,200,0.12)" />
             <stop offset="100%" stopColor="rgba(255,255,255,0)" />
           </linearGradient>
           <linearGradient
@@ -588,18 +588,7 @@ export function IDCard() {
           </filter>
         </defs>
 
-        <path
-          fill="none"
-          d={
-            layoutState.stageWidth
-              ? `M ${layoutState.anchorX} ${layoutState.anchorY} L ${layoutState.anchorX} ${layoutState.stageHeight}`
-              : ""
-          }
-          stroke="rgba(8,8,12,0.45)"
-          strokeWidth="42"
-          strokeLinecap="round"
-          opacity="0.22"
-        />
+
         <path
           id={strapPathId}
           ref={strapRef}
@@ -619,30 +608,7 @@ export function IDCard() {
           strokeLinejoin="round"
           opacity="0.32"
         />
-        <path
-          fill="none"
-          d={
-            layoutState.stageWidth
-              ? `M ${layoutState.anchorX} ${layoutState.anchorY} L ${layoutState.anchorX} ${layoutState.stageHeight}`
-              : ""
-          }
-          stroke={`url(#${gradientId}-inner)`}
-          strokeWidth="10"
-          strokeLinecap="round"
-          opacity="0.62"
-        />
-        <path
-          fill="none"
-          d={
-            layoutState.stageWidth
-              ? `M ${layoutState.anchorX} ${layoutState.anchorY} L ${layoutState.anchorX} ${layoutState.stageHeight}`
-              : ""
-          }
-          stroke={`url(#${gradientId}-lane)`}
-          strokeWidth="9.8"
-          strokeLinecap="round"
-          opacity="0.98"
-        />
+
         <path
           ref={strapStitchRef}
           fill="none"
@@ -670,18 +636,7 @@ export function IDCard() {
           opacity="0.88"
           transform="translate(4.9 0)"
         />
-        <path
-          fill="none"
-          d={
-            layoutState.stageWidth
-              ? `M ${layoutState.anchorX} ${layoutState.anchorY} L ${layoutState.anchorX} ${layoutState.stageHeight}`
-              : ""
-          }
-          stroke="rgba(12,8,18,0.24)"
-          strokeWidth="28"
-          strokeLinecap="round"
-          opacity="0.3"
-        />
+
         <text
           fill="rgba(255, 252, 244, 1)"
           stroke="rgba(11, 8, 16, 1)"
@@ -713,20 +668,20 @@ export function IDCard() {
       >
         <div className="mx-auto h-2.5 w-10 rounded-full bg-primary/10 blur-md" />
         <div className="relative mx-auto mt-0 flex w-[5.2rem] flex-col items-center">
-          <div className="absolute -top-1 h-4.5 w-4.5 rounded-full border border-white/10 bg-[radial-gradient(circle_at_35%_30%,rgba(255,255,255,0.88),rgba(171,138,255,0.88)_42%,rgba(58,34,114,0.96)_100%)] shadow-[0_7px_14px_rgba(8,8,16,0.32)]" />
+          <div className="absolute -top-1 h-4.5 w-4.5 rounded-full border border-white/10 bg-[radial-gradient(circle_at_35%_30%,rgba(255,255,255,0.88),rgba(80,80,80,0.88)_42%,rgba(10,10,10,0.96)_100%)] shadow-[0_7px_14px_rgba(8,8,16,0.32)]" />
           <div
             ref={mountSwingRef}
             className="relative mt-[0.45rem] flex flex-col items-center origin-top transition-transform duration-75 ease-out"
           >
-            <div className="h-[0.42rem] w-[0.18rem] rounded-full bg-[linear-gradient(180deg,rgba(240,235,255,0.94)_0%,rgba(105,77,196,0.9)_100%)]" />
-            <div className="relative mt-[0.18rem] h-[0.92rem] w-full rounded-[999px] border border-white/12 bg-[linear-gradient(180deg,rgba(244,238,255,0.98)_0%,rgba(205,188,243,0.92)_30%,rgba(88,63,177,0.95)_100%)] shadow-[0_7px_14px_rgba(6,6,12,0.28)]">
-              <div className="absolute left-1/2 top-1/2 h-[0.22rem] w-[3rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[linear-gradient(180deg,rgba(30,22,48,0.96)_0%,rgba(11,9,18,1)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]" />
+            <div className="h-[0.42rem] w-[0.18rem] rounded-full bg-[linear-gradient(180deg,rgba(200,200,200,0.94)_0%,rgba(30,30,30,0.9)_100%)]" />
+            <div className="relative mt-[0.18rem] h-[0.92rem] w-full rounded-[999px] border border-white/12 bg-[linear-gradient(180deg,rgba(220,220,220,0.98)_0%,rgba(120,120,120,0.92)_30%,rgba(20,20,20,0.95)_100%)] shadow-[0_7px_14px_rgba(6,6,12,0.28)]">
+              <div className="absolute left-1/2 top-1/2 h-[0.22rem] w-[3rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[linear-gradient(180deg,rgba(10,10,10,0.96)_0%,rgba(5,5,5,1)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]" />
               <div className="absolute left-1/2 top-1/2 h-[0.06rem] w-[1.7rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/12" />
               <div className="absolute inset-x-3 top-[0.11rem] h-px bg-white/65" />
             </div>
-            <div className="relative mt-[0.16rem] flex h-[0.34rem] w-[1.5rem] items-center justify-center rounded-full bg-[linear-gradient(180deg,rgba(238,231,255,0.96)_0%,rgba(118,88,218,0.92)_100%)] shadow-[0_4px_8px_rgba(8,8,14,0.24)]">
-              <div className="h-[0.08rem] w-[0.78rem] rounded-full bg-[rgba(21,15,34,0.7)]" />
-              <div className="absolute left-1/2 top-full h-[0.42rem] w-[0.16rem] -translate-x-1/2 rounded-full bg-[linear-gradient(180deg,rgba(171,139,255,0.95)_0%,rgba(78,53,164,0.94)_100%)]" />
+            <div className="relative mt-[0.16rem] flex h-[0.34rem] w-[1.5rem] items-center justify-center rounded-full bg-[linear-gradient(180deg,rgba(200,200,200,0.96)_0%,rgba(40,40,40,0.92)_100%)] shadow-[0_4px_8px_rgba(8,8,14,0.24)]">
+              <div className="h-[0.08rem] w-[0.78rem] rounded-full bg-[rgba(10,10,10,0.7)]" />
+              <div className="absolute left-1/2 top-full h-[0.42rem] w-[0.16rem] -translate-x-1/2 rounded-full bg-[linear-gradient(180deg,rgba(100,100,100,0.95)_0%,rgba(15,15,15,0.94)_100%)]" />
             </div>
           </div>
         </div>
