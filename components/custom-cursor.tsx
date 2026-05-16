@@ -126,21 +126,21 @@ export function CustomCursor() {
     tick();
 
     /* ── Event listeners ── */
-    function onMove(e: MouseEvent) {
+    function onMove(e: PointerEvent) {
       mouseX = e.clientX;
       mouseY = e.clientY;
       alphaTarget = 1;
       const t = e.target as HTMLElement;
-      setHoverState(!!t.closest("a, button, [data-cursor='hover']"));
+      setHoverState(!!(t && t.closest && t.closest("a, button, [data-cursor='hover']")));
     }
 
-    document.addEventListener("mousemove", onMove);
-    document.documentElement.addEventListener("mouseleave", () => { alphaTarget = 0; });
-    document.documentElement.addEventListener("mouseenter", () => { alphaTarget = 1; });
+    window.addEventListener("pointermove", onMove, { capture: true });
+    window.addEventListener("mouseleave", () => { alphaTarget = 0; });
+    window.addEventListener("mouseenter", () => { alphaTarget = 1; });
 
     return () => {
       cancelAnimationFrame(rafId);
-      document.removeEventListener("mousemove", onMove);
+      window.removeEventListener("pointermove", onMove, { capture: true });
     };
   }, [visible]);
 

@@ -10,7 +10,7 @@ import {
 } from "react";
 import { IDCardUI } from "./id-card-ui";
 
-const ATTACHMENT_OFFSET_Y = 20;
+const ATTACHMENT_OFFSET_Y = 28;
 const ANCHOR_Y = 18;
 const SIDE_ALLOWANCE = 20;
 const BOTTOM_PADDING = 24;
@@ -521,7 +521,7 @@ export function IDCard() {
     <div
       ref={stageRef}
       className="relative h-full w-full overflow-visible"
-      style={{ touchAction: "none" }}
+      style={{ touchAction: isMobile ? "pan-y" : "none" }}
     >
       <div
         aria-hidden
@@ -695,6 +695,7 @@ export function IDCard() {
           opacity: 0,
           transformOrigin: `50% ${ATTACHMENT_OFFSET_Y}px`,
           transformStyle: "preserve-3d",
+          touchAction: isMobile ? "pan-y" : "none",
         }}
         onPointerDown={handlePointerDown}
       >

@@ -47,7 +47,7 @@ export function CertificateCard({
         </CardHeader>
 
         <CardContent className="flex-1 flex flex-col justify-end">
-          <p className="text-sm text-muted-foreground">{date}</p>
+          <p className="text-sm text-foreground/70">{date}</p>
         </CardContent>
       </Card>
     </Link>

@@ -94,7 +94,7 @@ export default function ExperiencePage() {
       {/* Page hero */}
       <div className="relative border-b border-border overflow-hidden">
         <div aria-hidden className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <span className="font-display font-black text-[16vw] text-foreground/[0.015] leading-none select-none">
+          <span className="font-display font-black text-[20vw] text-foreground/[0.015] leading-none select-none">
             EXP
           </span>
         </div>
@@ -105,7 +105,7 @@ export default function ExperiencePage() {
             03 / Experience
           </motion.p>
           <h1 ref={titleRef}
-            className="font-display font-black text-[clamp(3.5rem,10vw,8rem)] leading-none tracking-tight mb-6">
+            className="font-display font-black text-[clamp(4rem,12vw,10rem)] leading-none tracking-tight mb-6">
             ██████████
           </h1>
           <div className="glow-line" />
@@ -155,7 +155,7 @@ export default function ExperiencePage() {
                         <h3 className="font-display font-bold text-xl leading-tight group-hover:text-primary transition-colors duration-300">
                           {exp.title}
                         </h3>
-                        <p className="font-mono text-xs text-muted-foreground mt-0.5">
+                        <p className="font-mono text-xs text-foreground/60 mt-0.5">
                           {exp.company} · {exp.location}
                         </p>
                       </div>
@@ -167,14 +167,14 @@ export default function ExperiencePage() {
 
                     <ul className="space-y-1.5 mb-4">
                       {exp.achievements.slice(0, 2).map((a, ai) => (
-                        <li key={ai} className="flex gap-2 text-sm text-muted-foreground">
+                        <li key={ai} className="flex gap-2 text-sm text-foreground/70">
                           <span className="text-primary mt-0.5 shrink-0">›</span>
                           {a}
                         </li>
                       ))}
                     </ul>
 
-                    <p className="font-mono text-xs text-muted-foreground/60">
+                    <p className="font-mono text-xs text-foreground/50">
                       {exp.startDate} — {exp.endDate ?? "Present"}
                     </p>
                   </div>
@@ -184,7 +184,7 @@ export default function ExperiencePage() {
                 <div className={`hidden md:flex items-start md:w-[calc(50%-2rem)] ${
                   i % 2 === 0 ? "justify-start pl-8" : "justify-end pr-8"
                 }`}>
-                  <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground/50 pt-5">
+                  <span className="font-mono text-xs uppercase tracking-widest text-foreground/40 pt-5">
                     {exp.startDate}
                   </span>
                 </div>

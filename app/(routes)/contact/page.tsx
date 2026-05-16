@@ -42,7 +42,7 @@ export default function ContactPage() {
         />
 
         <div aria-hidden className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <span className="font-display font-black text-[18vw] text-foreground/[0.02] uppercase leading-none">
+          <span className="font-display font-black text-[20vw] text-foreground/[0.015] uppercase leading-none">
             TALK
           </span>
         </div>
@@ -56,7 +56,7 @@ export default function ContactPage() {
           Let&apos;s Connect
         </motion.p>
 
-        <h1 ref={titleRef} className="font-display font-black text-[clamp(3rem,9vw,7rem)] leading-none tracking-tight mb-8">
+        <h1 ref={titleRef} className="font-display font-black text-[clamp(4rem,12vw,10rem)] leading-none tracking-tight mb-8">
           ███████
         </h1>
 

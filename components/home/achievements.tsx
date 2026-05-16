@@ -65,7 +65,7 @@ export function Achievements() {
                 {m.count}
               </p>
               <p className="font-semibold text-foreground mb-3">{m.label}</p>
-              <p className="text-sm text-muted-foreground leading-relaxed">{m.desc}</p>
+              <p className="text-sm text-foreground/80 leading-relaxed">{m.desc}</p>
 
               {/* Animated bottom gold bar */}
               <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-primary group-hover:w-full transition-all duration-700" />

@@ -57,7 +57,7 @@ export function FeaturedProjects() {
         <Link
           href="/projects"
           data-cursor="hover"
-          className="hidden md:inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors duration-300 mb-2"
+          className="hidden md:inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-foreground/60 hover:text-primary transition-colors duration-300 mb-2"
         >
           All work <ArrowUpRight className="h-3.5 w-3.5" />
         </Link>
@@ -95,7 +95,7 @@ export function FeaturedProjects() {
 
                 <div className="relative z-10 py-6 flex items-center gap-4 md:gap-6">
                   {/* Index */}
-                  <span className="font-mono text-[11px] text-muted-foreground/70 w-6 shrink-0">
+                  <span className="font-mono text-[11px] text-foreground/50 w-6 shrink-0">
                     {String(i + 1).padStart(2, "0")}
                   </span>
 
@@ -117,7 +117,7 @@ export function FeaturedProjects() {
                     {project.technologies.slice(0, 3).map((t) => (
                       <span
                         key={t}
-                        className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 border border-border text-muted-foreground/80"
+                        className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 border border-border text-foreground/70"
                       >
                         {t}
                       </span>
@@ -165,7 +165,7 @@ export function FeaturedProjects() {
 
                         {/* Right: essentials only */}
                         <div className="flex flex-col gap-4 flex-1 pt-1">
-                          <p className="text-sm text-muted-foreground leading-relaxed max-w-[55ch]">
+                          <p className="text-sm text-foreground/80 leading-relaxed max-w-[55ch]">
                             {project.description}
                           </p>
 

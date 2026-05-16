@@ -103,23 +103,23 @@ function ExperienceCard({ exp }: { exp: (typeof experiences)[0] }) {
             {exp.company}
           </p>
         </div>
-        <span className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground bg-muted px-2 py-1 shrink-0">
+        <span className="font-mono text-[9px] uppercase tracking-wider text-foreground/60 bg-muted px-2 py-1 shrink-0">
           {exp.startDate.split(" ").pop()} – {exp.endDate.split(" ").pop()}
         </span>
       </div>
 
-      <div className="flex items-center gap-1 text-muted-foreground mb-4">
+      <div className="flex items-center gap-1 text-foreground/70 mb-4">
         <MapPin className="h-3 w-3 shrink-0" />
         <span className="font-mono text-[10px]">{exp.location}</span>
       </div>
 
-      <p className="text-sm text-muted-foreground leading-relaxed mb-4">{exp.description}</p>
+      <p className="text-sm text-foreground/80 leading-relaxed mb-4">{exp.description}</p>
 
       <div className="space-y-2 border-t border-border pt-4">
         {exp.achievements.slice(0, 2).map((a, i) => (
           <div key={i} className="flex items-start gap-2">
             <ArrowRight className="h-3 w-3 text-primary shrink-0 mt-1" />
-            <span className="text-xs text-muted-foreground leading-relaxed">{a}</span>
+            <span className="text-xs text-foreground/80 leading-relaxed">{a}</span>
           </div>
         ))}
       </div>

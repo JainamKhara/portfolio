@@ -107,7 +107,7 @@ function ProjectCard({
           </Link>
         </div>
 
-        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 mb-4">
+        <p className="text-sm text-foreground/80 leading-relaxed line-clamp-2 mb-4">
           {project.description}
         </p>
 
@@ -115,7 +115,7 @@ function ProjectCard({
           {project.technologies.slice(0, 4).map((t) => (
             <span
               key={t}
-              className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 border border-border text-muted-foreground"
+              className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 border border-border text-foreground/70"
             >
               {t}
             </span>
@@ -154,7 +154,7 @@ export default function ProjectsPage() {
       {/* ── Page Hero ── */}
       <div className="relative min-h-[40vh] flex flex-col justify-end pt-28 pb-16 px-6 md:px-12 lg:px-20 border-b border-border overflow-hidden">
         <div aria-hidden className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <span className="font-display font-black text-[16vw] text-foreground/[0.02] uppercase leading-none">
+          <span className="font-display font-black text-[20vw] text-foreground/[0.015] leading-none select-none">
             WORK
           </span>
         </div>
@@ -162,7 +162,7 @@ export default function ProjectsPage() {
         <motion.p className="section-label mb-4" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}>
           Selected Work
         </motion.p>
-        <h1 ref={titleRef} className="font-display font-black text-[clamp(3rem,9vw,7rem)] leading-none tracking-tight mb-8">
+        <h1 ref={titleRef} className="font-display font-black text-[clamp(4rem,12vw,10rem)] leading-none tracking-tight mb-8">
           ████████
         </h1>
         <div className="glow-line" />

@@ -11,8 +11,9 @@ import { SmoothScrollProvider } from "@/components/shared/smooth-scroll-provider
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LoadingScreen } from "@/components/shared/loading-screen";
+import { LoadingProvider, useLoading } from "@/lib/loading-context";
 
 const CustomCursor = dynamic(
   () => import("@/components/custom-cursor").then((mod) => mod.CustomCursor),
@@ -39,10 +40,7 @@ const fontMono = JetBrains_Mono({
 });
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
-  const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => { setMounted(true); }, []);
 
   return (
     <html lang="en" suppressHydrationWarning className="dark">
@@ -56,32 +54,65 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
-          {loading && <LoadingScreen onComplete={() => setLoading(false)} />}
-
-          {/* Grain texture */}
-          <div className="grain" aria-hidden="true" />
-
-          {/* Custom cursor (desktop only) */}
-          {mounted && <CustomCursor />}
-
-          <SmoothScrollProvider>
-            <div
-              className={cn(
-                "relative flex min-h-screen flex-col transition-opacity duration-700",
-                loading ? "opacity-0 pointer-events-none" : "opacity-100",
-              )}
-            >
-              <Navbar />
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </div>
-            <ScrollToTop />
-            <ScrollProgress />
-            <SpeedInsights />
-            <Analytics />
-          </SmoothScrollProvider>
+          <LoadingProvider>
+            <LayoutContent loading={loading} onComplete={() => setLoading(false)}>
+              {children}
+            </LayoutContent>
+          </LoadingProvider>
         </ThemeProvider>
       </body>
     </html>
   );
 }
+
+function LayoutContent({ 
+  children, 
+  loading, 
+  onComplete 
+}: { 
+  children: React.ReactNode; 
+  loading: boolean; 
+  onComplete: () => void;
+}) {
+  const { setIsLoading } = useLoading();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const handleLoadingComplete = () => {
+    setIsLoading(false);
+    onComplete();
+  };
+
+  return (
+    <>
+      {loading && <LoadingScreen onComplete={handleLoadingComplete} />}
+
+      {/* Grain texture */}
+      <div className="grain" aria-hidden="true" />
+
+      {/* Custom cursor (desktop only) */}
+      {mounted && <CustomCursor />}
+
+      <SmoothScrollProvider>
+        <div
+          className={cn(
+            "relative flex min-h-screen flex-col transition-opacity duration-700",
+            loading ? "opacity-0 pointer-events-none" : "opacity-100",
+          )}
+        >
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </div>
+        <ScrollToTop />
+        <ScrollProgress />
+        <SpeedInsights />
+        <Analytics />
+      </SmoothScrollProvider>
+    </>
+  );
+}
+

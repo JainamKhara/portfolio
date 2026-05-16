@@ -191,14 +191,14 @@ export default function AboutPage() {
               transition={{ duration: 0.6, delay: gi * 0.07 }}
               className="flex flex-col md:flex-row md:items-start gap-4 py-5 border-b border-border last:border-b-0 group hover:bg-card/50 transition-colors duration-300 px-4 -mx-4"
             >
-              <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/50 w-28 shrink-0 pt-0.5">
+              <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/60 w-28 shrink-0 pt-0.5">
                 {group.cat}
               </span>
               <div className="flex flex-wrap gap-2">
                 {group.items.map((skill) => (
                   <span
                     key={skill}
-                    className="font-mono text-[10px] uppercase tracking-widest px-3 py-1.5 border border-border text-foreground/70 hover:border-primary hover:text-primary transition-all duration-300"
+                    className="font-mono text-[10px] uppercase tracking-widest px-3 py-1.5 border border-border text-foreground hover:border-primary hover:text-primary transition-all duration-300"
                     data-cursor="hover"
                   >
                     {skill}

@@ -51,7 +51,7 @@ export default function CertificatesPage() {
       {/* ── Page Hero ── */}
       <div className="relative min-h-[40vh] flex flex-col justify-end pt-28 pb-16 px-6 md:px-12 lg:px-20 border-b border-border overflow-hidden">
         <div aria-hidden className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <span className="font-display font-black text-[13vw] text-foreground/[0.02] uppercase leading-none">
+          <span className="font-display font-black text-[20vw] text-foreground/[0.015] uppercase leading-none">
             CERTS
           </span>
         </div>
@@ -59,7 +59,7 @@ export default function CertificatesPage() {
         <motion.p className="section-label mb-4" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}>
           Credentials
         </motion.p>
-        <h1 ref={titleRef} className="font-display font-black text-[clamp(2.5rem,7vw,6rem)] leading-none tracking-tight mb-8">
+        <h1 ref={titleRef} className="font-display font-black text-[clamp(4rem,12vw,10rem)] leading-none tracking-tight mb-8">
           ████████████
         </h1>
         <div className="glow-line" />
@@ -114,7 +114,7 @@ export default function CertificatesPage() {
 
       {/* ── Grid ── */}
       <div className="px-6 md:px-12 lg:px-20 py-16">
-        <motion.p className="section-label text-muted-foreground mb-8">
+        <motion.p className="section-label text-foreground/60 mb-8">
           {filtered.length} result{filtered.length !== 1 ? "s" : ""}
         </motion.p>
 
@@ -142,7 +142,7 @@ export default function CertificatesPage() {
 
         {filtered.length === 0 && (
           <div className="text-center py-24">
-            <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+            <p className="font-mono text-[11px] uppercase tracking-widest text-foreground/60">
               No certificates match. Try adjusting your search.
             </p>
           </div>
@@ -163,7 +163,7 @@ export default function CertificatesPage() {
               <p className="font-display font-black text-4xl md:text-5xl text-primary mb-2 tabular-nums">
                 {s.value}
               </p>
-              <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{s.label}</p>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-foreground/60">{s.label}</p>
             </motion.div>
           ))}
         </div>

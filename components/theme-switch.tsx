@@ -8,9 +8,13 @@ import { flushSync } from "react-dom";
 export function ThemeSwitch() {
   const { setTheme } = useTheme();
 
-  const toggleTheme = (e: React.MouseEvent) => {
+  const toggleTheme = (e: React.MouseEvent<HTMLButtonElement>) => {
     const isDark = document.documentElement.classList.contains("dark");
     const nextTheme = isDark ? "light" : "dark";
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (!(document as any).startViewTransition) {
@@ -18,8 +22,8 @@ export function ThemeSwitch() {
       return;
     }
 
-    document.documentElement.style.setProperty("--click-x", `${e.clientX}px`);
-    document.documentElement.style.setProperty("--click-y", `${e.clientY}px`);
+    document.documentElement.style.setProperty("--click-x", `${x}px`);
+    document.documentElement.style.setProperty("--click-y", `${y}px`);
     document.documentElement.classList.add("theme-transitioning");
 
     try {
