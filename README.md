@@ -1,238 +1,196 @@
-# Jainam Khara Portfolio
+# 📐 Jainam Khara Portfolio — Cinematic Developer Hub
 
-A cinematic developer portfolio built with Next.js 15, React 19, Tailwind CSS 4, Framer Motion, GSAP, and a custom interactive hero badge/lanyard experience.
+A high-performance, beautifully styled personal portfolio built with **Next.js 15**, **React 19**, **Tailwind CSS 4**, and **Three.js**. The site features a premium "CAD Blueprint & Editorial Brutalist" aesthetic, custom interactive elements, seamless typography animations, a cinematic loading experience, and fluid layouts.
 
-Live website: [https://jainamkhara.vercel.app](https://jainamkhara.vercel.app)
+[![Next.js](https://img.shields.io/badge/Next.js-15.x-000000?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.x-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind-v4.0-06B6D4?style=flat-square&logo=tailwindcss)](https://tailwindcss.com/)
+[![Three.js](https://img.shields.io/badge/Three.js-WebGL-000000?style=flat-square&logo=three.js&logoColor=white)](https://threejs.org/)
 
-## Overview
+🌐 **Live Website**: [https://jainamkhara.app](https://jainamkhara.app)
 
-This project is a personal portfolio for showcasing projects, experience, certificates, skills, and contact information with a strong editorial dark theme. The current build includes a custom animated loading flow, smooth scrolling, a command-palette-driven navigation layer, a bespoke draggable hero ID card, and a contact form backed by a Next.js API route and Resend.
+---
 
-## Features
+## 📖 Project Vision & Design Concept
 
-- Editorial dark-mode-first UI with custom typography, grain texture, and subtle motion
-- Interactive homepage hero with a draggable hanging ID card and animated lanyard strap
-- Scroll progress indicator, scroll-to-top control, and smooth scrolling via Lenis
-- Command palette navigation for fast keyboard-driven movement across the site
-- Custom desktop cursor treatment
-- Loading screen transition before the main layout appears
-- Dedicated pages for:
-  - About
-  - Projects
-  - Experience
-  - Certificates
-  - Contact
-- Dynamic detail pages for projects and certificates
-- Contact form with:
-  - `zod` validation
-  - `react-hook-form` integration
-  - API submission to `/api/contact`
-  - Resend-powered email delivery
-  - success and error states
-- Analytics and performance instrumentation via Vercel Analytics and Speed Insights
-- Responsive layout tuned for desktop, tablet, and mobile
+This portfolio is crafted to feel less like a traditional site and more like an **interactive technical drawing board**. Drawing inspiration from minimalist editorial layouts and mathematical blueprint sheets (CAD), the UI uses precise lines, alignment coordinate labels, clean grids, and subtle motion to showcase visual polish.
 
-## Tech Stack
+### Key Visual Principles
 
-- Framework: Next.js 15 App Router
-- Runtime: React 19
-- Styling: Tailwind CSS 4
-- Motion:
-  - Framer Motion
-  - GSAP
-  - Lenis
-- 3D / canvas:
-  - Three.js
-  - React Three Fiber
-  - Drei
-- Forms and validation:
-  - react-hook-form
-  - zod
-  - @hookform/resolvers
-- UI primitives: Radix UI + custom `shadcn/ui` components
-- Email delivery: Resend
-- Analytics: `@vercel/analytics`, `@vercel/speed-insights`
+* **The Blueprint Aesthetics**: Thin `1px` structural borders, coordinate axes, and technical markers outline every section, creating a structured workspace feel.
+* **Dual Theme Modes**:
+  * **Dark Mode**: A deep `#09090C` canvas with subtle slate gridlines, vermilion highlights, and crisp paper-white lettering.
+  * **Light Mode**: A clean, elegant `#F4F4F3` off-white canvas, ink-black text details, and soft divider elements.
+* **Smooth Scrolling**: Integrated with the Lenis scrolling engine to ensure smooth momentum, easing, and coordinate alignments on scroll.
 
-## Getting Started
+---
 
-### Prerequisites
+## ⚡ Core Interactive Features
 
-- Node.js 18.18+ recommended
-- npm
+### 1. 🪪 Draggable Lanyard & Physics ID Badge
 
-### Installation
+In the hero section of the landing page, users are greeted by a realistic, dynamic digital ID badge suspended from a flexible lanyard strap.
 
-1. Clone the repository:
+* **Realistic Playfulness**: You can grab, toss, and drag the ID badge using your cursor. The badge swings, rebounds, and reacts with realistic gravity and momentum.
+* **Smooth Spring Return**: When you release the card, the lanyard cable acts as a spring, pulling the card back to its natural rest position at the top-center.
 
-   ```bash
-   git clone https://github.com/JainamKhara/portfolio.git
-   cd portfolio
-   ```
+### 2. 🎬 Diagnostics Loader & Boot Screen
 
-2. Install dependencies:
+Before unlocking the homepage, a cinematic diagnostic loading screen runs on mount:
 
-   ```bash
-   npm install
-   ```
+* **Diagnostics Log**: Simulates technical system status reports on screen.
+* **Interactive Particle Wave**: Thousands of floating nodes calculate their coordinates on screen, gathering and converging together to cleanly form the letters of the name `"JAINAM"` before fading away to reveal the portfolio.
 
-3. Create `.env.local` in the project root with:
+### 3. 🎛️ Intelligent Tech Grid with Smart Contrast
 
-   ```bash
-   RESEND_API_KEY=your_resend_api_key
-   ```
+The tech stack skills showcase automatically matches the clean, minimalist blueprint aesthetic using adaptive styling logic:
 
-4. Start the dev server:
+* **Adaptive Contrast**: Icons like **Next.js**, **Express.js**, **Three.js**, **Pandas**, and **GitHub** consist of pure-black silhouettes. In dark mode, these automatically invert to a bright white, while in light mode they sit at a balanced `38%` opacity to match the visual weight of other icons.
+* **Unified Grayscale Hover**: All tech icons render in elegant grayscale by default. Hovering over a card cleanly fades the grayscale away, revealing the vibrant, colored brand identity of each framework.
 
-   ```bash
-   npm run dev
-   ```
+---
 
-5. Open [http://localhost:3000](http://localhost:3000).
+## 🗺️ Tour of the Portfolio Pages
 
-## Available Scripts
+### 🏡 Home Page
 
-- `npm run dev` - start the development server with Turbopack
-- `npm run build` - create a production build
-- `npm run start` - run the production server
-- `npm run lint` - run lint checks
+The primary viewport mounting the coordinate system. It features the interactive ID badge, quick-highlight achievements (Projects completed, experience indicators), a preview carousel of notable creations, and the skills matrix.
 
-## Environment Variables
+### 📁 Projects Hub
 
-The contact form API route uses Resend. Set:
+A complete list of technical projects. It features an interactive grid filtering system, dynamic thumbnail tags, and clean, custom project detail pages highlighting descriptions, core libraries, and live link buttons.
 
-```bash
-RESEND_API_KEY=your_resend_api_key
-```
+### 💼 Experience Timeline
 
-Without this value, the contact API returns a configuration error instead of attempting delivery.
+A detailed career archive. It uses a vertical timeline grid to map roles, company metrics, accomplishments, and career growth landmarks in a clean, easily readable system.
 
-## Project Structure
+### 🎓 Certificates Archive
+
+A catalog of verified professional credentials. Clicking any certificate displays a dynamic showcase detailing the credentials, completion dates, and issuing bodies.
+
+### 📝 Contact Desk
+
+A functional, validation-secured inbox portal:
+
+* Built with `react-hook-form` and `zod` for real-time field error indicators.
+* Connected to a secure server API endpoint.
+* Delivers messages directly to the portfolio owner using the **Resend API**.
+
+---
+
+## 🛠️ Technology Stack Overview
+
+* **Framework**: Next.js 15 (App Router)
+* **Runtime**: React 19
+* **Styling**: Tailwind CSS 4
+* **Motion Physics**: Framer Motion & GSAP (GreenSock)
+* **3D Canvas**: Three.js & React Three Fiber (R3F)
+* **Scrolling**: Lenis Scroll Engine
+* **Form Verification**: React Hook Form & Zod
+* **Mail Delivery**: Resend SDK
+
+---
+
+## 📂 Codebase Directory Map
 
 ```text
 ├── app/
 │   ├── (routes)/
-│   │   ├── about/
-│   │   ├── certificates/
-│   │   ├── contact/
-│   │   ├── experience/
-│   │   └── projects/
+│   │   ├── about/            # Profile page
+│   │   ├── certificates/     # Verified certificates showcase
+│   │   │   └── [slug]/       # Dynamic certification page
+│   │   ├── contact/          # Resend contact form
+│   │   ├── experience/       # Career timeline page
+│   │   └── projects/         # Extensive project catalog
+│   │       └── [slug]/       # Dynamic project showcase page
 │   ├── api/
-│   │   └── contact/
-│   ├── client-layout.tsx
-│   ├── globals.css
-│   ├── layout.tsx
-│   ├── metadata.ts
-│   └── page.tsx
+│   │   └── contact/          # Resend back-channel email API handler
+│   ├── client-layout.tsx     # Theme provider & Lenis smooth scroll bindings
+│   ├── globals.css           # Global custom fonts & custom styles
+│   ├── layout.tsx            # Main HTML layout
+│   └── page.tsx              # Home landing viewport
 ├── components/
-│   ├── certificates/
-│   ├── contact/
-│   ├── experience/
+│   ├── certificates/         # Components specific to credentials
+│   ├── contact/              # Interactive Zod contact form
+│   ├── experience/           # Timeline and achievements nodes
 │   ├── home/
-│   │   ├── hero.tsx
-│   │   ├── id-card.tsx
-│   │   ├── id-card-ui.tsx
-│   │   ├── achievements.tsx
-│   │   ├── featured-projects.tsx
-│   │   ├── skills-showcase.tsx
-│   │   └── testimonials.tsx
+│   │   ├── achievements.tsx  # Interactive stats block grid
+│   │   ├── featured-projects.tsx # Highlighted projects section
+│   │   ├── hero.tsx          # Homepage landing hero component
+│   │   ├── id-card-ui.tsx    # Front graphics of the ID badge
+│   │   ├── id-card.tsx       # Lanyard Verlet physics simulation
+│   │   ├── skills-showcase.tsx # Skills matrix catalog
+│   │   └── testimonials.tsx  # Slider detailing recommendations
 │   ├── layout/
-│   ├── projects/
-│   ├── shared/
-│   └── ui/
-├── data/
-│   ├── certificates.ts
-│   ├── education.ts
-│   ├── experience.ts
-│   ├── projects.ts
-│   ├── skills.ts
-│   └── social.ts
-├── lib/
-│   ├── animations.ts
-│   ├── gsap.ts
-│   └── utils.ts
-├── public/
-│   ├── fonts/
-│   ├── images/
-│   ├── Jainam_Khara_CV.pdf
-│   └── blackhole.webm
-└── package.json
+│   │   ├── footer.tsx        # Technical bottom bar
+│   │   └── navbar.tsx        # Top navigation & theme switch toggles
+│   ├── projects/             # Card & dynamic details components
+│   ├── shared/               # Modular components (magnetic triggers, loading screen, etc.)
+│   └── ui/                   # High-end design system primitives (shadcn UI)
+├── data/                     # Local data models (skills, projects, timeline, socials)
+├── lib/                      # Math utilities, GSAP configurations
+├── public/                   # Vector logo assets, PDF CV, video previews
+└── package.json              # Project dependencies and script declarations
 ```
 
-## Key Implementation Notes
+---
 
-- The hero ID card is a custom DOM/SVG interaction, not a generic draggable card.
-- The lanyard physics are implemented in the hero component layer and tuned for release swing + return-to-rest motion.
-- The star background canvas still uses React Three Fiber / Drei.
-- The root client layout sets the site to dark mode by default and disables system theme switching.
-- The contact flow is server-backed through `app/api/contact/route.ts`.
+## 🚀 Local Installation & Set-Up
 
-## Customization
+Setting up the project locally is fast and straightforward.
 
-### Content
+### Prerequisites
 
-Update these files to change portfolio content:
+* Ensure **Node.js** (v18.18+ or v20+) is installed on your computer.
 
-- `data/projects.ts`
-- `data/experience.ts`
-- `data/certificates.ts`
-- `data/skills.ts`
-- `data/social.ts`
-- `data/education.ts`
-
-### Hero / Branding
-
-If you want to rework the main visual identity:
-
-- `components/home/hero.tsx` controls the homepage hero composition
-- `components/home/id-card.tsx` controls the lanyard behavior and strap visuals
-- `components/home/id-card-ui.tsx` controls the badge face
-
-### Contact
-
-To change contact delivery behavior:
-
-- `components/contact/contact-form.tsx` controls client-side UX
-- `app/api/contact/route.ts` controls server-side validation and Resend delivery
-
-### Styling
-
-Core theme and layout styling live in:
-
-- `app/globals.css`
-- `tailwind.config.js`
-- `components/ui/*`
-
-## Deployment
-
-The project is optimized for Vercel, but it can run anywhere that supports Next.js.
-
-### Vercel
-
-1. Push the repository to GitHub.
-2. Import the project in Vercel.
-3. Add `RESEND_API_KEY` in the project environment settings.
-4. Deploy.
-
-### Other Platforms
-
-Build and run with:
+### 1. Clone & Enter
 
 ```bash
-npm run build
-npm run start
+git clone https://github.com/JainamKhara/portfolio.git
+cd portfolio
 ```
 
-Refer to the official [Next.js deployment docs](https://nextjs.org/docs/app/building-your-application/deploying).
+### 2. Install Project Libraries
 
-## Credits
+```bash
+npm install
+```
 
-- UI primitives: [Radix UI](https://www.radix-ui.com/)
-- Component patterns: [shadcn/ui](https://ui.shadcn.com/)
-- Motion: [Framer Motion](https://www.framer.com/motion/) and [GSAP](https://gsap.com/)
-- Smooth scrolling: [Lenis](https://lenis.darkroom.engineering/)
-- 3D background: [Three.js](https://threejs.org/), [React Three Fiber](https://r3f.docs.pmnd.rs/), and [Drei](https://github.com/pmndrs/drei)
-- Email delivery: [Resend](https://resend.com/)
+### 3. Add Environment Variables
 
-## License
+Create a file named `.env.local` in the project root folder:
 
-This repository is available for personal and educational reference. If you reuse it, replace personal content and branding with your own.
+```env
+# Add Resend API Key to handle email submissions
+RESEND_API_KEY=your_resend_api_key_here
+```
+
+### 4. Run the Site
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your web browser.
+
+---
+
+## 🌟 Show Your Support
+
+If you find this project useful or inspiring, please consider giving it a ⭐️ on [GitHub](https://github.com/JainamKhara/portfolio)! It helps others discover this high-performance technical blueprint portfolio.
+
+---
+
+## 📬 Connect & Collaborate
+
+Have a project idea, want to collaborate, or just want to chat about developer interfaces? Feel free to reach out:
+
+* **Email**: [kharajaynam0@gmail.com](mailto:kharajaynam0@gmail.com)
+* **LinkedIn**: [Jainam Khara](https://linkedin.com/in/jainamkhara)
+* **GitHub**: [@JainamKhara](https://github.com/JainamKhara)
+
+---
+
+## 📄 License
+
+Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
