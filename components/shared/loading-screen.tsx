@@ -190,7 +190,7 @@ export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
       }
 
       // Draw background grid (faint)
-      ctx.strokeStyle = "rgba(108, 71, 255, 0.05)";
+      ctx.strokeStyle = "rgba(217, 40, 28, 0.04)";
       ctx.lineWidth = 1;
       const step = 40;
       for (let x = 0; x < canvas.width; x += step) {
@@ -215,7 +215,7 @@ export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
       // Draw Laser
       if (currentStageRef.current === "BOOT" || currentStageRef.current === "COALESCE") {
         ctx.beginPath();
-        ctx.strokeStyle = "rgba(108, 71, 255, 0.5)";
+        ctx.strokeStyle = "rgba(217, 40, 28, 0.6)";
         ctx.lineWidth = 2;
         ctx.moveTo(0, laserYRef.current);
         ctx.lineTo(canvas.width, laserYRef.current);
@@ -236,8 +236,8 @@ export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
           canvas.width / 2, canvas.height / 2, irisSizeRef.current * 0.8,
           canvas.width / 2, canvas.height / 2, irisSizeRef.current
         );
-        gradient.addColorStop(0, "rgba(108, 71, 255, 0)");
-        gradient.addColorStop(0.5, "rgba(108, 71, 255, 0.3)");
+        gradient.addColorStop(0, "rgba(217, 40, 28, 0)");
+        gradient.addColorStop(0.5, "rgba(217, 40, 28, 0.4)");
         gradient.addColorStop(1, "white");
         
         ctx.fillStyle = gradient;

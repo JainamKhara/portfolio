@@ -20,24 +20,163 @@ export function Hero() {
   const containerRef = useRef<HTMLElement>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
   const nameLineRef = useRef<HTMLDivElement>(null);
+  const watermarkRef = useRef<HTMLDivElement>(null);
+  const btn1Ref = useRef<HTMLDivElement>(null);
+  const btn2Ref = useRef<HTMLDivElement>(null);
+  const tickerStripRef = useRef<HTMLDivElement>(null);
   const { isLoading } = useLoading();
 
-  /* GSAP: Infinite Ticker */
+  /* GSAP: Infinite Ticker with Dynamic Hover Friction */
   useGSAP(
     () => {
-      if (!tickerRef.current || isLoading) return;
+      if (!tickerRef.current || !tickerStripRef.current || isLoading) return;
       const ticker = tickerRef.current;
-      // Use 1/3 since we render 3 sets
+      const strip = tickerStripRef.current;
       const scrollWidth = ticker.scrollWidth / 3;
 
-      gsap.to(ticker, {
+      const scrollAnim = gsap.to(ticker, {
         x: -scrollWidth,
         duration: 40,
         ease: "none",
         repeat: -1,
       });
+
+      const onMouseEnter = () => {
+        gsap.to(scrollAnim, { timeScale: 0.12, duration: 0.9, ease: "power2.out" });
+      };
+
+      const onMouseLeave = () => {
+        gsap.to(scrollAnim, { timeScale: 1.0, duration: 1.2, ease: "power2.out" });
+      };
+
+      strip.addEventListener("mouseenter", onMouseEnter);
+      strip.addEventListener("mouseleave", onMouseLeave);
+
+      return () => {
+        strip.removeEventListener("mouseenter", onMouseEnter);
+        strip.removeEventListener("mouseleave", onMouseLeave);
+        scrollAnim.kill();
+      };
     },
     { scope: containerRef, dependencies: [isLoading] },
+  );
+
+  /* GSAP: 3D Watermark Parallax & Scroll Layout Parallax */
+  useGSAP(
+    () => {
+      if (!containerRef.current || !watermarkRef.current || isLoading) return;
+      const container = containerRef.current;
+      const watermark = watermarkRef.current;
+
+      const onMouseMove = (e: MouseEvent) => {
+        const { clientX, clientY } = e;
+        const rect = container.getBoundingClientRect();
+        const x = clientX - rect.left - rect.width / 2;
+        const y = clientY - rect.top - rect.height / 2;
+
+        gsap.to(watermark, {
+          x: x * -0.05,
+          y: y * -0.05,
+          rotateX: y * 0.015,
+          rotateY: x * -0.015,
+          duration: 0.8,
+          ease: "power2.out",
+        });
+      };
+
+      container.addEventListener("mousemove", onMouseMove);
+
+      // Scroll Parallax on watermark
+      gsap.to(watermark, {
+        yPercent: 12,
+        ease: "none",
+        scrollTrigger: {
+          trigger: container,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        }
+      });
+
+      // Right side coord tag slides up
+      gsap.to(".coord-grid-tag", {
+        yPercent: -15,
+        ease: "none",
+        scrollTrigger: {
+          trigger: container,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        }
+      });
+
+      // Left side sys boot tag slides down
+      gsap.to(".sys-boot-tag", {
+        yPercent: 15,
+        ease: "none",
+        scrollTrigger: {
+          trigger: container,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        }
+      });
+
+      return () => {
+        container.removeEventListener("mousemove", onMouseMove);
+      };
+    },
+    { scope: containerRef, dependencies: [isLoading] },
+  );
+
+  /* GSAP: Magnetic Buttons */
+  useGSAP(
+    () => {
+      if (isLoading) return;
+
+      const setupMagnetic = (ref: React.RefObject<HTMLDivElement | null>) => {
+        const el = ref.current;
+        if (!el) return;
+
+        const onMouseMove = (e: MouseEvent) => {
+          const rect = el.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+
+          gsap.to(el, {
+            x: x * 0.35,
+            y: y * 0.35,
+            duration: 0.3,
+            ease: "power2.out",
+          });
+        };
+
+        const onMouseLeave = () => {
+          gsap.to(el, {
+            x: 0,
+            y: 0,
+            duration: 0.5,
+            ease: "elastic.out(1, 0.3)",
+          });
+        };
+
+        el.addEventListener("mousemove", onMouseMove);
+        el.addEventListener("mouseleave", onMouseLeave);
+        return () => {
+          el.removeEventListener("mousemove", onMouseMove);
+          el.removeEventListener("mouseleave", onMouseLeave);
+        };
+      };
+
+      const cleanup1 = setupMagnetic(btn1Ref);
+      const cleanup2 = setupMagnetic(btn2Ref);
+
+      return () => {
+        if (cleanup1) cleanup1();
+        if (cleanup2) cleanup2();
+      };
+    },
+    { scope: containerRef, dependencies: [isLoading] }
   );
 
   /* GSAP: Rule expansion */
@@ -88,11 +227,13 @@ export function Hero() {
           <div className="relative mb-6">
             {/* "JK" watermark */}
             <div
+              ref={watermarkRef}
               aria-hidden
               className="absolute -left-6 -top-6 select-none pointer-events-none"
+              style={{ perspective: 1000 }}
             >
               <span
-                className="font-display font-black leading-none text-foreground/[0.018]"
+                className="font-display font-black leading-none text-foreground/[0.018] block"
                 style={{ fontSize: "clamp(8rem,18vw,16rem)" }}
               >
                 JK
@@ -174,24 +315,28 @@ export function Hero() {
             </p>
 
             <div className="flex flex-wrap gap-3">
-              <Link
-                href="/projects"
-                data-cursor="hover"
-                className="inline-flex items-center gap-2.5 bg-primary text-white font-mono text-[10px] uppercase tracking-widest px-6 py-3.5 hover:bg-white hover:text-background transition-all duration-300 group"
-              >
-                View Work
-                <span className="group-hover:translate-x-1 transition-transform duration-300">
-                  →
-                </span>
-              </Link>
-              <a
-                href="/Jainam_Khara_CV.pdf"
-                download
-                data-cursor="hover"
-                className="inline-flex items-center gap-2 border border-border font-mono text-[10px] uppercase tracking-widest px-6 py-3.5 hover:border-primary hover:text-primary transition-all duration-300"
-              >
-                <b>CV ↗</b>
-              </a>
+              <div ref={btn1Ref} className="inline-block">
+                <Link
+                  href="/projects"
+                  data-cursor="hover"
+                  className="inline-flex items-center gap-2.5 bg-primary text-white font-mono text-[10px] uppercase tracking-widest px-6 py-3.5 hover:bg-white hover:text-background transition-all duration-300 group"
+                >
+                  View Work
+                  <span className="group-hover:translate-x-1 transition-transform duration-300">
+                    →
+                  </span>
+                </Link>
+              </div>
+              <div ref={btn2Ref} className="inline-block">
+                <a
+                  href="/Jainam_Khara_CV.pdf"
+                  download
+                  data-cursor="hover"
+                  className="inline-flex items-center gap-2 border border-border font-mono text-[10px] uppercase tracking-widest px-6 py-3.5 hover:border-primary hover:text-primary transition-all duration-300"
+                >
+                  <b>CV ↗</b>
+                </a>
+              </div>
             </div>
           </motion.div>
 
@@ -207,7 +352,10 @@ export function Hero() {
       </div>
 
       {/* ── Tech ticker strip ── */}
-      <div className="border-t border-border h-9 flex items-center overflow-hidden relative z-10 select-none bg-background">
+      <div 
+        ref={tickerStripRef}
+        className="border-t border-border h-9 flex items-center overflow-hidden relative z-10 select-none bg-background cursor-grab active:cursor-grabbing"
+      >
         <div ref={tickerRef} className="flex items-center whitespace-nowrap">
           {[...tickerItems, ...tickerItems, ...tickerItems].map((item, i) => (
             <span
@@ -221,6 +369,20 @@ export function Hero() {
               {item}
             </span>
           ))}
+        </div>
+      </div>
+
+      {/* Decorative vertical blueprint coordinate line on the right */}
+      <div className="absolute right-6 top-0 bottom-0 w-[1px] bg-border/20 select-none pointer-events-none hidden md:block z-0">
+        <div className="coord-grid-tag absolute top-[25%] right-3 font-mono text-[9px] text-muted-foreground/30 tracking-widest uppercase [writing-mode:vertical-lr]">
+          COORD_GRID // Ahmedabad · IN
+        </div>
+      </div>
+
+      {/* Decorative vertical blueprint coordinate line on the left */}
+      <div className="absolute left-6 top-0 bottom-0 w-[1px] bg-border/20 select-none pointer-events-none hidden md:block z-0">
+        <div className="sys-boot-tag absolute bottom-[25%] left-3 font-mono text-[9px] text-muted-foreground/30 tracking-widest uppercase [writing-mode:vertical-lr]">
+          SYS_BOOT // ANTIGRAVITY_ACTIVE
         </div>
       </div>
 

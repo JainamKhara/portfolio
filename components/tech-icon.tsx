@@ -16,6 +16,11 @@ export function TechIcon({
 }: TechIconProps) {
   const [imageError, setImageError] = useState(false);
 
+  // Identify pure black line art icons to balance their visual weight in both modes
+  const isPureBlackLogo = ["nextjs", "express", "threejs", "github", "pandas"].includes(
+    logoKey.toLowerCase()
+  );
+
   // Try several icon variations in case some don't exist
   const getIconUrl = () => {
     // For special cases
@@ -49,7 +54,11 @@ export function TechIcon({
       <img
         src={getIconUrl()}
         alt={`${name} logo`}
-        className={`${className} object-contain`}
+        className={`${className} object-contain transition-all duration-300 ${
+          isPureBlackLogo
+            ? "opacity-[0.38] group-hover:opacity-100 dark:invert dark:opacity-[0.65] dark:group-hover:opacity-100"
+            : ""
+        }`}
         onError={(e) => {
           const target = e.currentTarget;
           // Try plain version as fallback

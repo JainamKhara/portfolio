@@ -20,6 +20,11 @@ const CustomCursor = dynamic(
   { ssr: false },
 );
 
+const CADCrosshair = dynamic(
+  () => import("@/components/cad-crosshair").then((mod) => mod.CADCrosshair),
+  { ssr: false },
+);
+
 /* ── Fonts ── */
 const fontDisplay = Playfair_Display({
   subsets: ["latin"],
@@ -95,6 +100,9 @@ function LayoutContent({
 
       {/* Custom cursor (desktop only) */}
       {mounted && <CustomCursor />}
+
+      {/* CAD Crosshair guide (desktop only) */}
+      {mounted && <CADCrosshair />}
 
       <SmoothScrollProvider>
         <div

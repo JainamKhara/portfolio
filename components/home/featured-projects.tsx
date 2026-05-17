@@ -7,22 +7,211 @@ import Image from "next/image";
 import Link from "next/link";
 import { projects } from "@/data/projects";
 import { ArrowUpRight, ChevronDown } from "lucide-react";
+import { DecoderText } from "@/components/decoder-text";
+import { RevealLine } from "@/components/reveal-line";
 
 const featured = projects.filter((p) => p.featured);
+
+// Tactile 3D Specular Glare Card Component
+function ThreeDProjectCard({ src, alt }: { src: string; alt: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const glareRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    
+    // Cursor position normalized relative to center of the card (-0.5 to 0.5)
+    const mouseX = (e.clientX - rect.left) / width - 0.5;
+    const mouseY = (e.clientY - rect.top) / height - 0.5;
+
+    // Tilt card dynamically in 3D (max 18 degrees tilt)
+    gsap.to(el, {
+      rotateY: mouseX * 22,
+      rotateX: -mouseY * 22,
+      scale: 1.02,
+      boxShadow: "0 20px 40px rgba(217, 40, 28, 0.15), 0 1px 3px rgba(0, 0, 0, 0.2)",
+      ease: "power2.out",
+      duration: 0.45,
+    });
+
+    // Translate the image in the opposite direction (stereoscopic parallax depth)
+    if (imageRef.current) {
+      gsap.to(imageRef.current, {
+        x: -mouseX * 12,
+        y: -mouseY * 12,
+        scale: 1.05,
+        ease: "power2.out",
+        duration: 0.45,
+      });
+    }
+
+    // Dynamic light reflections (specular glare effect) shifting dynamically
+    if (glareRef.current) {
+      const glareX = (mouseX + 0.5) * 100;
+      const glareY = (mouseY + 0.5) * 100;
+      gsap.to(glareRef.current, {
+        background: `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 65%)`,
+        ease: "power2.out",
+        duration: 0.45,
+      });
+    }
+  };
+
+  const handleMouseLeave = () => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    // Smoothly snap back to original resting position
+    gsap.to(el, {
+      rotateY: 0,
+      rotateX: 0,
+      scale: 1.0,
+      boxShadow: "0 0px 0px rgba(0, 0, 0, 0), 0 0px 0px rgba(0, 0, 0, 0)",
+      ease: "power3.out",
+      duration: 0.7,
+    });
+
+    if (imageRef.current) {
+      gsap.to(imageRef.current, {
+        x: 0,
+        y: 0,
+        scale: 1.0,
+        ease: "power3.out",
+        duration: 0.7,
+      });
+    }
+
+    if (glareRef.current) {
+      gsap.to(glareRef.current, {
+        background: "radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 100%)",
+        ease: "power3.out",
+        duration: 0.7,
+      });
+    }
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="w-full md:w-80 lg:w-96 shrink-0 relative overflow-hidden border-[1.5px] border-primary/60 bg-black transition-all duration-300"
+      style={{
+        aspectRatio: "16/9",
+        transformStyle: "preserve-3d",
+        perspective: "1200px",
+      }}
+    >
+      {/* Inner Image Container with dynamic opposite offset */}
+      <div
+        ref={imageRef}
+        className="w-full h-full relative pointer-events-none"
+        style={{ transformStyle: "preserve-3d" }}
+      >
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          className="object-cover object-top"
+          sizes="(max-width: 768px) 100vw, 384px"
+        />
+        <div className="absolute inset-0 bg-primary/5" />
+      </div>
+
+      {/* Dynamic Specular Glare Sheet */}
+      <div
+        ref={glareRef}
+        className="absolute inset-0 pointer-events-none mix-blend-overlay"
+        style={{
+          background: "radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 100%)",
+        }}
+      />
+    </div>
+  );
+}
 
 export function FeaturedProjects() {
   const sectionRef = useRef<HTMLElement>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
 
-  /* GSAP: section header */
+  const renderSplitHeading = (text: string) => {
+    return text.split(" ").map((word, wIdx) => (
+      <span key={wIdx} className="inline-block overflow-hidden relative pb-2 mr-3 last:mr-0 group/word">
+        {word.split("").map((char, cIdx) => (
+          <span key={cIdx} className="char-letter inline-block translate-y-[110%] select-none">
+            {char}
+          </span>
+        ))}
+        <div className="sweep-line absolute bottom-0 left-0 h-[2.5px] bg-primary w-0" />
+      </span>
+    ));
+  };
+
+  /* GSAP: section header kinetic reveal & sweep */
   useGSAP(() => {
-    const header = sectionRef.current?.querySelector(".section-header");
-    if (!header) return;
-    gsap.fromTo(header,
-      { opacity: 0, y: 36 },
-      { opacity: 1, y: 0, duration: 0.75, ease: "power3.out",
-        scrollTrigger: { trigger: sectionRef.current, start: "top 82%" } }
-    );
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const chars = section.querySelectorAll(".char-letter");
+    const sweeps = section.querySelectorAll(".sweep-line");
+    const label = section.querySelector(".section-label");
+
+    if (chars.length > 0) {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top 80%",
+          toggleActions: "play none none none",
+        }
+      });
+
+      tl.to(chars, {
+        y: "0%",
+        duration: 0.55,
+        stagger: 0.02,
+        ease: "power3.out",
+      });
+
+      tl.to(sweeps, {
+        width: "100%",
+        duration: 0.45,
+        ease: "power2.inOut",
+      }, "-=0.25");
+    }
+
+    if (label) {
+      gsap.fromTo(label,
+        { opacity: 0, y: 15 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 82%",
+          }
+        }
+      );
+
+      // Scroll Parallax on label
+      gsap.to(label, {
+        yPercent: 16,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        }
+      });
+    }
   }, { scope: sectionRef });
 
   /* GSAP: stagger rows */
@@ -39,19 +228,23 @@ export function FeaturedProjects() {
   }, { scope: sectionRef });
 
   return (
-    <section ref={sectionRef} className="relative border-t border-border bg-background pt-24 md:pt-32">
+    <section ref={sectionRef} className="relative bg-background pt-24 md:pt-32">
       <div className="px-6 md:px-12 lg:px-20">
         <div className="max-w-7xl mx-auto">
+          {/* Animated Blueprint divider reveal lines */}
+          <RevealLine tagLeft="[ SYS_STAT // SEC_01 ]" tagRight="[ CAD_GRID // 01 ]" className="mb-16" />
 
       {/* Header */}
       <div className="section-header flex items-end justify-between pb-12 md:pb-16">
         <div>
-          <p className="section-label mb-3">02 / Selected Work</p>
+          <p className="section-label mb-3 font-mono text-[11px] uppercase tracking-widest text-primary/70 font-semibold opacity-0">
+            <DecoderText text="02 / SELECTED WORK" delay={0.2} />
+          </p>
           <h2
-            className="font-display font-black leading-none tracking-tight"
+            className="font-display font-black leading-none tracking-tight flex flex-wrap"
             style={{ fontSize: "clamp(2.8rem,7vw,5.5rem)" }}
           >
-            Projects
+            {renderSplitHeading("Projects")}
           </h2>
         </div>
         <Link
@@ -148,20 +341,8 @@ export function FeaturedProjects() {
                     <div className="pt-2 pb-8">
                       <div className="flex flex-col md:flex-row gap-6 items-start">
 
-                        {/* Project screenshot */}
-                        <div
-                          className="w-full md:w-80 lg:w-96 shrink-0 relative overflow-hidden border-[1.5px] border-primary/60 group/img"
-                          style={{ aspectRatio: "16/9" }}
-                        >
-                          <Image
-                            src={project.image}
-                            alt={project.title}
-                            fill
-                            className="object-cover object-top transition-transform duration-700 group-hover/img:scale-105"
-                            sizes="(max-width: 768px) 100vw, 384px"
-                          />
-                          <div className="absolute inset-0 bg-primary/5 group-hover/img:bg-transparent transition-colors duration-300" />
-                        </div>
+                        {/* 3D Specular Parallax Card */}
+                        <ThreeDProjectCard src={project.image} alt={project.title} />
 
                         {/* Right: essentials only */}
                         <div className="flex flex-col gap-4 flex-1 pt-1">
