@@ -216,10 +216,6 @@ export function Achievements() {
                   <span>METRIC_0{i + 1}</span>
                   <span className="text-primary/70">]</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary/60 animate-pulse" />
-                  <span>SYS_STAT // ACTIVE</span>
-                </div>
               </div>
 
               {/* Huge number & icon overlay */}

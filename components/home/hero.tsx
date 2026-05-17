@@ -98,30 +98,6 @@ export function Hero() {
         }
       });
 
-      // Right side coord tag slides up
-      gsap.to(".coord-grid-tag", {
-        yPercent: -15,
-        ease: "none",
-        scrollTrigger: {
-          trigger: container,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        }
-      });
-
-      // Left side sys boot tag slides down
-      gsap.to(".sys-boot-tag", {
-        yPercent: 15,
-        ease: "none",
-        scrollTrigger: {
-          trigger: container,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        }
-      });
-
       return () => {
         container.removeEventListener("mousemove", onMouseMove);
       };
@@ -198,7 +174,7 @@ export function Hero() {
       ref={containerRef}
       className="relative w-full bg-background overflow-hidden pt-16 lg:pt-24"
     >
-      <div className="container mx-auto px-8 md:px-14 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:items-center lg:min-h-[calc(100vh-80px)] py-12 md:py-20">
+      <div className="container mx-auto px-8 md:px-14 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:items-center lg:min-h-[calc(100vh-80px)] pt-12 md:pt-20 pb-24 md:pb-32 lg:pb-40">
         {/* Left: Content panel */}
         <div className="lg:col-span-7 xl:col-span-8 order-1 flex flex-col justify-center">
           {/* Availability badge */}
@@ -345,7 +321,7 @@ export function Hero() {
 
         {/* Right: hanging ID card */}
         <div className="lg:col-span-5 xl:col-span-4 order-2 flex justify-center lg:justify-end self-start mt-40 lg:mt-0">
-          <div className="relative w-full max-w-[33rem] h-[34rem] sm:h-[38rem] md:h-[41rem] lg:h-[49rem] lg:-mt-24 xl:-mt-28 overflow-visible">
+          <div className="relative z-20 w-full max-w-[31rem] h-[39rem] sm:h-[42rem] md:h-[45rem] lg:h-[49rem] lg:-mt-24 xl:-mt-28 overflow-visible">
             <IDCard />
           </div>
         </div>
@@ -369,20 +345,6 @@ export function Hero() {
               {item}
             </span>
           ))}
-        </div>
-      </div>
-
-      {/* Decorative vertical blueprint coordinate line on the right */}
-      <div className="absolute right-6 top-0 bottom-0 w-[1px] bg-border/20 select-none pointer-events-none hidden md:block z-0">
-        <div className="coord-grid-tag absolute top-[25%] right-3 font-mono text-[9px] text-muted-foreground/30 tracking-widest uppercase [writing-mode:vertical-lr]">
-          COORD_GRID // Ahmedabad · IN
-        </div>
-      </div>
-
-      {/* Decorative vertical blueprint coordinate line on the left */}
-      <div className="absolute left-6 top-0 bottom-0 w-[1px] bg-border/20 select-none pointer-events-none hidden md:block z-0">
-        <div className="sys-boot-tag absolute bottom-[25%] left-3 font-mono text-[9px] text-muted-foreground/30 tracking-widest uppercase [writing-mode:vertical-lr]">
-          SYS_BOOT // ANTIGRAVITY_ACTIVE
         </div>
       </div>
 

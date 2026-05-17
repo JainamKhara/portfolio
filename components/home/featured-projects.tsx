@@ -229,7 +229,7 @@ export function FeaturedProjects() {
 
   return (
     <section ref={sectionRef} className="relative bg-background pt-24 md:pt-32">
-      <div className="px-6 md:px-12 lg:px-20">
+      <div className="px-6 md:px-12 lg:px-20 pb-24 md:pb-32">
         <div className="max-w-7xl mx-auto">
           {/* Animated Blueprint divider reveal lines */}
           <RevealLine tagLeft="[ SYS_STAT // SEC_01 ]" tagRight="[ CAD_GRID // 01 ]" className="mb-16" />

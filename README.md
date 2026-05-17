@@ -185,7 +185,7 @@ If you find this project useful or inspiring, please consider giving it a ⭐️
 
 Have a project idea, want to collaborate, or just want to chat about developer interfaces? Feel free to reach out:
 
-* **Email**: [kharajaynam0@gmail.com](mailto:kharajaynam0@gmail.com)
+* **Email**: [kharajaynam@gmail.com](mailto:kharajaynam@gmail.com)
 * **LinkedIn**: [Jainam Khara](https://linkedin.com/in/jainamkhara)
 * **GitHub**: [@JainamKhara](https://github.com/JainamKhara)
 

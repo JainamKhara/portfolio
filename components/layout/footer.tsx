@@ -15,7 +15,7 @@ const links = [
 const socials = [
   { label: "GitHub",   href: "https://github.com/JainamKhara",                icon: Github   },
   { label: "LinkedIn", href: "https://linkedin.com/in/jainam-khara-3864a7251", icon: Linkedin },
-  { label: "Email",    href: "mailto:kharajainam0@gmail.com",                  icon: Mail     },
+  { label: "Email",    href: "mailto:kharajaynam@gmail.com",                  icon: Mail     },
 ];
 
 export function Footer() {

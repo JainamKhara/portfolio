@@ -84,7 +84,6 @@ class Particle {
 
 export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [progress, setProgress] = useState(0);
   const [done, setDone] = useState(false);
   const [stage, setStage] = useState<Stage>("BOOT");
   
@@ -148,7 +147,6 @@ export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
     init();
 
     const masterTl = gsap.timeline({
-      onUpdate: () => setProgress(Math.round(masterTl.progress() * 100)),
       onComplete: () => {
         setTimeout(() => setDone(true), 100);
         setTimeout(onComplete, 800);
@@ -277,42 +275,6 @@ export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
             ref={canvasRef}
             className="absolute inset-0 h-full w-full"
           />
-
-          {/* Diagnostic UI Overlays */}
-          <div className="pointer-events-none relative z-10 flex h-full flex-col justify-between p-8">
-            <div className="flex justify-between items-start">
-              <div className="flex flex-col gap-1">
-                <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-primary font-bold">System Boot Sequence</span>
-                <span className="font-mono text-[10px] text-muted-foreground/60">Build: 2026.05.14.v1</span>
-              </div>
-              <div className="font-display font-black text-7xl text-primary/20 select-none">
-                {progress}%
-              </div>
-            </div>
-
-            <div className="flex justify-between items-end">
-              <div className="max-w-xs">
-                <div className="h-1.5 w-64 bg-white/10 overflow-hidden rounded-full mb-3">
-                  <motion.div 
-                    className="h-full bg-primary shadow-[0_0_10px_rgba(217,40,28,0.8)]"
-                    animate={{ width: `${progress}%` }}
-                  />
-                </div>
-                <p className="font-mono text-[10px] uppercase tracking-widest text-primary/60 font-bold">
-                  {stage === "BOOT" && "Initializing Core Systems..."}
-                  {stage === "COALESCE" && "Processing Neural Data..."}
-                  {stage === "IDENTITY" && "Resolving Identity Matrix..."}
-                  {stage === "REVEAL" && "Access Granted."}
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground/40">
-                  Secure Connection Established<br />
-                  Encryption: AES-256-GCM
-                </p>
-              </div>
-            </div>
-          </div>
         </motion.div>
       )}
     </AnimatePresence>

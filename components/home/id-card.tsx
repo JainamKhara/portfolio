@@ -9,11 +9,8 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { IDCardUI } from "./id-card-ui";
-
 const ATTACHMENT_OFFSET_Y = 28;
 const ANCHOR_Y = 18;
-const SIDE_ALLOWANCE = 20;
-const BOTTOM_PADDING = 24;
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
@@ -76,7 +73,13 @@ export function IDCard() {
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      const touchDevice = 
+        typeof window !== "undefined" && 
+        ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+      const userAgentMobile = 
+        typeof navigator !== "undefined" && 
+        /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+      setIsMobile(window.innerWidth < 1024 || touchDevice || userAgentMobile);
     };
     checkMobile();
     window.addEventListener("resize", checkMobile);
@@ -202,11 +205,11 @@ export function IDCard() {
     const dx = attachX - layout.anchorX;
     const dy = attachY - layout.anchorY;
     const speed = Math.hypot(sim.vx, sim.vy);
-    const bow = clamp(72 + Math.abs(dx) * 0.24 + speed * 18, 72, 166);
+    const bow = clamp(78 + Math.abs(dx) * 0.12 + speed * 0.8, 72, 130);
 
     const control1X = layout.anchorX + dx * 0.08;
     const control1Y = layout.anchorY + bow * 0.48;
-    const control2X = attachX - dx * 0.18 - sim.vx * 7;
+    const control2X = attachX - dx * 0.12 - sim.vx * 0.45;
     const control2Y = attachY - Math.max(78, bow * 0.55 + dy * 0.06);
     const path = `M ${layout.anchorX} ${layout.anchorY} C ${control1X} ${control1Y}, ${control2X} ${control2Y}, ${attachX} ${attachY}`;
     const mountTilt = clamp(
@@ -257,31 +260,25 @@ export function IDCard() {
     if (!stage || !card) return;
 
     const syncLayout = () => {
-      const stageWidth = stage.clientWidth;
-      const stageHeight = stage.clientHeight;
+      const stageWidth = stage.clientWidth || 528;
+      const stageHeight = stage.clientHeight || 720;
 
-      if (!stageWidth || !stageHeight) return;
-
-      const widthRatio = stageWidth < 400 ? 0.82 : 0.64;
+      const widthRatio = stageWidth < 400 ? 0.85 : 0.82;
       const nextCardWidth = Math.round(
-        clamp(stageWidth * widthRatio, 248, 312),
+        clamp(stageWidth * widthRatio, 280, 410),
       );
-      const cardHeight = card.offsetHeight;
+      const cardHeight = card.offsetHeight || 480;
       const anchorX = stageWidth / 2;
       const anchorY = ANCHOR_Y;
-      const strapLength = isMobile ? 180 : clamp(stageHeight * 0.46, 210, 276);
-      const stageRect = stage.getBoundingClientRect();
+      const strapLength = isMobile
+        ? (stageWidth < 400 ? clamp(stageHeight * 0.28, 90, 135) : clamp(stageHeight * 0.32, 120, 170))
+        : clamp(stageHeight * 0.31, 160, 210);
       const restX = anchorX - nextCardWidth / 2;
-      const restY = Math.min(
-        anchorY + strapLength - ATTACHMENT_OFFSET_Y,
-        stageHeight - cardHeight - BOTTOM_PADDING,
-      );
-      const minX = -stageRect.left + SIDE_ALLOWANCE;
-      const maxX =
-        window.innerWidth - stageRect.left - nextCardWidth - SIDE_ALLOWANCE;
-      const minY = -stageRect.top + SIDE_ALLOWANCE;
-      const maxY =
-        window.innerHeight - stageRect.top - cardHeight - SIDE_ALLOWANCE;
+      const restY = anchorY + strapLength - ATTACHMENT_OFFSET_Y;
+      const minX = -nextCardWidth * 0.4;
+      const maxX = stageWidth - nextCardWidth * 0.6;
+      const minY = 10;
+      const maxY = stageHeight - 40;
 
       layoutRef.current = {
         stageWidth,
@@ -327,9 +324,6 @@ export function IDCard() {
         sim.ready = true;
         sim.x = restX;
         sim.y = restY;
-      } else if (!sim.dragging) {
-        sim.x = clamp(sim.x, minX, maxX);
-        sim.y = clamp(sim.y, minY, maxY);
       }
 
       renderScene();
@@ -355,15 +349,7 @@ export function IDCard() {
       const sim = simRef.current;
 
       if (sim.ready && layout.cardHeight) {
-        if (isMobile) {
-          // Keep at rest position on mobile
-          sim.vx = 0;
-          sim.vy = 0;
-          sim.angularVelocity = 0;
-          sim.x = layout.restX;
-          sim.y = layout.restY;
-          sim.angle = 0;
-        } else if (!sim.dragging) {
+        if (!sim.dragging) {
           const attachmentPoint = getAttachmentPoint(sim, layout);
           const attachX = attachmentPoint.x;
           const swingDx = clamp(
@@ -379,10 +365,7 @@ export function IDCard() {
                 0,
               ),
             );
-          const desiredY = Math.max(
-            layout.minY,
-            hangingY - ATTACHMENT_OFFSET_Y,
-          );
+          const desiredY = hangingY - ATTACHMENT_OFFSET_Y;
           const restingInfluence = reducedMotionRef.current ? 0.015 : 0.026;
 
           if (!reducedMotionRef.current) {
@@ -395,8 +378,6 @@ export function IDCard() {
           sim.vy *= reducedMotionRef.current ? 0.9 : 0.96;
           sim.x += sim.vx * dt;
           sim.y += sim.vy * dt;
-          sim.x = clamp(sim.x, layout.minX, layout.maxX);
-          sim.y = clamp(sim.y, layout.minY, layout.maxY);
 
           const targetAngle = clamp(swingDx * 0.1 + sim.vx * 2.6, -22, 22);
           sim.angularVelocity += (targetAngle - sim.angle) * 0.12 * dt;
@@ -459,8 +440,21 @@ export function IDCard() {
       const point = getPointFromClient(event.clientX, event.clientY);
       const now = performance.now();
       const dt = Math.max((now - sim.lastPointerAt) / 16.6667, 0.6);
-      const nextX = clamp(point.x - sim.dragOffsetX, layout.minX, layout.maxX);
-      const nextY = clamp(point.y - sim.dragOffsetY, layout.minY, layout.maxY);
+      
+      const stage = stageRef.current;
+      let nextX = point.x - sim.dragOffsetX;
+      let nextY = point.y - sim.dragOffsetY;
+      
+      if (stage) {
+        const stageRect = stage.getBoundingClientRect();
+        const dynMinX = -stageRect.left - layout.cardWidth + 80;
+        const dynMaxX = window.innerWidth - stageRect.left - 80;
+        const dynMinY = -stageRect.top - layout.cardHeight + 80;
+        const dynMaxY = window.innerHeight - stageRect.top - 80;
+        
+        nextX = clamp(nextX, dynMinX, dynMaxX);
+        nextY = clamp(nextY, dynMinY, dynMaxY);
+      }
 
       sim.vx = (nextX - sim.x) / dt;
       sim.vy = (nextY - sim.y) / dt;
@@ -497,7 +491,7 @@ export function IDCard() {
   }, [endDrag, getPointFromClient, renderScene]);
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (isMobile || !event.isPrimary) return;
+    if (!event.isPrimary) return;
 
     const sim = simRef.current;
     const layout = layoutRef.current;
@@ -695,7 +689,7 @@ export function IDCard() {
           opacity: 0,
           transformOrigin: `50% ${ATTACHMENT_OFFSET_Y}px`,
           transformStyle: "preserve-3d",
-          touchAction: isMobile ? "pan-y" : "none",
+          touchAction: "none",
         }}
         onPointerDown={handlePointerDown}
       >
