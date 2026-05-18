@@ -16,7 +16,7 @@ export interface Experience {
     // Regular job positions
     {
       id: "python",
-      title: "Python Internship",
+      title: "Python Intern",
       company: "Findpro IT Solutions",
       location: "Surendranagar, Gujarat, India",
       startDate: "9 September 2022",
@@ -32,7 +32,7 @@ export interface Experience {
     },
     {
       id: "android",
-      title: "Android Internship",
+      title: "Android Intern",
       company: "Findpro IT Solutions",
       location: "Surendranagar, Gujarat, India",
       startDate: "27 July 2022",

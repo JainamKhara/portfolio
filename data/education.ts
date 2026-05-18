@@ -24,7 +24,7 @@ export const education: Education[] = [
     {
       id: "deegre",
       degree: "Bachelor's in Computer Science",
-      institution: "SAL Institute and Technologies and Engineering Research",
+      institution: "SAL Institute and Technologies and Engineering Research - 067",
       university: "Gujarat Technological University",
       location: "Ahmedabad, Gujarat, India",
       startDate: "2024",
