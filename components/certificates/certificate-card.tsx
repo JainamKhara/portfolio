@@ -24,7 +24,7 @@ export function CertificateCard({
   date,
 }: CertificateCardProps) {
   return (
-    <Link href={`/certificates/${id}`}>
+    <Link href={`/certificates/${id}`} data-cursor="hover">
       <Card className="h-full flex flex-col overflow-hidden border-2 transition-all hover:border-primary group cursor-pointer">
         {/* Image Container - Full height to show complete certificate */}
         <div className="relative w-full h-64 overflow-hidden group">

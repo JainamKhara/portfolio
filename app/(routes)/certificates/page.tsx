@@ -76,10 +76,11 @@ export default function CertificatesPage() {
               placeholder="Search certificates…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              data-cursor="hover"
               className="w-full pl-9 pr-9 py-2 bg-transparent border border-border font-mono text-[11px] uppercase tracking-widest text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary transition-colors"
             />
             {search && (
-              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+              <button onClick={() => setSearch("")} data-cursor="hover" className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                 <X className="h-4 w-4" />
               </button>
             )}

@@ -96,26 +96,26 @@ export default function AboutPage() {
 
         {/* Left — bio text */}
         <div className="px-6 md:px-12 lg:px-16 py-16 border-r border-border">
-          <p className="reveal-line text-2xl md:text-4xl font-display font-black leading-[1.1] tracking-tight mb-8">
+          <p className="reveal-line text-2xl md:text-4xl font-display font-black leading-[1.1] tracking-tight mb-8 max-w-[45ch]">
             I&apos;m a Computer Science student at{" "}
             <span className="text-primary italic">SAL Institute of Technology and Engineering Research</span>,
             Ahmedabad — building things that matter.
           </p>
 
-          <p className="reveal-line text-lg text-muted-foreground leading-relaxed mb-6 font-medium">
+          <p className="reveal-line text-lg text-muted-foreground leading-relaxed mb-6 font-medium max-w-[65ch]">
             My engineering philosophy is simple: every line of code should serve a purpose,
             and every interface should feel inevitable. I work at the intersection of
             design and engineering — obsessive about performance, accessibility, and
             the kind of detail that users feel but can&apos;t quite name.
           </p>
 
-          <p className="reveal-line text-lg text-muted-foreground leading-relaxed mb-6 font-medium">
+          <p className="reveal-line text-lg text-muted-foreground leading-relaxed mb-6 font-medium max-w-[65ch]">
             When I&apos;m not building products, I&apos;m solving algorithmic challenges on LeetCode,
             training ML models, or contributing to open-source. I believe the best
             engineers are relentlessly curious — I try to build something new every week.
           </p>
 
-          <p className="reveal-line text-lg text-muted-foreground leading-relaxed font-medium">
+          <p className="reveal-line text-lg text-muted-foreground leading-relaxed font-medium max-w-[65ch]">
             Currently seeking a Full-Stack or ML role where craft and ambition collide.
           </p>
 

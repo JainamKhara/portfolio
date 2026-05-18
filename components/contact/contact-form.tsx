@@ -156,6 +156,7 @@ export function ContactForm() {
                     <FormControl>
                       <Input 
                         placeholder="JOHN DOE" 
+                        data-cursor="hover"
                         className="rounded-none border-t-0 border-x-0 border-b border-border bg-transparent px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-muted-foreground/30 font-display font-bold uppercase tracking-tight"
                         {...field} 
                       />
@@ -173,6 +174,7 @@ export function ContactForm() {
                     <FormControl>
                       <Input 
                         placeholder="HELLO@EXAMPLE.COM" 
+                        data-cursor="hover"
                         className="rounded-none border-t-0 border-x-0 border-b border-border bg-transparent px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-muted-foreground/30 font-display font-bold uppercase tracking-tight"
                         {...field} 
                       />
@@ -190,6 +192,7 @@ export function ContactForm() {
                     <FormControl>
                       <Input 
                         placeholder="PROJECT INQUIRY" 
+                        data-cursor="hover"
                         className="rounded-none border-t-0 border-x-0 border-b border-border bg-transparent px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-muted-foreground/30 font-display font-bold uppercase tracking-tight"
                         {...field} 
                       />
@@ -207,6 +210,7 @@ export function ContactForm() {
                     <FormControl>
                       <Textarea
                         placeholder="I'D LIKE TO DISCUSS..."
+                        data-cursor="hover"
                         className="min-h-32 rounded-none border border-border bg-card/30 p-4 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-muted-foreground/30 font-medium resize-none"
                         {...field}
                       />
@@ -215,7 +219,7 @@ export function ContactForm() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" disabled={isSubmitting} className="w-full h-14 font-mono text-[11px] uppercase tracking-[0.3em] bg-foreground text-background hover:bg-primary transition-all duration-500">
+              <Button type="submit" disabled={isSubmitting} data-cursor="hover" className="w-full h-14 font-mono text-[11px] uppercase tracking-[0.3em] bg-foreground text-background hover:bg-primary transition-all duration-500">
                 {isSubmitting ? (
                   <motion.div
                     initial={{ opacity: 0 }}

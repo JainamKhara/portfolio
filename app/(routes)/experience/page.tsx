@@ -196,11 +196,11 @@ export default function ExperiencePage() {
                       </div>
                     </div>
 
-                    <p className="text-sm text-foreground/80 leading-relaxed mb-4">
+                    <p className="text-sm text-foreground/80 leading-relaxed mb-4 max-w-[65ch]">
                       {exp.description}
                     </p>
 
-                    <ul className="space-y-1.5 mb-4">
+                    <ul className="space-y-1.5 mb-4 max-w-[65ch]">
                       {exp.achievements.slice(0, 2).map((a, ai) => (
                         <li
                           key={ai}
@@ -310,7 +310,7 @@ export default function ExperiencePage() {
                     </div>
 
                     {edu.description && (
-                      <p className="text-sm text-foreground/80 leading-relaxed mb-4">
+                      <p className="text-sm text-foreground/80 leading-relaxed mb-4 max-w-[65ch]">
                         {edu.description}
                       </p>
                     )}
