@@ -18,7 +18,7 @@ const SKILLS = [
 const STATS = [
   { value: "10+",  label: "Projects shipped" },
   { value: "100+", label: "LeetCode problems" },
-  { value: "3+",   label: "Years of building" },
+  { value: "4+",   label: "Years of building" },
   { value: "6+",   label: "Skill domains" },
 ];
 

@@ -14,6 +14,7 @@ import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import { LoadingScreen } from "@/components/shared/loading-screen";
 import { LoadingProvider, useLoading } from "@/lib/loading-context";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const CustomCursor = dynamic(
   () => import("@/components/custom-cursor").then((mod) => mod.CustomCursor),
@@ -81,19 +82,51 @@ function LayoutContent({
 }) {
   const { setIsLoading } = useLoading();
   const [mounted, setMounted] = useState(false);
+  const [revealStarted, setRevealStarted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  const handleRevealStart = () => {
+    setRevealStarted(true);
+    setIsLoading(false);
+  };
+
   const handleLoadingComplete = () => {
+    setRevealStarted(true);
     setIsLoading(false);
     onComplete();
   };
 
+  // Force ScrollTrigger to refresh once the loading screen is dismissed
+  // This ensures all scroll triggers are calculated with the final document scroll bounds.
+  useEffect(() => {
+    if (!loading) {
+      const timer1 = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 100);
+
+      // Secondary check to catch delayed layouts, Three.js or WebGL renders
+      const timer2 = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 800);
+
+      return () => {
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+      };
+    }
+  }, [loading]);
+
   return (
     <>
-      {loading && <LoadingScreen onComplete={handleLoadingComplete} />}
+      {loading && (
+        <LoadingScreen 
+          onRevealStart={handleRevealStart} 
+          onComplete={handleLoadingComplete} 
+        />
+      )}
 
       {/* Grain texture */}
       <div className="grain" aria-hidden="true" />
@@ -107,8 +140,8 @@ function LayoutContent({
       <SmoothScrollProvider>
         <div
           className={cn(
-            "relative flex min-h-screen flex-col transition-opacity duration-700",
-            loading ? "opacity-0 pointer-events-none" : "opacity-100",
+            "relative flex min-h-screen flex-col transition-opacity duration-400",
+            revealStarted ? "opacity-100" : "opacity-0 pointer-events-none",
           )}
         >
           <Navbar />

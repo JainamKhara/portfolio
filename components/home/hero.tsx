@@ -161,8 +161,8 @@ export function Hero() {
       if (!nameLineRef.current || isLoading) return;
       gsap.fromTo(
         nameLineRef.current,
-        { scaleX: 0 },
-        { scaleX: 1, duration: 1.2, ease: "expo.out", delay: 0.8 },
+        { scaleX: 0, transformOrigin: "left" },
+        { scaleX: 1, duration: 0.8, ease: "expo.out", delay: 0.5 },
       );
     },
     { scope: containerRef, dependencies: [isLoading] },
@@ -181,7 +181,7 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={!isLoading ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
             className="flex items-center gap-4 mb-10"
           >
             <div className="flex items-center gap-2">
@@ -202,11 +202,14 @@ export function Hero() {
           {/* Giant name — THE centrepiece */}
           <div className="relative mb-6">
             {/* "JK" watermark */}
-            <div
+            <motion.div
               ref={watermarkRef}
               aria-hidden
               className="absolute -left-6 -top-6 select-none pointer-events-none"
               style={{ perspective: 1000 }}
+              initial={{ opacity: 0 }}
+              animate={!isLoading ? { opacity: 1 } : { opacity: 0 }}
+              transition={{ duration: 0.8, delay: 0.25 }}
             >
               <span
                 className="font-display font-black leading-none text-foreground/[0.018] block"
@@ -214,13 +217,13 @@ export function Hero() {
               >
                 JK
               </span>
-            </div>
+            </motion.div>
 
             {/* Role label */}
             <motion.p
               initial={{ opacity: 0, x: -16 }}
               animate={!isLoading ? { opacity: 1, x: 0 } : { opacity: 0, x: -16 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
+              transition={{ duration: 0.5, delay: 0.15 }}
               className="section-label mb-5"
             >
               Full-Stack Developer · ML Practitioner
@@ -237,9 +240,9 @@ export function Hero() {
                 initial={{ y: "108%" }}
                 animate={!isLoading ? { y: "0%" } : { y: "108%" }}
                 transition={{
-                  duration: 0.85,
+                  duration: 0.7,
                   ease: [0.22, 1, 0.36, 1],
-                  delay: 0.38,
+                  delay: 0.2,
                 }}
               >
                 Jainam
@@ -261,9 +264,9 @@ export function Hero() {
                 initial={{ y: "108%" }}
                 animate={!isLoading ? { y: "0%" } : { y: "108%" }}
                 transition={{
-                  duration: 0.85,
+                  duration: 0.7,
                   ease: [0.22, 1, 0.36, 1],
-                  delay: 0.5,
+                  delay: 0.28,
                 }}
               >
                 Khara
@@ -271,7 +274,11 @@ export function Hero() {
             </div>
 
             {/* Rule */}
-            <div ref={nameLineRef} className="mt-5 h-px bg-primary" />
+            <div
+              ref={nameLineRef}
+              className="mt-5 h-px bg-primary"
+              style={{ transform: "scaleX(0)", transformOrigin: "left" }}
+            />
           </div>
 
           {/* Bio + CTAs */}
@@ -279,9 +286,9 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={!isLoading ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{
-              duration: 0.7,
+              duration: 0.6,
               ease: [0.22, 1, 0.36, 1],
-              delay: 0.68,
+              delay: 0.45,
             }}
           >
             <p className="text-foreground/80 text-sm leading-relaxed max-w-[38ch] mb-8">
@@ -321,15 +328,27 @@ export function Hero() {
 
         {/* Right: hanging ID card */}
         <div className="lg:col-span-5 xl:col-span-4 order-2 flex justify-center lg:justify-end self-start mt-40 lg:mt-0">
-          <div className="relative z-20 w-full max-w-[31rem] h-[39rem] sm:h-[42rem] md:h-[45rem] lg:h-[49rem] lg:-mt-24 xl:-mt-28 overflow-visible">
+          <motion.div
+            initial={{ opacity: 0, y: 35 }}
+            animate={!isLoading ? { opacity: 1, y: 0 } : { opacity: 0, y: 35 }}
+            transition={{
+              duration: 0.8,
+              ease: [0.22, 1, 0.36, 1],
+              delay: 0.45,
+            }}
+            className="relative z-20 w-full max-w-[31rem] h-[39rem] sm:h-[42rem] md:h-[45rem] lg:h-[49rem] lg:-mt-24 xl:-mt-28 overflow-visible"
+          >
             <IDCard />
-          </div>
+          </motion.div>
         </div>
       </div>
 
       {/* ── Tech ticker strip ── */}
-      <div 
+      <motion.div
         ref={tickerStripRef}
+        initial={{ opacity: 0, y: 15 }}
+        animate={!isLoading ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0.5 }}
         className="border-t border-border h-9 flex items-center overflow-hidden relative z-10 select-none bg-background cursor-grab active:cursor-grabbing"
       >
         <div ref={tickerRef} className="flex items-center whitespace-nowrap">
@@ -346,7 +365,7 @@ export function Hero() {
             </span>
           ))}
         </div>
-      </div>
+      </motion.div>
 
     </section>
   );

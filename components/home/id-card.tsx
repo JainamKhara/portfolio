@@ -3,12 +3,12 @@
 import {
   useCallback,
   useEffect,
-  useId,
   useRef,
   useState,
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { IDCardUI } from "./id-card-ui";
+import { useLoading } from "@/lib/loading-context";
 const ATTACHMENT_OFFSET_Y = 28;
 const ANCHOR_Y = 18;
 
@@ -53,18 +53,17 @@ type SimulationModel = {
 };
 
 export function IDCard() {
-  const gradientId = useId().replace(/:/g, "");
+  const { isLoading } = useLoading();
+  const gradientId = "id-card-grad";
   const edgeGradientId = `${gradientId}-edge`;
   const glowId = `${gradientId}-glow`;
   const strapPathId = `${gradientId}-strap-path`;
 
   const stageRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
-  const strapRef = useRef<SVGPathElement>(null);
-  const strapEdgeRef = useRef<SVGPathElement>(null);
-  const strapStitchRef = useRef<SVGPathElement>(null);
-  const strapSeamLeftRef = useRef<SVGPathElement>(null);
-  const strapSeamRightRef = useRef<SVGPathElement>(null);
+  const strapGroupRef = useRef<SVGGElement>(null);
+  const strapPathsRef = useRef<SVGPathElement[]>([]);
+  const strapClipRef = useRef<SVGGElement>(null);
   const mountSwingRef = useRef<HTMLDivElement>(null);
 
   const [isDragging, setIsDragging] = useState(false);
@@ -178,22 +177,15 @@ export function IDCard() {
 
   const renderScene = useCallback(() => {
     const card = cardRef.current;
-    const strap = strapRef.current;
-    const strapEdge = strapEdgeRef.current;
-    const strapStitch = strapStitchRef.current;
-    const strapSeamLeft = strapSeamLeftRef.current;
-    const strapSeamRight = strapSeamRightRef.current;
+    const strapGroup = strapGroupRef.current;
+    const strapClip = strapClipRef.current;
     const mountSwing = mountSwingRef.current;
     const layout = layoutRef.current;
     const sim = simRef.current;
 
     if (
       !card ||
-      !strap ||
-      !strapEdge ||
-      !strapStitch ||
-      !strapSeamLeft ||
-      !strapSeamRight ||
+      !strapGroup ||
       !layout.cardHeight
     ) {
       return;
@@ -233,11 +225,19 @@ export function IDCard() {
       : clamp(sim.vx * 0.9 + dx * 0.034, -10, 10);
     card.style.transformOrigin = `${transformOrigin.x}px ${transformOrigin.y}px`;
     card.style.transform = `perspective(1600px) translate3d(${sim.x}px, ${sim.y}px, 0) rotateZ(${sim.angle}deg) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
-    strap.setAttribute("d", path);
-    strapEdge.setAttribute("d", path);
-    strapStitch.setAttribute("d", path);
-    strapSeamLeft.setAttribute("d", path);
-    strapSeamRight.setAttribute("d", path);
+
+    if (strapPathsRef.current.length === 0) {
+      strapPathsRef.current = Array.from(strapGroup.querySelectorAll("path"));
+    }
+    strapPathsRef.current.forEach((p) => p.setAttribute("d", path));
+
+    if (strapClip) {
+      strapClip.setAttribute(
+        "transform",
+        `translate(${attachX}, ${attachY}) rotate(${sim.angle})`
+      );
+    }
+
     if (mountSwing) {
       mountSwing.style.transform = `rotate(${mountTilt}deg)`;
     }
@@ -515,7 +515,12 @@ export function IDCard() {
     <div
       ref={stageRef}
       className="relative h-full w-full overflow-visible"
-      style={{ touchAction: isMobile ? "pan-y" : "none" }}
+      style={{ 
+        touchAction: isMobile ? "pan-y" : "none",
+        opacity: isLoading ? 0 : 1,
+        pointerEvents: isLoading ? "none" : "auto",
+        transition: "opacity 0.5s ease-in-out"
+      }}
     >
       <div
         aria-hidden
@@ -541,30 +546,29 @@ export function IDCard() {
             <stop offset="26%" stopColor="rgba(255,200,200,0.12)" />
             <stop offset="100%" stopColor="rgba(255,255,255,0)" />
           </linearGradient>
-          <linearGradient
-            id={`${gradientId}-inner`}
-            x1="0%"
-            y1="0%"
-            x2="0%"
-            y2="100%"
-          >
-            <stop offset="0%" stopColor="rgba(255,255,255,0.16)" />
-            <stop offset="18%" stopColor="rgba(255,255,255,0.03)" />
-            <stop offset="50%" stopColor="rgba(255,255,255,0)" />
-            <stop offset="84%" stopColor="rgba(10,7,18,0.08)" />
-            <stop offset="100%" stopColor="rgba(4,4,8,0.12)" />
+          
+          {/* 3D repeating woven ribbed polyester fabric texture pattern */}
+          <pattern id="lanyard-weave" width="4" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">
+            <rect width="4" height="8" fill="transparent" />
+            <line x1="0" y1="0" x2="4" y2="0" stroke="rgba(0, 0, 0, 0.28)" strokeWidth="1.6" />
+            <line x1="0" y1="4" x2="4" y2="4" stroke="rgba(255, 255, 255, 0.14)" strokeWidth="1.6" />
+          </pattern>
+
+          {/* Premium gunmetal and chrome linear gradients for clasp hardware */}
+          <linearGradient id="metal-dark" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#1a1a1c" />
+            <stop offset="35%" stopColor="#3d3d42" />
+            <stop offset="65%" stopColor="#252528" />
+            <stop offset="100%" stopColor="#0e0e0f" />
           </linearGradient>
-          <linearGradient
-            id={`${gradientId}-lane`}
-            x1="0%"
-            y1="0%"
-            x2="0%"
-            y2="100%"
-          >
-            <stop offset="0%" stopColor="rgba(23,16,34,0.95)" />
-            <stop offset="45%" stopColor="rgba(31,20,48,0.94)" />
-            <stop offset="100%" stopColor="rgba(14,10,22,0.96)" />
+          <linearGradient id="metal-light" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#8a8a93" />
+            <stop offset="25%" stopColor="#ffffff" />
+            <stop offset="50%" stopColor="#a3a3ac" />
+            <stop offset="85%" stopColor="#52525b" />
+            <stop offset="100%" stopColor="#18181b" />
           </linearGradient>
+
           <filter id={glowId} x="-45%" y="-30%" width="190%" height="190%">
             <feDropShadow
               dx="0"
@@ -582,77 +586,166 @@ export function IDCard() {
           </filter>
         </defs>
 
+        {/* Dynamic 12-layer volumetric strap shading container */}
+        <g ref={strapGroupRef}>
+          {/* 1. Ambient Occlusion Drop Shadow */}
+          <path
+            fill="none"
+            stroke="rgba(0, 0, 0, 0.45)"
+            strokeWidth="28"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            filter={`url(#${glowId})`}
+          />
+          {/* 2. Deep Under-edge Red Shadow */}
+          <path
+            fill="none"
+            stroke="#1f0201"
+            strokeWidth="24"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          {/* 3. Base Shadow Red Contour */}
+          <path
+            fill="none"
+            stroke="#520503"
+            strokeWidth="22"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          {/* 4. Core Rich Crimson Ribbon */}
+          <path
+            fill="none"
+            stroke="#a31410"
+            strokeWidth="20"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          {/* 5. Center Brilliant 3D Ribbon Face */}
+          <path
+            fill="none"
+            stroke="#d9281c"
+            strokeWidth="16"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          {/* 6. Centered Volumetric Highlight Beam */}
+          <path
+            fill="none"
+            stroke="#ff6054"
+            strokeWidth="10"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          {/* 7. Specular Silk Reflection (Text Path Anchor) */}
+          <path
+            id={strapPathId}
+            fill="none"
+            stroke="#ffffff"
+            strokeWidth="4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            opacity="0.28"
+          />
+          {/* 8. Repeating Woven Ribbed Fabric Overlay */}
+          <path
+            fill="none"
+            stroke="url(#lanyard-weave)"
+            strokeWidth="22"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            opacity="0.75"
+          />
+          {/* 9. Embossed Left Stitch Shadow */}
+          <path
+            fill="none"
+            stroke="rgba(0, 0, 0, 0.48)"
+            strokeWidth="0.8"
+            strokeLinecap="round"
+            strokeDasharray="2 3"
+            transform="translate(-6.8 0.4)"
+          />
+          {/* 10. Left Fine Cotton Stitch Thread */}
+          <path
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.38)"
+            strokeWidth="0.8"
+            strokeLinecap="round"
+            strokeDasharray="2 3"
+            transform="translate(-6.8 0)"
+          />
+          {/* 11. Embossed Right Stitch Shadow */}
+          <path
+            fill="none"
+            stroke="rgba(0, 0, 0, 0.48)"
+            strokeWidth="0.8"
+            strokeLinecap="round"
+            strokeDasharray="2 3"
+            transform="translate(6.8 0.4)"
+          />
+          {/* 12. Right Fine Cotton Stitch Thread */}
+          <path
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.38)"
+            strokeWidth="0.8"
+            strokeLinecap="round"
+            strokeDasharray="2 3"
+            transform="translate(6.8 0)"
+          />
+        </g>
 
-        <path
-          id={strapPathId}
-          ref={strapRef}
-          fill="none"
-          stroke={`url(#${gradientId})`}
-          strokeWidth="28"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          filter={`url(#${glowId})`}
-        />
-        <path
-          ref={strapEdgeRef}
-          fill="none"
-          stroke={`url(#${edgeGradientId})`}
-          strokeWidth="18"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          opacity="0.32"
-        />
-
-        <path
-          ref={strapStitchRef}
-          fill="none"
-          stroke="rgba(255, 255, 255, 0.18)"
-          strokeWidth="0.9"
-          strokeLinecap="round"
-          strokeDasharray="1 12"
-          opacity="0.18"
-        />
-        <path
-          ref={strapSeamLeftRef}
-          fill="none"
-          stroke="rgba(248, 245, 255, 0.74)"
-          strokeWidth="1.2"
-          strokeLinecap="round"
-          opacity="0.82"
-          transform="translate(-4.9 0)"
-        />
-        <path
-          ref={strapSeamRightRef}
-          fill="none"
-          stroke="rgba(20, 14, 31, 0.72)"
-          strokeWidth="1.2"
-          strokeLinecap="round"
-          opacity="0.88"
-          transform="translate(4.9 0)"
-        />
-
+        {/* Clean, high-end matte silicone editorial screen printing */}
         <text
-          fill="rgba(255, 252, 244, 1)"
-          stroke="rgba(11, 8, 16, 1)"
-          strokeWidth="1.85"
+          fill="rgba(255, 255, 255, 0.88)"
+          stroke="rgba(0, 0, 0, 0.28)"
+          strokeWidth="0.5"
           paintOrder="stroke"
-          fontSize="12.1"
+          fontSize="9.2"
           fontFamily="var(--font-mono)"
-          fontWeight="700"
-          letterSpacing="1.3"
-          opacity="0.98"
+          fontWeight="600"
+          letterSpacing="2.8"
+          opacity="0.94"
         >
           <textPath
             href={`#${strapPathId}`}
             startOffset="50%"
             textAnchor="middle"
           >
-            JAINAM KHARA • JAINAM KHARA • JAINAM KHARA • JAINAM KHARA • JAINAM
-            KHARA • JAINAM KHARA • JAINAM KHARA • JAINAM KHARA • JAINAM KHARA •
-            JAINAM KHARA • JAINAM KHARA • JAINAM KHARA • JAINAM KHARA • JAINAM
-            KHARA • JAINAM KHARA
+            JAINAM KHARA  //  CREATIVE DEVELOPER  //  JAINAM KHARA  //  CREATIVE DEVELOPER  //  JAINAM KHARA  //  CREATIVE DEVELOPER
           </textPath>
         </text>
+
+        {/* Dynamically swinging gunmetal/chrome Swivel snap hook clasp */}
+        <g ref={strapClipRef} className="pointer-events-none">
+          {/* Fabric fold wrapping around swivel clasp D-ring */}
+          <rect x="-10" y="-20" width="20" height="11" rx="1.5" fill="#400403" stroke="rgba(0,0,0,0.55)" strokeWidth="0.8" />
+          <line x1="-10" y1="-12" x2="10" y2="-12" stroke="rgba(0,0,0,0.4)" strokeWidth="0.8" />
+          {/* Metallic Rivet through the fabric fold */}
+          <circle cx="0" cy="-15" r="2.8" fill="url(#metal-light)" stroke="rgba(0,0,0,0.5)" strokeWidth="0.6" />
+          
+          {/* D-ring Loop of the swivel clasp */}
+          <path 
+            d="M -12 -12 L 12 -12 A 1.8 1.8 0 0 1 13.8 -10.2 L 9 -5 C 7.5 -3.5, 6 -2.5, 3.5 -2.5 L -3.5 -2.5 C -6 -2.5, -7.5 -3.5, -9 -5 L -13.8 -10.2 A 1.8 1.8 0 0 1 -12 -12 Z" 
+            fill="url(#metal-dark)" 
+            stroke="rgba(0,0,0,0.6)" 
+            strokeWidth="0.8" 
+          />
+          
+          {/* Swivel center collar */}
+          <rect x="-3" y="-2.5" width="6" height="4.5" rx="1" fill="url(#metal-light)" stroke="rgba(0,0,0,0.55)" strokeWidth="0.6" />
+          
+          {/* Snap hook curved main body */}
+          <path 
+            d="M -4.5 2 C -4.5 4.5, -6.5 8.5, -3 11.5 C 0.5 14.5, 5.5 12, 6 7.5 C 6.2 5.5, 4.5 3.5, 4.5 2" 
+            fill="none" 
+            stroke="url(#metal-dark)" 
+            strokeWidth="3.2" 
+            strokeLinecap="round" 
+          />
+          
+          {/* Clasp wire spring gate */}
+          <line x1="3.5" y1="2" x2="-3.5" y2="7.5" stroke="url(#metal-light)" strokeWidth="1.2" strokeLinecap="round" />
+        </g>
       </svg>
 
       <div
