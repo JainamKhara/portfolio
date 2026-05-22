@@ -21,8 +21,6 @@ export function Hero() {
   const tickerRef = useRef<HTMLDivElement>(null);
   const nameLineRef = useRef<HTMLDivElement>(null);
   const watermarkRef = useRef<HTMLDivElement>(null);
-  const btn1Ref = useRef<HTMLDivElement>(null);
-  const btn2Ref = useRef<HTMLDivElement>(null);
   const tickerStripRef = useRef<HTMLDivElement>(null);
   const { isLoading } = useLoading();
 
@@ -105,55 +103,7 @@ export function Hero() {
     { scope: containerRef, dependencies: [isLoading] },
   );
 
-  /* GSAP: Magnetic Buttons */
-  useGSAP(
-    () => {
-      if (isLoading) return;
 
-      const setupMagnetic = (ref: React.RefObject<HTMLDivElement | null>) => {
-        const el = ref.current;
-        if (!el) return;
-
-        const onMouseMove = (e: MouseEvent) => {
-          const rect = el.getBoundingClientRect();
-          const x = e.clientX - rect.left - rect.width / 2;
-          const y = e.clientY - rect.top - rect.height / 2;
-
-          gsap.to(el, {
-            x: x * 0.35,
-            y: y * 0.35,
-            duration: 0.3,
-            ease: "power2.out",
-          });
-        };
-
-        const onMouseLeave = () => {
-          gsap.to(el, {
-            x: 0,
-            y: 0,
-            duration: 0.5,
-            ease: "elastic.out(1, 0.3)",
-          });
-        };
-
-        el.addEventListener("mousemove", onMouseMove);
-        el.addEventListener("mouseleave", onMouseLeave);
-        return () => {
-          el.removeEventListener("mousemove", onMouseMove);
-          el.removeEventListener("mouseleave", onMouseLeave);
-        };
-      };
-
-      const cleanup1 = setupMagnetic(btn1Ref);
-      const cleanup2 = setupMagnetic(btn2Ref);
-
-      return () => {
-        if (cleanup1) cleanup1();
-        if (cleanup2) cleanup2();
-      };
-    },
-    { scope: containerRef, dependencies: [isLoading] }
-  );
 
   /* GSAP: Rule expansion */
   useGSAP(
@@ -189,12 +139,12 @@ export function Hero() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary" />
               </span>
-              <span className="section-label text-muted-foreground">
+              <span className="font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.25em] text-muted-foreground/70">
                 Available for work
               </span>
             </div>
             <span className="h-3 w-px bg-border" />
-              <span className="section-label text-muted-foreground">
+              <span className="font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.25em] text-muted-foreground/70">
                 Ahmedabad · IN
               </span>
           </motion.div>
@@ -218,16 +168,6 @@ export function Hero() {
                 JK
               </span>
             </motion.div>
-
-            {/* Role label */}
-            <motion.p
-              initial={{ opacity: 0, x: -16 }}
-              animate={!isLoading ? { opacity: 1, x: 0 } : { opacity: 0, x: -16 }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="section-label mb-5"
-            >
-              Full-Stack Developer · ML Practitioner
-            </motion.p>
 
             {/* "Jainam" */}
             <div
@@ -273,10 +213,20 @@ export function Hero() {
               </motion.h1>
             </div>
 
+            {/* Role Subtitle */}
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={!isLoading ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+              transition={{ duration: 0.6, delay: 0.38 }}
+              className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.24em] text-foreground/80 font-medium mt-5 mb-1.5"
+            >
+              Full-Stack Developer · ML Practitioner
+            </motion.p>
+
             {/* Rule */}
             <div
               ref={nameLineRef}
-              className="mt-5 h-px bg-primary"
+              className="mt-4 h-px bg-primary"
               style={{ transform: "scaleX(0)", transformOrigin: "left" }}
             />
           </div>
@@ -298,11 +248,11 @@ export function Hero() {
             </p>
 
             <div className="flex flex-wrap gap-3">
-              <div ref={btn1Ref} className="inline-block">
+              <div className="inline-block">
                 <Link
                   href="/projects"
                   data-cursor="hover"
-                  className="inline-flex items-center gap-2.5 bg-primary text-white font-mono text-[10px] uppercase tracking-widest px-6 py-3.5 hover:bg-white hover:text-background transition-all duration-300 group"
+                  className="inline-flex items-center gap-2.5 bg-primary text-white font-mono text-[10px] uppercase tracking-widest px-6 py-3.5 hover:bg-[#c22016] hover:text-white transition-colors duration-300 group"
                 >
                   View Work
                   <span className="group-hover:translate-x-1 transition-transform duration-300">
@@ -310,12 +260,12 @@ export function Hero() {
                   </span>
                 </Link>
               </div>
-              <div ref={btn2Ref} className="inline-block">
+              <div className="inline-block">
                 <a
                   href="/Jainam_Khara_CV.pdf"
                   download
                   data-cursor="hover"
-                  className="inline-flex items-center gap-2 border border-border font-mono text-[10px] uppercase tracking-widest px-6 py-3.5 hover:border-primary hover:text-primary transition-all duration-300"
+                  className="inline-flex items-center gap-2 border border-border font-mono text-[10px] uppercase tracking-widest px-6 py-3.5 hover:border-primary hover:text-primary hover:bg-primary/5 transition-colors duration-300"
                 >
                   <b>CV ↗</b>
                 </a>
@@ -336,7 +286,7 @@ export function Hero() {
               ease: [0.22, 1, 0.36, 1],
               delay: 0.45,
             }}
-            className="relative z-20 w-full max-w-[31rem] h-[39rem] sm:h-[42rem] md:h-[45rem] lg:h-[49rem] lg:-mt-24 xl:-mt-28 overflow-visible"
+            className="relative z-20 w-full max-w-[31rem] h-[39rem] sm:h-[42rem] md:h-[45rem] lg:h-[49rem] lg:-mt-24 xl:-mt-24 overflow-visible"
           >
             <IDCard />
           </motion.div>

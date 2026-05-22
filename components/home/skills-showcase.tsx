@@ -366,6 +366,8 @@ function MorphicOrb({ activeCategory }: { activeCategory: SkillCategory }) {
   );
 }
 
+
+
 export function SkillsShowcase() {
   const [active, setActive] = useState<SkillCategory>(CATEGORIES[0]);
   const ref    = useRef<HTMLDivElement>(null);
@@ -454,7 +456,7 @@ export function SkillsShowcase() {
     <section className="py-24 md:py-32 px-6 md:px-12 lg:px-20 bg-card overflow-hidden relative">
       <div ref={ref} className="max-w-7xl mx-auto">
         {/* Animated Blueprint divider reveal lines */}
-        <RevealLine tagLeft="[ SYS_STAT // SEC_02 ]" tagRight="[ CAD_GRID // 02 ]" className="mb-16" />
+        <RevealLine className="mb-16" />
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-16 lg:items-center">
           
@@ -476,25 +478,32 @@ export function SkillsShowcase() {
 
               {/* Category tabs */}
               <motion.div
-                className="flex flex-wrap gap-2"
                 initial={{ opacity: 0 }}
                 animate={inView ? { opacity: 1 } : {}}
                 transition={{ duration: 0.6, delay: 0.3 }}
               >
-                {CATEGORIES.map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setActive(cat)}
-                    data-cursor="hover"
-                    className={`font-mono text-[10px] uppercase tracking-widest px-4 py-2 border transition-all duration-300 ${
-                      active === cat
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground"
-                    }`}
-                  >
-                    {cat === "Frameworks/Libraries" ? "Frameworks" : cat === "ML/Data" ? "AI / ML" : cat === "Cloud/DevOps" ? "DevOps" : cat}
-                  </button>
-                ))}
+                <div role="tablist" className="flex flex-wrap gap-2">
+                  {CATEGORIES.map((cat) => (
+                    <button
+                      key={cat}
+                      ref={(el) => {
+                        if (el) {
+                          el.setAttribute("aria-selected", active === cat ? "true" : "false");
+                        }
+                      }}
+                      role="tab"
+                      onClick={() => setActive(cat)}
+                      data-cursor="hover"
+                      className={`font-mono text-[10px] uppercase tracking-widest px-4 py-2 border transition-colors duration-300 ${
+                        active === cat
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground"
+                      }`}
+                    >
+                      {cat === "Frameworks/Libraries" ? "Frameworks" : cat === "ML/Data" ? "AI / ML" : cat === "Cloud/DevOps" ? "DevOps" : cat}
+                    </button>
+                  ))}
+                </div>
               </motion.div>
             </div>
 
@@ -517,15 +526,18 @@ export function SkillsShowcase() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.35, delay: i * 0.04, ease: [0.22, 1, 0.36, 1] }}
-                    className="group flex flex-col items-center gap-3 p-5 border border-border hover:border-primary/50 bg-background hover:bg-primary/5 transition-all duration-300 cursor-default"
+                    className="group flex flex-col items-center gap-3 p-5 border border-border bg-background hover:border-primary hover:-translate-x-1.5 hover:-translate-y-1.5 hover:shadow-[6px_6px_0_0_#D9281C] transition-all duration-300 ease-[0.22,1,0.36,1] cursor-default relative"
                     data-cursor="hover"
                   >
+                    {/* Status LED Indicator Dot */}
+                    <div className="absolute top-2 right-2 w-1.5 h-1.5 bg-[#D9281C] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
                     <TechIcon
                       logoKey={skill.logoKey}
                       name={skill.name}
-                      className="h-8 w-8 grayscale group-hover:grayscale-0 transition-all duration-500"
+                      className="h-8 w-8 grayscale group-hover:grayscale-0 group-hover:scale-110 group-hover:-translate-y-0.5 transition-all duration-300 ease-[0.22,1,0.36,1]"
                     />
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground group-hover:text-foreground transition-colors text-center leading-tight">
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors duration-300 text-center leading-tight">
                       {skill.name}
                     </span>
                   </motion.div>
@@ -539,20 +551,6 @@ export function SkillsShowcase() {
             {/* Technical grid background */}
             <div className="absolute inset-0 border border-border/40 dark:border-border/20 bg-[linear-gradient(rgba(217,40,28,0.038)_1px,transparent_1px),linear-gradient(90deg,rgba(217,40,28,0.038)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(217,40,28,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(217,40,28,0.015)_1px,transparent_1px)] bg-[size:32px_32px] rounded-lg pointer-events-none" />
             
-            {/* Holographic framing markings */}
-            <div className="absolute top-4 left-4 font-mono text-[8px] text-muted-foreground/60 dark:text-muted-foreground/35 uppercase tracking-widest pointer-events-none">
-              [ SYSTEM STATUS: ONLINE // WEBG_ENGINE_V2 ]
-            </div>
-            <div className="absolute top-4 right-4 font-mono text-[8px] text-muted-foreground/60 dark:text-muted-foreground/35 uppercase tracking-widest pointer-events-none">
-              RESOLUTION: 2400_PNTS
-            </div>
-            <div className="absolute bottom-4 left-4 font-mono text-[8px] text-muted-foreground/60 dark:text-muted-foreground/35 uppercase tracking-widest pointer-events-none">
-              GEOM_HASH: {active === "Frameworks/Libraries" ? "FRAMEWORKS" : active === "ML/Data" ? "AI_ML" : active === "Cloud/DevOps" ? "DEVOPS" : active.toUpperCase()}
-            </div>
-            <div className="absolute bottom-4 right-4 font-mono text-[8px] text-primary/75 dark:text-primary/60 uppercase tracking-widest pointer-events-none font-bold animate-pulse">
-              MORPHIC: ACTIVE
-            </div>
-
             {mounted && (
               <div className="h-full w-full cursor-grab active:cursor-grabbing">
                 <Canvas camera={{ position: [0, 0, 2.18], fov: 55 }}>

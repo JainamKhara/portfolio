@@ -101,7 +101,7 @@ function ThreeDProjectCard({ src, alt }: { src: string; alt: string }) {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="w-full md:w-80 lg:w-96 shrink-0 relative overflow-hidden border-[1.5px] border-primary/60 bg-black transition-all duration-300"
+      className="w-full md:w-80 lg:w-96 shrink-0 relative overflow-hidden border-[1.5px] border-primary/60 bg-black transition-[border-color,transform,box-shadow] duration-300"
       style={{
         aspectRatio: "16/9",
         transformStyle: "preserve-3d",
@@ -232,7 +232,7 @@ export function FeaturedProjects() {
       <div className="px-6 md:px-12 lg:px-20 pb-24 md:pb-32">
         <div className="max-w-7xl mx-auto">
           {/* Animated Blueprint divider reveal lines */}
-          <RevealLine tagLeft="[ SYS_STAT // SEC_01 ]" tagRight="[ CAD_GRID // 01 ]" className="mb-16" />
+          <RevealLine className="mb-16" />
 
       {/* Header */}
       <div className="section-header flex items-end justify-between pb-12 md:pb-16">
@@ -268,6 +268,12 @@ export function FeaturedProjects() {
 
               {/* ── Clickable row header ── */}
               <button
+                ref={(el) => {
+                  if (el) {
+                    el.setAttribute("aria-expanded", isOpen ? "true" : "false");
+                    el.setAttribute("aria-controls", `proj-content-${project.id}`);
+                  }
+                }}
                 onClick={() => setExpanded(isOpen ? null : project.id)}
                 data-cursor="hover"
                 className="w-full group relative text-left"
@@ -332,6 +338,7 @@ export function FeaturedProjects() {
               <AnimatePresence initial={false}>
                 {isOpen && (
                   <motion.div
+                    id={`proj-content-${project.id}`}
                     initial={{ height: 0 }}
                     animate={{ height: "auto" }}
                     exit={{ height: 0 }}
@@ -355,7 +362,7 @@ export function FeaturedProjects() {
                             <Link
                               href={`/projects/${project.id}`}
                               data-cursor="hover"
-                              className="inline-flex items-center gap-2 bg-primary text-white font-mono text-[9px] uppercase tracking-widest px-5 py-2.5 hover:bg-white hover:text-background transition-all duration-300 group"
+                              className="inline-flex items-center gap-2 bg-primary text-white font-mono text-[9px] uppercase tracking-widest px-5 py-2.5 hover:bg-[#c22016] hover:text-white transition-colors duration-300 group"
                             >
                               Case Study
                               <ArrowUpRight className="h-3 w-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
@@ -391,7 +398,7 @@ export function FeaturedProjects() {
           <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/80 group-hover:text-primary transition-colors duration-300">
             See all projects
           </span>
-          <ArrowUpRight className="h-4 w-4 text-muted-foreground/80 group-hover:text-primary transition-all duration-300" />
+          <ArrowUpRight className="h-4 w-4 text-muted-foreground/80 group-hover:text-primary transition-[color,transform] duration-300" />
         </Link>
       </div>
       </div>

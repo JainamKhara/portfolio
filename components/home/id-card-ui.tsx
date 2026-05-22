@@ -14,7 +14,7 @@ export function IDCardUI({ isDragging, innerRef }: IDCardUIProps) {
     <div
       ref={innerRef}
       className={cn(
-        "relative select-none rounded-[1.6rem] pointer-events-auto transition-all duration-500",
+        "relative select-none rounded-[1.6rem] pointer-events-auto transition-shadow duration-500",
         // Multi-layered clear/frosted polycarbonate bevel border container
         "p-[4px]",
         "bg-gradient-to-br from-white/95 via-white/35 to-black/25 dark:from-white/18 dark:via-white/5 dark:to-black/60",
@@ -45,7 +45,7 @@ export function IDCardUI({ isDragging, innerRef }: IDCardUIProps) {
         {/* ── Graphic Accent Overlays ── */}
         <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-[linear-gradient(180deg,rgba(0,0,0,0.03),transparent_70%)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.07),transparent_70%)]" />
         <div className="pointer-events-none absolute inset-0 rounded-[1.32rem] border border-foreground/[0.05] dark:border-white/[0.03]" />
-        <div className="pointer-events-none absolute inset-0 rounded-[1.32rem] shadow-[inset_0_0_0_1px_rgba(217,40,28,0.06)]" />
+        <div className="pointer-events-none absolute inset-0 rounded-[1.32rem] shadow-[inset_0_0_0_1px_var(--poly-glow)]" />
         
         {/* Editorial side technical ticks */}
         <div className="pointer-events-none absolute inset-y-8 left-0 w-px bg-foreground/[0.04] dark:bg-white/5" />
@@ -57,7 +57,7 @@ export function IDCardUI({ isDragging, innerRef }: IDCardUIProps) {
           className="absolute left-1/2 top-[12px] z-20 h-6 w-6 -translate-x-1/2 rounded-full border-2 border-primary/45 dark:border-primary/55 bg-[linear-gradient(180deg,rgba(250,240,240,0.95)_0%,rgba(230,180,180,0.88)_36%,rgba(217,40,28,0.4)_100%)] dark:bg-[linear-gradient(180deg,rgba(255,240,240,0.95)_0%,rgba(220,100,100,0.88)_36%,rgba(150,20,20,0.96)_100%)] shadow-[0_8px_18px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_18px_rgba(0,0,0,0.36)]"
         >
           <div className="absolute inset-x-[3px] top-[3px] h-[2px] rounded-full bg-white/75" />
-          <div className="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-background dark:bg-[#09090c] shadow-[inset_0_2px_4px_rgba(0,0,0,0.25)] dark:shadow-[inset_0_2px_4px_rgba(0,0,0,0.7)]" />
+          <div className="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--hanger-eyelet-bg)] shadow-[inset_0_2px_4px_rgba(0,0,0,0.25)] dark:shadow-[inset_0_2px_4px_rgba(0,0,0,0.7)]" />
         </div>
 
         {/* ── Primary Layout Container ── */}
@@ -72,11 +72,6 @@ export function IDCardUI({ isDragging, innerRef }: IDCardUIProps) {
               <p className="mt-1 font-mono text-[7px] uppercase tracking-[0.24em] text-muted-foreground/80">
                 Corporate Directory
               </p>
-            </div>
-            <div className="rounded-md border border-foreground/10 dark:border-white/8 bg-foreground/5 dark:bg-white/[0.03] px-2.5 py-0.5 animate-pulse">
-              <span className="font-mono text-[7px] uppercase tracking-[0.2em] text-foreground/75 dark:text-foreground/60">
-                SYS-VER // 2026
-              </span>
             </div>
           </div>
 
@@ -96,7 +91,7 @@ export function IDCardUI({ isDragging, innerRef }: IDCardUIProps) {
                 priority
                 draggable={false}
                 sizes="(max-width: 640px) 300px, 360px"
-                className="object-cover grayscale contrast-[1.12] brightness-[0.9] hover:grayscale-0 transition-all duration-700"
+                className="object-cover grayscale contrast-[1.12] brightness-[0.9] hover:grayscale-0 transition-[filter] duration-700"
                 style={{ objectPosition: "50% 18%" }}
               />
             </div>

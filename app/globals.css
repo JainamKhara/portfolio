@@ -84,6 +84,15 @@
   --sidebar-accent-foreground: #D9281C;
   --sidebar-border:            rgba(10, 10, 10, 0.12);
   --sidebar-ring:              #D9281C;
+
+  /* Physical ID Card & Lanyard Tokens */
+  --clasp-fold:                #400403;
+  --poly-glow:                 rgba(217, 40, 28, 0.06);
+  --hanger-eyelet-bg:          #faeded;
+  --lanyard-stop-0:            #4A0B09;
+  --lanyard-stop-1:            #8A1310;
+  --lanyard-stop-2:            #D9281C;
+  --lanyard-stop-3:            #A31C14;
 }
 
 .dark {
@@ -125,6 +134,15 @@
   --sidebar-accent-foreground: #D9281C;
   --sidebar-border:            rgba(248, 250, 252, 0.08);
   --sidebar-ring:              #D9281C;
+
+  /* Physical ID Card & Lanyard Tokens */
+  --clasp-fold:                #200201;
+  --poly-glow:                 rgba(217, 40, 28, 0.08);
+  --hanger-eyelet-bg:          #09090c;
+  --lanyard-stop-0:            #240504;
+  --lanyard-stop-1:            #520B09;
+  --lanyard-stop-2:            #D9281C;
+  --lanyard-stop-3:            #7F150F;
 }
 
 /* ─── Base ─── */

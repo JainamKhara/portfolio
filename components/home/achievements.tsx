@@ -187,7 +187,7 @@ export function Achievements() {
     >
       <div className="max-w-7xl mx-auto">
         {/* Animated Blueprint divider reveal line */}
-        <RevealLine tagLeft="[ SYS_STAT // SEC_03 ]" tagRight="[ CAD_GRID // 03 ]" className="mb-16" />
+        <RevealLine className="mb-16" />
 
         {/* Header */}
         <div className="mb-16">
@@ -209,14 +209,7 @@ export function Achievements() {
               key={m.label}
               className="milestone-card group relative p-8 md:p-10 flex flex-col justify-between transition-colors duration-500 overflow-hidden bg-background/5 min-h-[320px] opacity-0"
             >
-              {/* Technical annotations top bar */}
-              <div className="flex items-center justify-between font-mono text-[9px] text-muted-foreground/40 tracking-widest mb-6 select-none pb-4 border-b border-border/30">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-primary/70">[</span>
-                  <span>METRIC_0{i + 1}</span>
-                  <span className="text-primary/70">]</span>
-                </div>
-              </div>
+
 
               {/* Huge number & icon overlay */}
               <div className="relative my-8 flex items-baseline justify-between">
@@ -251,7 +244,7 @@ export function Achievements() {
               <div className="glare-overlay absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-tr from-primary/5 via-transparent to-transparent" />
 
               {/* Bottom dynamic light line */}
-              <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-primary group-hover:w-full transition-all duration-700" />
+              <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-primary group-hover:w-full transition-[width] duration-700" />
             </div>
           ))}
         </div>

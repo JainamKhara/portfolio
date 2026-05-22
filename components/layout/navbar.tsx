@@ -16,11 +16,94 @@ const NAV = [
   { label: "Contact", href: "/contact" },
 ];
 
+interface NavLinkProps {
+  item: typeof NAV[0];
+  isActive: boolean;
+}
+
+function NavLink({ item, isActive }: NavLinkProps) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <Link
+      href={item.href}
+      data-cursor="hover"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="relative h-full flex items-center justify-center font-mono text-[10.5px] font-bold uppercase tracking-[0.2em] select-none overflow-visible transition-colors duration-300 border-r border-border/40 first:border-l shrink-0 min-w-fit"
+      style={{ perspective: 1000, transformStyle: "preserve-3d" }}
+    >
+      {/* 3D Vertical Flipping Card Section (Normal flow to size the link correctly) */}
+      <motion.div
+        className="h-full flex items-center justify-center px-4 lg:px-6"
+        animate={{
+          rotateX: isHovered ? 360 : 0,
+          backgroundColor: isHovered
+            ? "#D9281C"
+            : isActive
+            ? "rgba(217, 40, 28, 0.08)"
+            : "rgba(0, 0, 0, 0)",
+        }}
+        transition={{
+          rotateX: {
+            type: "spring",
+            stiffness: 120,
+            damping: 20,
+            mass: 1,
+          },
+          backgroundColor: {
+            duration: 0.3,
+            ease: "easeInOut",
+          },
+        }}
+        style={{
+          transformStyle: "preserve-3d",
+          backfaceVisibility: "visible",
+          willChange: "transform",
+        }}
+      >
+        {/* Text Label - spins 3D coordinate-synced with its card background wrapper */}
+        <span
+          className={cn(
+            "relative z-10 transition-colors duration-300 block whitespace-nowrap",
+            isHovered
+              ? "text-white"
+              : isActive
+              ? "text-primary"
+              : "text-foreground/70"
+          )}
+          style={{ transform: "translateZ(1px)" }} // Tiny positive Z offset to guarantee absolute layered clarity
+        >
+          {item.label}
+        </span>
+
+        {/* Active Route bottom border highlighter indicator (Hidden during active rotation) */}
+        {isActive && !isHovered && (
+          <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#D9281C]" />
+        )}
+      </motion.div>
+    </Link>
+  );
+}
+
 export function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const logoRef = useRef<HTMLAnchorElement>(null);
+  const logoSpanRef = useRef<HTMLSpanElement>(null);
+  const menuBtnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const btn = menuBtnRef.current;
+    if (!btn) return;
+    btn.setAttribute("aria-expanded", menuOpen ? "true" : "false");
+    if (menuOpen) {
+      btn.setAttribute("aria-controls", "mobile-menu");
+    } else {
+      btn.removeAttribute("aria-controls");
+    }
+  }, [menuOpen]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -30,7 +113,7 @@ export function Navbar() {
 
   /* GSAP magnetic logo */
   useEffect(() => {
-    const el = logoRef.current;
+    const el = logoSpanRef.current;
     if (!el) return;
     const xTo = gsap.quickTo(el, "x", { duration: 0.5, ease: "power3" });
     const yTo = gsap.quickTo(el, "y", { duration: 0.5, ease: "power3" });
@@ -58,68 +141,60 @@ export function Navbar() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 lg:px-20 h-16 transition-all duration-500",
-          scrolled
-            ? "bg-background/85 backdrop-blur-xl border-b border-border shadow-[0_2px_20px_-10px_rgba(0,0,0,0.1)] h-14"
-            : "bg-transparent h-20",
+          "fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 lg:px-8 transition-[background-color,border-color,box-shadow,height] duration-500 border-b border-border/40",
+          scrolled ? "h-14 shadow-[0_2px_15px_rgba(0,0,0,0.02)]" : "h-16 lg:h-20",
         )}
       >
-        {/* Logo */}
-        <Link
-          href="/"
-          data-cursor="hover"
-          className="flex items-center gap-3 font-display font-black text-xl tracking-tight hover:text-primary transition-colors duration-300 group"
-        >
-          <span
+        {/* Background Layer with Backdrop Filter (Isolated to prevent nested 3D flattening) */}
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-xl -z-10 pointer-events-none" />
+        {/* Brand Segment (High-contrast Serif Display Typography with Right Border divider) */}
+        <div className="flex items-center h-full border-r border-border/40 pr-8 md:pr-12">
+          <Link
             ref={logoRef}
-            className="inline-flex items-center justify-center w-8 h-8 bg-primary text-white font-mono font-bold text-[10px] shadow-lg shadow-primary/20"
+            href="/"
+            data-cursor="hover"
+            className="flex items-center gap-3 hover:text-primary transition-colors duration-300 group"
           >
-            JK
-          </span>
-          <span className="hidden sm:inline-block">Jainam</span>
-        </Link>
-
-        {/* Desktop nav */}
-        <nav className="hidden lg:flex items-center gap-10">
-          {NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              data-cursor="hover"
-              className={cn(
-                "font-mono text-[11px] font-semibold uppercase tracking-[0.2em] transition-all duration-300 relative py-1",
-                pathname === item.href
-                  ? "text-primary"
-                  : "text-foreground/60 hover:text-foreground",
-              )}
+            <span
+              ref={logoSpanRef}
+              className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-primary text-white font-mono font-bold text-[10px] shadow-lg shadow-primary/20"
             >
-              {item.label}
-              {pathname === item.href && (
-                <motion.span
-                  layoutId="nav-underline"
-                  className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-primary"
-                />
-              )}
-            </Link>
+              JK
+            </span>
+            <span className="hidden sm:inline-block font-display font-black text-xl italic tracking-tight text-foreground">
+              Jainam
+            </span>
+          </Link>
+        </div>
+
+        {/* Desktop Nav Links (Segmented Brutalist block grid cells with full-height display) */}
+        <nav className="hidden lg:flex items-center h-full">
+          {NAV.map((item) => (
+            <NavLink
+              key={item.href}
+              item={item}
+              isActive={pathname === item.href}
+            />
           ))}
         </nav>
 
-        {/* Actions (Desktop) */}
-        <div className="hidden lg:flex items-center gap-6">
+        {/* Actions Segment with Left Border divider */}
+        <div className="hidden lg:flex items-center gap-6 h-full border-l border-border/40 pl-8 lg:pl-12">
           <ThemeSwitch />
           <Link
             href="/contact"
             data-cursor="hover"
-            className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] px-6 py-2.5 border border-foreground/10 bg-foreground text-background hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 shadow-sm"
+            className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] px-6 py-2.5 bg-foreground text-background hover:bg-primary hover:text-white transition-all duration-300 border border-foreground/10 hover:border-primary hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#D9281C]"
           >
             Hire me
           </Link>
         </div>
 
-        {/* Mobile controls */}
-        <div className="lg:hidden flex items-center gap-4">
+        {/* Mobile controls (Compact fit) */}
+        <div className="lg:hidden flex items-center gap-4 h-full">
           <ThemeSwitch />
           <button
+            ref={menuBtnRef}
             className="flex flex-col gap-1.5 p-2 z-50 group"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Toggle menu"
@@ -127,17 +202,17 @@ export function Navbar() {
             <motion.span
               animate={{ rotate: menuOpen ? 45 : 0, y: menuOpen ? 7.5 : 0 }}
               transition={{ duration: 0.3 }}
-              className="block w-6 h-[1.5px] bg-foreground group-hover:bg-primary transition-colors"
+              className="block w-5 h-[1.5px] bg-foreground group-hover:bg-primary transition-colors"
             />
             <motion.span
               animate={{ opacity: menuOpen ? 0 : 1, scaleX: menuOpen ? 0 : 1 }}
               transition={{ duration: 0.2 }}
-              className="block w-6 h-[1.5px] bg-foreground group-hover:bg-primary transition-colors"
+              className="block w-5 h-[1.5px] bg-foreground group-hover:bg-primary transition-colors"
             />
             <motion.span
               animate={{ rotate: menuOpen ? -45 : 0, y: menuOpen ? -7.5 : 0 }}
               transition={{ duration: 0.3 }}
-              className="block w-6 h-[1.5px] bg-foreground group-hover:bg-primary transition-colors"
+              className="block w-5 h-[1.5px] bg-foreground group-hover:bg-primary transition-colors"
             />
           </button>
         </div>
@@ -147,6 +222,7 @@ export function Navbar() {
       <AnimatePresence>
         {menuOpen && (
           <motion.div
+            id="mobile-menu"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -166,7 +242,7 @@ export function Navbar() {
                       href={item.href}
                       onClick={() => setMenuOpen(false)}
                       className={cn(
-                        "font-display font-black text-[clamp(2.5rem,10vw,5rem)] leading-none transition-all duration-300 block hover:text-primary hover:translate-x-3 w-fit",
+                        "font-display font-black text-[clamp(2.5rem,10vw,5rem)] leading-none transition-[color,transform] duration-300 block hover:text-primary hover:translate-x-3 w-fit",
                         pathname === item.href
                           ? "text-primary"
                           : "text-foreground",

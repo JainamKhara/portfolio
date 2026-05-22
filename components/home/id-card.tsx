@@ -776,6 +776,8 @@ export function IDCard() {
 
       <div
         ref={cardRef}
+        role="application"
+        aria-label="Interactive 3D lanyard student ID card. Click and drag to swing with realistic physical spring dynamics."
         className="absolute left-0 top-0 z-30 will-change-transform"
         style={{
           width: `${cardWidth}px`,
