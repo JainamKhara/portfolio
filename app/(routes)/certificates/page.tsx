@@ -114,7 +114,7 @@ export default function CertificatesPage() {
       </div>
 
       {/* ── Grid ── */}
-      <div className="px-6 md:px-12 lg:px-20 py-16">
+      <div className="px-6 md:px-12 lg:px-20 py-10">
         <motion.p className="section-label text-foreground/60 mb-8">
           {filtered.length} result{filtered.length !== 1 ? "s" : ""}
         </motion.p>
@@ -142,7 +142,7 @@ export default function CertificatesPage() {
         </motion.div>
 
         {filtered.length === 0 && (
-          <div className="text-center py-24">
+          <div className="text-center py-12">
             <p className="font-mono text-[11px] uppercase tracking-widest text-foreground/60">
               No certificates match. Try adjusting your search.
             </p>
@@ -151,7 +151,7 @@ export default function CertificatesPage() {
       </div>
 
       {/* ── Stats strip ── */}
-      <div ref={statsRef} className="border-t border-border px-6 md:px-12 lg:px-20 py-16">
+      <div ref={statsRef} className="border-t border-border px-6 md:px-12 lg:px-20 py-10">
         <div className="grid grid-cols-3 gap-px bg-border">
           {stats.map((s, i) => (
             <motion.div

@@ -107,7 +107,7 @@ function ProjectCard({
           </Link>
         </div>
 
-        <p className="text-sm text-foreground/80 leading-relaxed line-clamp-2 mb-4">
+        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 mb-4 group-hover:text-foreground/90 transition-colors duration-300">
           {project.description}
         </p>
 
@@ -200,7 +200,7 @@ export default function ProjectsPage() {
       </div>
 
       {/* ── Grid ── */}
-      <div className="px-6 md:px-12 lg:px-20 py-16">
+      <div className="px-6 md:px-12 lg:px-20 py-10">
         <motion.div
           layout
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
@@ -213,7 +213,7 @@ export default function ProjectsPage() {
         </motion.div>
 
         {filtered.length === 0 && (
-          <div className="text-center py-24">
+          <div className="text-center py-12">
             <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
               No projects match this filter.
             </p>

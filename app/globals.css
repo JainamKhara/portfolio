@@ -292,3 +292,41 @@
     clip-path: circle(150vmax at var(--click-x, 50%) var(--click-y, 50%));
   }
 }
+
+/* ─────────────────────────────────────────────────────
+   GLOBAL ACCESSIBILITY UPGRADES — Typography Scaling
+   Instantly scales up tiny unreadable fonts project-wide
+   without breaking existing Tailwind class layouts.
+   ───────────────────────────────────────────────────── */
+:root {
+  /* Scale standard theme fonts */
+  --text-xs: 0.8125rem;   /* 13px instead of 12px */
+  --text-sm: 0.9375rem;   /* 15px instead of 14px */
+  --text-base: 1.0625rem; /* 17px instead of 16px */
+}
+
+/* Redefine small arbitrary classes to enforce absolute legibility */
+.text-\[8px\] {
+  font-size: 11px !important;
+}
+.text-\[9px\] {
+  font-size: 12px !important;
+}
+.text-\[10px\] {
+  font-size: 13px !important;
+}
+.text-\[11px\] {
+  font-size: 14px !important;
+}
+.text-xs {
+  font-size: 13px !important;
+}
+.text-sm {
+  font-size: 15px !important;
+}
+
+/* Increase section label legibility */
+.section-label {
+  font-size: 0.8rem !important;
+  letter-spacing: 0.25em;
+}

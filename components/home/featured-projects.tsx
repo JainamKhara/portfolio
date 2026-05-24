@@ -1,19 +1,18 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { gsap, useGSAP } from "@/lib/gsap";
 import Image from "next/image";
 import Link from "next/link";
 import { projects } from "@/data/projects";
-import { ArrowUpRight, ChevronDown } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { DecoderText } from "@/components/decoder-text";
 import { RevealLine } from "@/components/reveal-line";
 
 const featured = projects.filter((p) => p.featured);
 
-// Tactile 3D Specular Glare Card Component
-function ThreeDProjectCard({ src, alt }: { src: string; alt: string }) {
+// Tactile 3D Specular Parallax Card Component
+function ThreeDProjectCard({ src, alt, isHovered }: { src: string; alt: string; isHovered: boolean }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const glareRef = useRef<HTMLDivElement>(null);
@@ -32,22 +31,22 @@ function ThreeDProjectCard({ src, alt }: { src: string; alt: string }) {
 
     // Tilt card dynamically in 3D (max 18 degrees tilt)
     gsap.to(el, {
-      rotateY: mouseX * 22,
-      rotateX: -mouseY * 22,
-      scale: 1.02,
-      boxShadow: "0 20px 40px rgba(217, 40, 28, 0.15), 0 1px 3px rgba(0, 0, 0, 0.2)",
+      rotateY: mouseX * 18,
+      rotateX: -mouseY * 18,
+      scale: 1.01,
+      boxShadow: "0 15px 30px rgba(217, 40, 28, 0.12), 0 1px 3px rgba(0, 0, 0, 0.15)",
       ease: "power2.out",
-      duration: 0.45,
+      duration: 0.4,
     });
 
     // Translate the image in the opposite direction (stereoscopic parallax depth)
     if (imageRef.current) {
       gsap.to(imageRef.current, {
-        x: -mouseX * 12,
-        y: -mouseY * 12,
-        scale: 1.05,
+        x: -mouseX * 10,
+        y: -mouseY * 10,
+        scale: 1.04,
         ease: "power2.out",
-        duration: 0.45,
+        duration: 0.4,
       });
     }
 
@@ -56,9 +55,9 @@ function ThreeDProjectCard({ src, alt }: { src: string; alt: string }) {
       const glareX = (mouseX + 0.5) * 100;
       const glareY = (mouseY + 0.5) * 100;
       gsap.to(glareRef.current, {
-        background: `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 65%)`,
+        background: `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0) 60%)`,
         ease: "power2.out",
-        duration: 0.45,
+        duration: 0.4,
       });
     }
   };
@@ -74,7 +73,7 @@ function ThreeDProjectCard({ src, alt }: { src: string; alt: string }) {
       scale: 1.0,
       boxShadow: "0 0px 0px rgba(0, 0, 0, 0), 0 0px 0px rgba(0, 0, 0, 0)",
       ease: "power3.out",
-      duration: 0.7,
+      duration: 0.6,
     });
 
     if (imageRef.current) {
@@ -83,7 +82,7 @@ function ThreeDProjectCard({ src, alt }: { src: string; alt: string }) {
         y: 0,
         scale: 1.0,
         ease: "power3.out",
-        duration: 0.7,
+        duration: 0.6,
       });
     }
 
@@ -91,7 +90,7 @@ function ThreeDProjectCard({ src, alt }: { src: string; alt: string }) {
       gsap.to(glareRef.current, {
         background: "radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 100%)",
         ease: "power3.out",
-        duration: 0.7,
+        duration: 0.6,
       });
     }
   };
@@ -101,11 +100,15 @@ function ThreeDProjectCard({ src, alt }: { src: string; alt: string }) {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="w-full md:w-80 lg:w-96 shrink-0 relative overflow-hidden border-[1.5px] border-primary/60 bg-black transition-[border-color,transform,box-shadow] duration-300"
+      className={`w-full relative overflow-hidden border-[1.5px] bg-black transition-colors duration-500 ease-out ${
+        isHovered 
+          ? "border-primary/60" 
+          : "border-border/40"
+      }`}
       style={{
         aspectRatio: "16/9",
         transformStyle: "preserve-3d",
-        perspective: "1200px",
+        perspective: "1000px",
       }}
     >
       {/* Inner Image Container with dynamic opposite offset */}
@@ -119,7 +122,8 @@ function ThreeDProjectCard({ src, alt }: { src: string; alt: string }) {
           alt={alt}
           fill
           className="object-cover object-top"
-          sizes="(max-width: 768px) 100vw, 384px"
+          sizes="(max-width: 768px) 100vw, 600px"
+          priority
         />
         <div className="absolute inset-0 bg-primary/5" />
       </div>
@@ -138,7 +142,7 @@ function ThreeDProjectCard({ src, alt }: { src: string; alt: string }) {
 
 export function FeaturedProjects() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [expanded, setExpanded] = useState<string | null>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const renderSplitHeading = (text: string) => {
     return text.split(" ").map((word, wIdx) => (
@@ -166,7 +170,7 @@ export function FeaturedProjects() {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          start: "top 80%",
+          start: "top 82%",
           toggleActions: "play none none none",
         }
       });
@@ -195,218 +199,204 @@ export function FeaturedProjects() {
           ease: "power2.out",
           scrollTrigger: {
             trigger: section,
-            start: "top 82%",
+            start: "top 84%",
           }
         }
       );
-
-      // Scroll Parallax on label
-      gsap.to(label, {
-        yPercent: 16,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: true,
-        }
-      });
     }
   }, { scope: sectionRef });
 
-  /* GSAP: stagger rows */
+  /* GSAP: staggered visual plate entrance */
   useGSAP(() => {
-    const rows = sectionRef.current?.querySelectorAll(".proj-row");
-    if (!rows) return;
-    rows.forEach((row) => {
-      gsap.fromTo(row,
-        { opacity: 0, y: 24 },
-        { opacity: 1, y: 0, duration: 0.55, ease: "power3.out",
-          scrollTrigger: { trigger: row, start: "top 91%" } }
-      );
-    });
+    const cards = sectionRef.current?.querySelectorAll(".project-spread-plate");
+    if (!cards) return;
+    gsap.fromTo(cards,
+      { opacity: 0, y: 35 },
+      { 
+        opacity: 1, 
+        y: 0, 
+        duration: 0.75, 
+        stagger: 0.15,
+        ease: "power3.out",
+        scrollTrigger: { 
+          trigger: sectionRef.current, 
+          start: "top 78%" 
+        } 
+      }
+    );
   }, { scope: sectionRef });
 
   return (
-    <section ref={sectionRef} className="relative bg-background pt-24 md:pt-32">
+    <section ref={sectionRef} className="relative bg-background pt-12 md:pt-16 overflow-hidden">
+      {/* Structural Brutalist paper borders connecting sections */}
+      <div className="absolute inset-x-6 md:inset-x-12 lg:inset-x-20 top-0 h-[1px] bg-border/40 pointer-events-none" />
+      <div className="absolute inset-y-0 left-6 md:left-12 lg:left-20 w-[1px] bg-border/10 pointer-events-none" />
+      <div className="absolute inset-y-0 right-6 md:right-12 lg:right-20 w-[1px] bg-border/10 pointer-events-none" />
+
       <div className="px-6 md:px-12 lg:px-20 pb-24 md:pb-32">
-        <div className="max-w-7xl mx-auto">
-          {/* Animated Blueprint divider reveal lines */}
+        <div className="max-w-7xl mx-auto relative z-10">
+          
+          {/* Subtle line break divider */}
           <RevealLine className="mb-16" />
 
-      {/* Header */}
-      <div className="section-header flex items-end justify-between pb-12 md:pb-16">
-        <div>
-          <p className="section-label mb-3 font-mono text-[11px] uppercase tracking-widest text-primary/70 font-semibold opacity-0">
-            <DecoderText text="02 / SELECTED WORK" delay={0.2} />
-          </p>
-          <h2
-            className="font-display font-black leading-none tracking-tight flex flex-wrap"
-            style={{ fontSize: "clamp(2.8rem,7vw,5.5rem)" }}
-          >
-            {renderSplitHeading("Projects")}
-          </h2>
-        </div>
-        <Link
-          href="/projects"
-          data-cursor="hover"
-          className="hidden md:inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-foreground/60 hover:text-primary transition-colors duration-300 mb-2"
-        >
-          All work <ArrowUpRight className="h-3.5 w-3.5" />
-        </Link>
-      </div>
-
-      <div className="w-full h-px bg-border" />
-
-      {/* Rows */}
-      <div className="pb-4 md:pb-8">
-        {featured.map((project, i) => {
-          const isOpen = expanded === project.id;
-
-          return (
-            <div key={project.id} className="proj-row border-b border-border" style={{ opacity: 0 }}>
-
-              {/* ── Clickable row header ── */}
-              <button
-                ref={(el) => {
-                  if (el) {
-                    el.setAttribute("aria-expanded", isOpen ? "true" : "false");
-                    el.setAttribute("aria-controls", `proj-content-${project.id}`);
-                  }
-                }}
-                onClick={() => setExpanded(isOpen ? null : project.id)}
-                data-cursor="hover"
-                className="w-full group relative text-left"
+          {/* Section title (Simple editorial header) */}
+          <div className="section-header flex items-end justify-between pb-12 md:pb-16">
+            <div>
+              <p className="section-label mb-3 font-mono text-[10px] uppercase tracking-widest text-primary font-bold opacity-0">
+                <DecoderText text="02 / SELECTED WORK" delay={0.2} />
+              </p>
+              <h2
+                className="font-display font-black leading-none tracking-tight flex flex-wrap"
+                style={{ fontSize: "clamp(2.8rem,7vw,5.5rem)" }}
               >
-                {/* Hover / open bg */}
-                <div
-                  className="absolute inset-0 bg-card/70 transition-opacity duration-300 pointer-events-none"
-                  style={{ opacity: isOpen ? 1 : 0 }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.opacity = "1"; }}
-                  onMouseLeave={(e) => { if (!isOpen) (e.currentTarget as HTMLDivElement).style.opacity = "0"; }}
-                />
-
-                {/* Left accent */}
-                <div
-                  className="absolute left-0 top-0 bottom-0 w-[2px] bg-primary transition-transform duration-300 pointer-events-none origin-top"
-                  style={{ transform: isOpen ? "scaleY(1)" : "scaleY(0)" }}
-                />
-
-                <div className="relative z-10 py-6 flex items-center gap-4 md:gap-6">
-                  {/* Index */}
-                  <span className="font-mono text-[11px] text-foreground/50 w-6 shrink-0">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-
-                  {/* Title */}
-                  <div className="flex-1">
-                    <h3
-                      className="font-display font-bold leading-tight transition-colors duration-300"
-                      style={{
-                        fontSize: "clamp(1.1rem,2.6vw,1.7rem)",
-                        color: isOpen ? "#D9281C" : undefined,
-                      }}
-                    >
-                      {project.title}
-                    </h3>
-                  </div>
-
-                  {/* 3 tech badges — desktop */}
-                  <div className="hidden md:flex items-center gap-1.5 shrink-0">
-                    {project.technologies.slice(0, 3).map((t) => (
-                      <span
-                        key={t}
-                        className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 border border-border text-foreground/70"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Chevron */}
-                  <motion.div
-                    animate={{ rotate: isOpen ? 180 : 0 }}
-                    transition={{ duration: 0.28 }}
-                    className="shrink-0 text-muted-foreground/60"
-                  >
-                    <ChevronDown className="h-4 w-4" />
-                  </motion.div>
-                </div>
-              </button>
-
-              {/* ── Inline panel ── */}
-              <AnimatePresence initial={false}>
-                {isOpen && (
-                  <motion.div
-                    id={`proj-content-${project.id}`}
-                    initial={{ height: 0 }}
-                    animate={{ height: "auto" }}
-                    exit={{ height: 0 }}
-                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                    className="overflow-hidden"
-                  >
-                    <div className="pt-2 pb-8">
-                      <div className="flex flex-col md:flex-row gap-6 items-start">
-
-                        {/* 3D Specular Parallax Card */}
-                        <ThreeDProjectCard src={project.image} alt={project.title} />
-
-                        {/* Right: essentials only */}
-                        <div className="flex flex-col gap-4 flex-1 pt-1">
-                          <p className="text-sm text-foreground/80 leading-relaxed max-w-[55ch]">
-                            {project.description}
-                          </p>
-
-                          {/* CTA */}
-                          <div className="flex items-center gap-3 mt-auto pt-2">
-                            <Link
-                              href={`/projects/${project.id}`}
-                              data-cursor="hover"
-                              className="inline-flex items-center gap-2 bg-primary text-white font-mono text-[9px] uppercase tracking-widest px-5 py-2.5 hover:bg-[#c22016] hover:text-white transition-colors duration-300 group"
-                            >
-                              Case Study
-                              <ArrowUpRight className="h-3 w-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
-                            </Link>
-                            {project.github && (
-                              <a
-                                href={project.github}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                data-cursor="hover"
-                                className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors duration-200"
-                              >
-                                GitHub ↗
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                {renderSplitHeading("Projects")}
+              </h2>
             </div>
-          );
-        })}
+            <Link
+              href="/projects"
+              data-cursor="hover"
+              className="hidden md:inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-foreground/60 hover:text-primary transition-colors duration-300 mb-2 font-bold"
+            >
+              All work <ArrowUpRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
 
-        {/* Footer CTA */}
-        <Link
-          href="/projects"
-          data-cursor="hover"
-          className="group flex items-center justify-between py-6 hover:bg-card/50 transition-colors duration-300"
-        >
-          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/80 group-hover:text-primary transition-colors duration-300">
-            See all projects
-          </span>
-          <ArrowUpRight className="h-4 w-4 text-muted-foreground/80 group-hover:text-primary transition-[color,transform] duration-300" />
-        </Link>
-      </div>
-      </div>
+          {/* Compact 2-Column Staggered Magazine Spread Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 border-t border-border/40 pt-12">
+            
+            {featured.map((project, i) => {
+              const isHovered = hoveredIndex === i;
+
+              return (
+                <div
+                  key={project.id}
+                  className="project-spread-plate group flex flex-col space-y-6"
+                  onMouseEnter={() => setHoveredIndex(i)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                >
+                  {/* Plate Header: Index / Title */}
+                  <div className="flex flex-col space-y-2">
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-xs text-muted-foreground/60 select-none">
+                        0{i + 1}.
+                      </span>
+                      <h3 className={`font-display font-bold text-2xl md:text-3xl transition-colors duration-400 relative ${
+                        isHovered ? "text-primary" : "text-foreground"
+                      }`}>
+                        {project.title}
+                        {/* Horizontal slide-sweep line */}
+                        <div className={`absolute -bottom-1.5 left-0 h-[2px] bg-primary transition-all duration-400 ${
+                          isHovered ? "w-1/3" : "w-0"
+                        }`} />
+                      </h3>
+                    </div>
+
+                    {/* Technology Badges List */}
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {project.technologies.slice(0, 4).map((tech) => (
+                        <span
+                          key={tech}
+                          className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 border border-border/40 bg-secondary/10 text-foreground/75 select-none"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 3D Specular Parallax Card View */}
+                  <div className={`relative p-2.5 border transition-all duration-500 bg-card/10 ${
+                    isHovered 
+                      ? "border-primary/50 shadow-[0_12px_24px_rgba(217,40,28,0.06)]" 
+                      : "border-border/30"
+                  }`}>
+                    <ThreeDProjectCard 
+                      src={project.image} 
+                      alt={project.title} 
+                      isHovered={isHovered}
+                    />
+                  </div>
+
+                  {/* Concise Description Context & Actions */}
+                  <div className="space-y-4 pt-1 flex flex-col flex-1 justify-between">
+                    <p className="text-[15px] text-muted-foreground leading-relaxed font-sans max-w-[48ch] group-hover:text-foreground/90 transition-colors duration-300">
+                      {project.description}
+                    </p>
+
+                    {/* Triple Action Buttons (Live Demo, Case Study, Source Code) */}
+                    <div className="flex flex-wrap items-center gap-2.5 pt-4 border-t border-border/10 mt-auto">
+                      {project.liveUrl ? (
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          data-cursor="hover"
+                          className="group inline-flex items-center justify-center gap-1 bg-foreground text-background dark:bg-zinc-100 dark:text-black font-mono text-[9px] uppercase tracking-widest px-3 py-2 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors duration-300 font-bold border border-foreground dark:border-zinc-100 hover:border-primary dark:hover:border-primary flex-1 sm:flex-none text-center"
+                        >
+                          Live Demo ↗
+                        </a>
+                      ) : (
+                        <span 
+                          className="inline-flex items-center justify-center gap-1 border border-border/20 bg-secondary/5 text-foreground/30 font-mono text-[9px] uppercase tracking-widest px-3 py-2 cursor-not-allowed select-none flex-1 sm:flex-none text-center"
+                          title="Demo coming soon"
+                        >
+                          Demo Soon
+                        </span>
+                      )}
+                      
+                      <Link
+                        href={`/projects/${project.id}`}
+                        data-cursor="hover"
+                        className="group inline-flex items-center justify-center gap-1 border border-border/40 hover:border-primary/40 bg-secondary/5 text-foreground hover:text-primary font-mono text-[9px] uppercase tracking-widest px-3 py-2 transition-colors duration-300 font-bold flex-1 sm:flex-none text-center"
+                      >
+                        Case Study
+                      </Link>
+
+                      {project.github ? (
+                        <a
+                          href={project.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          data-cursor="hover"
+                          className="group inline-flex items-center justify-center gap-1 border border-border/30 hover:border-foreground/40 bg-card/5 hover:bg-card/20 text-foreground/60 hover:text-foreground font-mono text-[9px] uppercase tracking-widest px-3 py-2 transition-colors duration-300 flex-1 sm:flex-none text-center"
+                        >
+                          Source Code ↗
+                        </a>
+                      ) : (
+                        <span className="inline-flex items-center justify-center gap-1 border border-border/20 bg-secondary/5 text-foreground/30 font-mono text-[9px] uppercase tracking-widest px-3 py-2 cursor-not-allowed select-none flex-1 sm:flex-none text-center">
+                          Private Repo
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                </div>
+              );
+            })}
+
+          </div>
+
+          {/* Stately sequential footer transition line */}
+          <div className="w-full h-[1px] bg-border/40 mt-16 mb-6" />
+
+          {/* Compact bottom redirect strip */}
+          <Link
+            href="/projects"
+            data-cursor="hover"
+            className="group flex items-center justify-between py-5 px-3 hover:bg-secondary/5 transition-colors duration-300"
+          >
+            <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/85 group-hover:text-primary transition-colors duration-300 font-bold">
+              See all projects index
+            </span>
+            <ArrowUpRight className="h-4 w-4 text-muted-foreground/85 group-hover:text-primary transition-[color,transform] duration-300" />
+          </Link>
+
+        </div>
       </div>
 
-      {/* Tech marquee */}
-      <div className="h-9 border-t border-border flex items-center overflow-hidden bg-muted/10 select-none">
-        <div className="marquee-track font-mono text-[9px] uppercase tracking-widest text-muted-foreground/70 whitespace-nowrap">
+      {/* Aesthetic infinite technology loop strip linking to the footer */}
+      <div className="h-10 border-t border-border/40 flex items-center overflow-hidden bg-secondary/5 select-none pointer-events-none">
+        <div className="marquee-track font-mono text-[9px] uppercase tracking-widest text-muted-foreground/60 whitespace-nowrap">
           {[0, 1, 2, 3].map((_, k) => (
             <span key={k} className="px-3">
               Next.js · React · TypeScript · Node.js · Python · TailwindCSS

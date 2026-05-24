@@ -35,7 +35,7 @@ export default function CertificatePage() {
   }
 
   return (
-    <section className="py-20 md:py-32">
+    <section className="py-12 md:py-16">
       <div className="container px-6 md:px-12 lg:px-20">
         <Button 
           variant="ghost" 
@@ -55,7 +55,7 @@ export default function CertificatePage() {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             >
               <p className="section-label mb-4 text-primary">Certification</p>
-              <h1 className="font-display font-black text-4xl sm:text-5xl md:text-7xl leading-[0.9] tracking-tighter mb-8 uppercase">
+              <h1 className="font-display font-bold text-4xl sm:text-5xl md:text-7xl leading-[0.9] tracking-tighter mb-8 uppercase">
                 {certificate.name}
               </h1>
 

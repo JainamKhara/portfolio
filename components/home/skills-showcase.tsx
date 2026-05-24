@@ -70,7 +70,6 @@ function MorphicOrb({ activeCategory }: { activeCategory: SkillCategory }) {
   });
 
   // Calculate target positions based on activeCategory
-  // Calculate target positions based on activeCategory
   const getTargetPositions = (category: SkillCategory) => {
     const temp = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount; i++) {
@@ -366,8 +365,6 @@ function MorphicOrb({ activeCategory }: { activeCategory: SkillCategory }) {
   );
 }
 
-
-
 export function SkillsShowcase() {
   const [active, setActive] = useState<SkillCategory>(CATEGORIES[0]);
   const ref    = useRef<HTMLDivElement>(null);
@@ -453,14 +450,14 @@ export function SkillsShowcase() {
   }, []);
 
   return (
-    <section className="py-24 md:py-32 px-6 md:px-12 lg:px-20 bg-card overflow-hidden relative">
+    <section className="py-12 md:py-16 px-6 md:px-12 lg:px-20 bg-card overflow-hidden relative">
       <div ref={ref} className="max-w-7xl mx-auto">
         {/* Animated Blueprint divider reveal lines */}
         <RevealLine className="mb-16" />
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-16 lg:items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-16 lg:items-start">
           
-          {/* Left panel: Info & Grid */}
+          {/* Left panel: Info & Logo-First Bento Grid */}
           <div>
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
@@ -476,13 +473,14 @@ export function SkillsShowcase() {
                 </h2>
               </div>
 
-              {/* Category tabs */}
+              {/* Responsive Box Tab Switcher */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={inView ? { opacity: 1 } : {}}
                 transition={{ duration: 0.6, delay: 0.3 }}
+                className="w-full sm:w-auto"
               >
-                <div role="tablist" className="flex flex-wrap gap-2">
+                <div role="tablist" className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 md:gap-3 w-full border-b border-border/20 pb-4 sm:pb-1">
                   {CATEGORIES.map((cat) => (
                     <button
                       key={cat}
@@ -494,10 +492,12 @@ export function SkillsShowcase() {
                       role="tab"
                       onClick={() => setActive(cat)}
                       data-cursor="hover"
-                      className={`font-mono text-[10px] uppercase tracking-widest px-4 py-2 border transition-colors duration-300 ${
+                      className={`font-mono text-[10px] uppercase tracking-widest px-4 py-2.5 border transition-all duration-300 text-center ${
+                        cat === "Concepts" ? "col-span-2 sm:col-span-1" : ""
+                      } ${
                         active === cat
-                          ? "border-primary bg-primary/10 text-primary"
-                          : "border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground"
+                          ? "border-primary bg-primary/10 text-primary font-bold shadow-[2px_2px_0_0_#D9281C]"
+                          : "border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground hover:bg-secondary/5"
                       }`}
                     >
                       {cat === "Frameworks/Libraries" ? "Frameworks" : cat === "ML/Data" ? "AI / ML" : cat === "Cloud/DevOps" ? "DevOps" : cat}
@@ -507,49 +507,51 @@ export function SkillsShowcase() {
               </motion.div>
             </div>
 
-            {/* Glow divider */}
-            <div className="glow-line mb-16" />
+            {/* Premium, Spacious Logo-First Bento Grid */}
+            <div className="relative">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={active}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                  className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 border-t border-border/40 pt-6"
+                >
+                  {skills[active].map((skill) => (
+                    <div
+                      key={skill.name}
+                      data-cursor="hover"
+                      className="group flex flex-col items-center justify-center p-6 border border-border/30 dark:border-border/10 bg-secondary/5 dark:bg-zinc-900/5 hover:bg-secondary/15 dark:hover:bg-zinc-900/15 hover:border-primary/50 hover:shadow-[4px_4px_0_0_#D9281C] transition-all duration-300 cursor-default relative overflow-hidden rounded-sm min-h-[116px]"
+                    >
+                      {/* Tech Logo - Generous Size, Highlighted Priority */}
+                      <TechIcon
+                        logoKey={skill.logoKey}
+                        name={skill.name}
+                        className="h-11 w-11 grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-350 ease-out mb-3.5"
+                      />
 
-            {/* Skill grid */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={active}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"
-              >
-                {skills[active].map((skill, i) => (
-                  <motion.div
-                    key={skill.name}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.35, delay: i * 0.04, ease: [0.22, 1, 0.36, 1] }}
-                    className="group flex flex-col items-center gap-3 p-5 border border-border bg-background hover:border-primary hover:-translate-x-1.5 hover:-translate-y-1.5 hover:shadow-[6px_6px_0_0_#D9281C] transition-all duration-300 ease-[0.22,1,0.36,1] cursor-default relative"
-                    data-cursor="hover"
-                  >
-                    {/* Status LED Indicator Dot */}
-                    <div className="absolute top-2 right-2 w-1.5 h-1.5 bg-[#D9281C] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                    <TechIcon
-                      logoKey={skill.logoKey}
-                      name={skill.name}
-                      className="h-8 w-8 grayscale group-hover:grayscale-0 group-hover:scale-110 group-hover:-translate-y-0.5 transition-all duration-300 ease-[0.22,1,0.36,1]"
-                    />
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors duration-300 text-center leading-tight">
-                      {skill.name}
-                    </span>
-                  </motion.div>
-                ))}
-              </motion.div>
-            </AnimatePresence>
+                      {/* Bold, Highly Legible Typographic Title */}
+                      <span className="font-display text-[10px] uppercase tracking-widest text-foreground/80 group-hover:text-primary transition-colors duration-300 text-center leading-tight font-bold">
+                        {skill.name}
+                      </span>
+                    </div>
+                  ))}
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </div>
 
-          {/* Right panel: Morphic 3D WebGL Orb */}
-          <div className="hidden lg:flex h-[450px] w-full relative items-center justify-center bg-background/20 rounded-xl border border-border/20 dark:border-border/10 overflow-hidden shadow-[inset_0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[inset_0_8px_32px_rgba(0,0,0,0.38)]">
-            {/* Technical grid background */}
-            <div className="absolute inset-0 border border-border/40 dark:border-border/20 bg-[linear-gradient(rgba(217,40,28,0.038)_1px,transparent_1px),linear-gradient(90deg,rgba(217,40,28,0.038)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(217,40,28,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(217,40,28,0.015)_1px,transparent_1px)] bg-[size:32px_32px] rounded-lg pointer-events-none" />
+          {/* Right panel: Gallery Framed 3D WebGL Orb */}
+          <div className="hidden lg:flex h-[450px] w-full relative items-center justify-center bg-secondary/5 dark:bg-zinc-900/5 rounded-sm border border-border/30 dark:border-border/10 overflow-hidden shadow-[inset_0_4px_16px_rgba(0,0,0,0.02)] dark:shadow-[inset_0_4px_16px_rgba(0,0,0,0.18)] group/orb mt-24">
+            
+            {/* Gallery Labels */}
+            <div className="absolute top-4 left-4 font-mono text-[9px] text-muted-foreground/30 font-semibold select-none tracking-widest">
+              [CAPABILITY SPECTRUM]
+            </div>
+            <div className="absolute bottom-4 right-4 font-mono text-[9px] text-muted-foreground/30 font-semibold select-none tracking-widest">
+              [INTERACTIVE_3D_SPACE]
+            </div>
             
             {mounted && (
               <div className="h-full w-full cursor-grab active:cursor-grabbing">

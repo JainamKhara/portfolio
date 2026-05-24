@@ -141,7 +141,7 @@ export default function ExperiencePage() {
       </div>
 
       {/* Timeline */}
-      <div className="px-6 md:px-12 lg:px-16 py-20">
+      <div className="px-6 md:px-12 lg:px-16 py-10 md:py-12">
         <div className="relative max-w-4xl mx-auto">
           {/* Vertical spine */}
           <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-border">
@@ -237,7 +237,7 @@ export default function ExperiencePage() {
       </div>
 
       {/* Education Header */}
-      <div className="px-6 md:px-12 lg:px-16 py-12">
+      <div className="px-6 md:px-12 lg:px-16 py-8">
         <div className="max-w-4xl mx-auto">
           <motion.p
             className="section-label mb-4"

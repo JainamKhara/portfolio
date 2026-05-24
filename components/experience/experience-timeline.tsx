@@ -159,7 +159,7 @@ export function ExperienceTimeline() {
       </div>
 
       {/* Timeline */}
-      <div className="px-6 md:px-12 lg:px-20 py-24">
+      <div className="px-6 md:px-12 lg:px-20 py-12 md:py-16">
         <div className="relative max-w-4xl mx-auto">
           {experiences.map((exp, i) => (
             <TimelineItem key={exp.id} exp={exp} index={i} />
