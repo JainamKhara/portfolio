@@ -237,44 +237,7 @@ export function LoadingScreen({
       };
     };
 
-    // Elegant printer's grayscale test bar
-    const drawGrayscaleTarget = (cx: number, cy: number, opacity: number) => {
-      ctx.save();
-      ctx.globalAlpha = opacity;
-      
-      const w = 15;
-      const h = 7;
-      const spacing = 3;
-      const startX = cx - (5 * w + 4 * spacing) / 2;
-
-      const colors = [
-        "rgba(255, 255, 255, 0.7)",
-        "rgba(195, 195, 195, 0.7)",
-        "rgba(120, 120, 120, 0.7)",
-        "rgba(60, 60, 60, 0.7)",
-        "rgba(10, 10, 10, 0.7)"
-      ];
-
-      ctx.lineWidth = 0.5;
-      ctx.strokeStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.12)`;
-
-      for (let i = 0; i < 5; i++) {
-        const x = startX + i * (w + spacing);
-        ctx.fillStyle = colors[i];
-        ctx.fillRect(x, cy, w, h);
-        ctx.strokeRect(x, cy, w, h);
-      }
-
-      // Draw tiny registration crosshair above target
-      ctx.strokeStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.22)`;
-      ctx.beginPath();
-      ctx.arc(cx, cy - 10, 4, 0, Math.PI * 2);
-      ctx.moveTo(cx - 7, cy - 10); ctx.lineTo(cx + 7, cy - 10);
-      ctx.moveTo(cx, cy - 14); ctx.lineTo(cx, cy - 6);
-      ctx.stroke();
-
-      ctx.restore();
-    };
+    
 
     // Draws a beautiful 3D debossed drop shadow using unified alphabetic baseline alignment
     const drawDebossedShadow = (
@@ -621,60 +584,9 @@ export function LoadingScreen({
           drawCropMark(rightBound + 12, bottomBound + 12, -1, -1);
           ctx.restore();
 
-          drawGrayscaleTarget(canvas.width / 2, bottomBound + 35, dimOpacity);
         }
       }
-
-      // ── NEW D: Monospace frame counter (bottom-right corner) ───────────
-      // Counts from 000 → 100 as the stamps load, like a film frame counter.
-      // Fades out when the reveal begins.
-      if (stageVal !== "REVEAL" || revealProgress < 0.3) {
-        const counterOpacity = stageVal === "REVEAL"
-          ? (1 - revealProgress / 0.3) * 0.45
-          : (stageVal === "BOOT" ? Math.min(1, bootProgressRef.current * 3) * 0.45 : 0.45);
-
-        if (counterOpacity > 0.01) {
-          const count = Math.min(100, Math.round(frameCounterRef.current));
-          const counterStr = String(count).padStart(3, "0");
-          const counterFontSize = Math.max(10, Math.min(13, canvas.width * 0.011));
-          const monoFont = `400 ${counterFontSize}px "JetBrains Mono", "Courier New", monospace`;
-
-          ctx.save();
-          ctx.font = monoFont;
-          ctx.textAlign = "right";
-          ctx.textBaseline = "bottom";
-          ctx.fillStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, ${counterOpacity})`;
-
-          // Counter value
-          ctx.fillText(counterStr, canvas.width - 28, canvas.height - 28);
-
-          // Label above
-          ctx.font = `400 ${counterFontSize * 0.78}px "JetBrains Mono", "Courier New", monospace`;
-          ctx.fillStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, ${counterOpacity * 0.5})`;
-          ctx.fillText("FRAME", canvas.width - 28, canvas.height - 28 - counterFontSize - 3);
-
-          // Small tick-bar progress indicator (5 segments)
-          const barW = 36;
-          const barH = 2;
-          const barX = canvas.width - 28 - barW;
-          const barY = canvas.height - 28 - counterFontSize - 10;
-          const segments = 5;
-          const filledSegments = Math.floor((count / 100) * segments);
-
-          for (let s = 0; s < segments; s++) {
-            const segX = barX + s * (barW / segments + 1);
-            const filled = s < filledSegments;
-            ctx.fillStyle = filled
-              ? `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, ${counterOpacity * 0.8})`
-              : `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, ${counterOpacity * 0.18})`;
-            ctx.fillRect(segX, barY, barW / segments - 1, barH);
-          }
-
-          ctx.restore();
-        }
-      }
-      // ─────────────────────────────────────────────────────────────────
-
+      
       frame = requestAnimationFrame(render);
     };
 
