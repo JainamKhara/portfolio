@@ -24,7 +24,7 @@ The landing page features an asymmetric layout with interactive physics-based el
 ## ✨ Key Features
 
 - **🪪 Interactive Physics ID Badge** - Draggable lanyard with realistic gravity, momentum, and spring-based animations
-- **🎬 Cinematic Boot Screen** - Particle-based diagnostics loader with thousands of nodes forming animated text
+- **🎬 Mechanical Letterpress Loading Screen** - Typographic boot sequence with sequential letter stamping, baseline rules, and vertical shutter reveal
 - **📜 Staggered Scroll Reveals** - Content cascades onto screen with smooth spring physics and calculated delays
 - **🎛️ Tech Grid with Adaptive Contrast** - Intelligent styling with grayscale-to-color hover transitions
 - **🌓 Dark/Light Theme System** - Blueprint aesthetic with seamless theme switching maintaining perfect contrast
@@ -121,7 +121,7 @@ The landing page features an asymmetric layout with interactive physics-based el
 │   │   ├── navbar.tsx          # Top navigation and theme toggle
 │   │   └── footer.tsx          # Footer with links
 │   ├── shared/
-│   │   ├── loading-screen.tsx  # Particle-based boot sequence
+│   │   ├── loading-screen.tsx  # Mechanical letterpress animation with canvas rendering
 │   │   └── scroll-to-top.tsx   # Scroll utilities
 │   └── ui/                     # shadcn UI components
 │
@@ -201,7 +201,13 @@ npm start
 ## 💡 Animation & Interaction Details
 
 ### GSAP Implementation
-- Timeline-based animation sequences for hero elements
+- Timeline-based animation sequences with mechanical spring recoil
+- **Letterpress Loading Animation**: Sequential letter stamping (Boot → Coalesce → Identity → Reveal stages) with:
+  - Individual letter elastic animations with custom spring tension
+  - Animated baseline rule accents sliding out after each stamp
+  - Ink pressure grain texture that spikes on impact and decays naturally
+  - 6-column vertical shutter reveal with alternating up/down slide
+  - Canvas-based rendering for high-performance typography
 - Spring dynamics for physics-based interactions
 - Scroll triggers for staggered content reveals
 - Elastic animations with customizable tension and friction
@@ -212,11 +218,12 @@ npm start
 - Layout animations for smooth DOM updates
 - Coordinated parent-child animations
 
-### Three.js & Particles
-- WebGL particle system in diagnostics loader
-- GPU-accelerated text formation animation
-- Optimized rendering for 60fps performance
-- Custom materials and shaders
+### Canvas & Graphics
+- High-performance 2D canvas rendering for loading screen typography
+- Debossed drop shadows with alphabetic baseline alignment
+- Ink texture simulation with seeded pseudo-random grain patterns
+- Corner drafting compass circles and layout guides
+- Dynamic color parsing from CSS theme tokens
 
 ### Performance Optimizations
 - GPU-accelerated animations (transform/opacity only)
