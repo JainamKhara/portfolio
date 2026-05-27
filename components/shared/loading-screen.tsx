@@ -3,11 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { gsap } from "@/lib/gsap";
-import { getTextPoints } from "@/lib/canvas-utils";
 
 type Stage = "BOOT" | "COALESCE" | "IDENTITY" | "REVEAL";
 
-// A utility helper to parse dynamic hex and rgb strings returned by computed styles
+// Parses hex and rgb strings returned by computed styles
 function parseColor(color: string): { r: number; g: number; b: number } {
   const clean = color.trim().toLowerCase();
   
@@ -42,173 +41,18 @@ function parseColor(color: string): { r: number; g: number; b: number } {
   if (clean === "black") return { r: 0, g: 0, b: 0 };
   if (clean === "white") return { r: 255, g: 255, b: 255 };
   
-  // Default Vermilion red fallback
-  return { r: 217, g: 40, b: 28 };
+  return { r: 217, g: 40, b: 28 }; // Default Vermilion red fallback
 }
 
-class Particle {
-  x: number;
+// Stamped letter layout state
+interface LetterState {
+  char: string;
   y: number;
-  originX: number;
-  originY: number;
-  targetX: number;
-  targetY: number;
-  vx: number;
-  vy: number;
-  size: number;
-  color: string;
-  active: boolean = false;
-  alpha: number = 0;
-
-  // Cinematic 3D Warp Properties
-  angle: number;
-  speedFactor: number;
-  prevX: number = 0;
-  prevY: number = 0;
-
-  constructor(canvasWidth: number, canvasHeight: number, themePrimary: string = "#D9281C") {
-    this.x = Math.random() * canvasWidth;
-    this.y = Math.random() * canvasHeight;
-    this.originX = this.x;
-    this.originY = this.y;
-    this.targetX = this.x;
-    this.targetY = this.y;
-    this.vx = (Math.random() - 0.5) * 3;
-    this.vy = (Math.random() - 0.5) * 3;
-    this.size = Math.random() * 2.0 + 0.8; // Crisp lettering
-    this.color = themePrimary; // Dynamic theme vermilion/accent
-
-    this.angle = Math.random() * Math.PI * 2;
-    this.speedFactor = 0.4 + Math.random() * 1.6;
-  }
-
-  update(
-    stage: Stage,
-    laserY: number,
-    mouseX: number,
-    mouseY: number,
-    canvasWidth: number,
-    progress: number,
-    dt: number
-  ) {
-    if (stage === "BOOT") {
-      // Activate anything above the laser (plus a small buffer)
-      if (this.y < laserY + 100) { 
-        this.active = true;
-        this.alpha = 1;
-      }
-      if (this.active) {
-        this.x += this.vx * 0.5 * dt;
-        this.y += this.vy * 0.5 * dt;
-      }
-    } else if (stage === "COALESCE") {
-      const dx = mouseX - this.x;
-      const dy = mouseY - this.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      const force = Math.max(0, (250 - dist) / 250);
-      
-      // Accumulate velocity scaled by dt
-      this.vx += (dx / dist) * force * 0.6 * dt;
-      this.vy += (dy / dist) * force * 0.6 * dt;
-      
-      // Frame independent friction using exponentiation
-      const friction = Math.pow(0.94, dt);
-      this.vx *= friction;
-      this.vy *= friction;
-      
-      this.x += this.vx * dt;
-      this.y += this.vy * dt;
-    } else if (stage === "IDENTITY") {
-      const dx = this.targetX - this.x;
-      const dy = this.targetY - this.y;
-      
-      // Frame rate independent snapping snap
-      this.x += dx * (1 - Math.pow(1 - 0.15, dt));
-      this.y += dy * (1 - Math.pow(1 - 0.15, dt));
-      
-      // Organic vibration scaled by dt
-      this.x += (Math.random() - 0.5) * 0.6 * dt;
-      this.y += (Math.random() - 0.5) * 0.6 * dt;
-      
-      this.alpha = 1;
-    } else if (stage === "REVEAL") {
-      const centerX = canvasWidth / 2;
-      const centerY = mouseY; // Passed in as canvasHeight / 2
-      
-      // Store current coords for drawing velocity streaks
-      this.prevX = this.x;
-      this.prevY = this.y;
-
-      if (progress < 0.22) {
-        // --- 1. Implosion Phase ---
-        const t = progress / 0.22;
-        const ease = t * t * t; // Cubic ease-in for dramatic acceleration
-        
-        this.x = this.targetX + (centerX - this.targetX) * ease;
-        this.y = this.targetY + (centerY - this.targetY) * ease;
-        this.alpha = Math.max(0, 1 - ease * 0.3); // Slightly fade as they pack tight
-      } else {
-        // --- 2. Explosion / 3D Warp Phase ---
-        const warpT = (progress - 0.22) / 0.78;
-        
-        // Unit direction vector originating from center
-        const dx = this.targetX - centerX;
-        const dy = this.targetY - centerY;
-        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-        const dirX = dx / dist;
-        const dirY = dy / dist;
-
-        // Depth z: flies toward the screen along the Z-axis (focalLength = 300)
-        const z = warpT * 295 * this.speedFactor;
-        const scale = 300 / (300 - Math.min(z, 299));
-        
-        // Base radial displacement distance
-        const expDist = warpT * 420 * this.speedFactor;
-        
-        this.x = centerX + dirX * (dist * 0.05 + expDist) * scale;
-        this.y = centerY + dirY * (dist * 0.05 + expDist) * scale;
-        
-        // Fade out as they fly past the camera boundaries (Z > 250)
-        if (z > 250) {
-          this.alpha = Math.max(0, 1 - (z - 250) / 45);
-        } else {
-          this.alpha = 1;
-        }
-      }
-    }
-  }
-
-  draw(ctx: CanvasRenderingContext2D, stage: Stage, progress: number) {
-    if (!this.active) return;
-    ctx.globalAlpha = this.alpha;
-    
-    if (stage === "REVEAL") {
-      if (progress < 0.22) {
-        ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, this.size, this.size);
-      } else {
-        // Render 3D speed trail streaks
-        ctx.strokeStyle = this.color;
-        ctx.lineWidth = this.size * 0.8;
-        ctx.beginPath();
-        ctx.moveTo(this.prevX, this.prevY);
-        ctx.lineTo(this.x, this.y);
-        ctx.stroke();
-      }
-    } else {
-      ctx.fillStyle = this.color;
-      ctx.fillRect(this.x, this.y, this.size, this.size);
-    }
-  }
-}
-
-interface DissolveBlock {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  delay: number;
-  scrollingHex: string;
+  scale: number;
+  opacity: number;
+  stamped: boolean;
+  // Baseline rule accent: 0 = hidden, 1 = fully extended
+  ruleProgress: number;
 }
 
 export function LoadingScreen({
@@ -221,18 +65,25 @@ export function LoadingScreen({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [done, setDone] = useState(false);
   const [stage, setStage] = useState<Stage>("BOOT");
-  
-  // Refs for simulation state to avoid React re-renders
-  const particlesRef = useRef<Particle[]>([]);
-  const laserYRef = useRef(0);
+
+  // GSAP animation references driven via timelines
+  const bootProgressRef = useRef(0);
+  const coalesceProgressRef = useRef(0);
+  const identityProgressRef = useRef(0);
   const revealProgressRef = useRef(0);
+  const gridOpacityRef = useRef(1.0);
+
+  // Frame counter 0–100
+  const frameCounterRef = useRef(0);
+  // Ink pressure noise intensity per column: spikes on letter stamp, decays to resting grain
+  const noiseIntensityRef = useRef<number[]>([0, 0, 0, 0, 0, 0]);
+
   const currentStageRef = useRef<Stage>("BOOT");
-
-  // Grid block dissolve references
-  const blocksRef = useRef<DissolveBlock[]>([]);
-
   const onRevealStartRef = useRef(onRevealStart);
   const onCompleteRef = useRef(onComplete);
+
+  // Mechanical Letter Stamping references
+  const lettersRef = useRef<LetterState[]>([]);
 
   useEffect(() => {
     onRevealStartRef.current = onRevealStart;
@@ -242,7 +93,6 @@ export function LoadingScreen({
     onCompleteRef.current = onComplete;
   }, [onComplete]);
 
-  // Sync state stage with ref for render loop
   useEffect(() => {
     currentStageRef.current = stage;
   }, [stage]);
@@ -253,121 +103,123 @@ export function LoadingScreen({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Fetch theme colors dynamically from the DOM layout context
+    gridOpacityRef.current = 1.0;
+
+    // Fetch design color tokens dynamically from the theme
     const computedStyle = window.getComputedStyle(document.documentElement);
     const themePrimary = computedStyle.getPropertyValue('--primary').trim() || "#D9281C";
     const themeBackground = computedStyle.getPropertyValue('--background').trim() || "#030303";
-
     const primaryRgb = parseColor(themePrimary);
+    const fontLoaderVal = computedStyle.getPropertyValue('--font-loader').trim() || '"Unbounded", "DM Sans", "Inter", sans-serif';
+
 
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.visualViewport ? window.visualViewport.height : document.documentElement.clientHeight;
-
-      // Denser grid matrix dissolve (60px desktop, 50px mobile) for technical precision
-      const isDesktop = window.innerWidth > 768;
-      const blockSize = isDesktop ? 60 : 50;
-      const cols = Math.ceil(canvas.width / blockSize);
-      const rows = Math.ceil(canvas.height / blockSize);
-      const centerX = canvas.width / 2;
-      const centerY = canvas.height / 2;
-      const maxDist = Math.sqrt(centerX * centerX + centerY * centerY) || 1;
-
-      const blocks: DissolveBlock[] = [];
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          const bx = c * blockSize;
-          const by = r * blockSize;
-          const bw = Math.min(blockSize, canvas.width - bx);
-          const bh = Math.min(blockSize, canvas.height - by);
-
-          const bCenterX = bx + bw / 2;
-          const bCenterY = by + bh / 2;
-          const dx = bCenterX - centerX;
-          const dy = bCenterY - centerY;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          // Staggered radial center-outward delay pattern
-          const baseDelay = (dist / maxDist) * 0.65;
-          const delay = Math.min(0.75, Math.max(0, baseDelay + (Math.random() - 0.5) * 0.08));
-
-          blocks.push({
-            x: bx,
-            y: by,
-            w: bw,
-            h: bh,
-            delay: delay,
-            scrollingHex: Math.floor(Math.random() * 256).toString(16).toUpperCase().padStart(2, '0')
-          });
-        }
-      }
-      blocksRef.current = blocks;
     };
     window.addEventListener("resize", resize);
     resize();
 
-    // Initialize particle grid density with dynamic theme primary color
-    const particles: Particle[] = [];
-    const isDesktop = window.innerWidth > 768;
-    const dynamicParticleCount = isDesktop ? 7000 : 3500;
-    for (let i = 0; i < dynamicParticleCount; i++) {
-      particles.push(new Particle(canvas.width, canvas.height, themePrimary));
-    }
-    particlesRef.current = particles;
+    // Initialize letter stamping parameters (with ruleProgress)
+    lettersRef.current = ["J", "A", "I", "N", "A", "M"].map((char) => ({
+      char,
+      y: -300,
+      scale: 3.8,
+      opacity: 0,
+      stamped: false,
+      ruleProgress: 0,
+    }));
 
-    // Load fonts and process centered text coordinates
-    const init = async () => {
-      await new Promise(r => setTimeout(r, 200));
-      await document.fonts.ready;
-      
-      const textPoints = getTextPoints(
-        "JAINAM",
-        Math.min(canvas.width * 0.22, 260),
-        canvas.width,
-        canvas.height,
-        2
-      );
-
-      if (textPoints.length > 0) {
-        particles.forEach((p, i) => {
-          const pt = textPoints[i % textPoints.length];
-          p.targetX = (canvas.width / 2) + pt.x;
-          p.targetY = (canvas.height / 2) + pt.y;
-        });
-      }
-    };
-
-    init();
-
-    // Cinematic GSAP Sequencing
-    const masterTl = gsap.timeline({
-      onComplete: () => {
-        onCompleteRef.current?.();
-        setDone(true);
-      },
-    });
+    // Sequential Letterpress Stamping GSAP timeline
+    const masterTl = gsap.timeline();
 
     masterTl
-      .to(laserYRef, {
-        current: canvas.height,
-        duration: 0.6,
+      // Stage 1: Boot — scan line sweeps top to bottom, frame counter climbs to 18
+      .to(bootProgressRef, {
+        current: 1.0,
+        duration: 0.7,
         ease: "power2.inOut",
         onStart: () => setStage("BOOT"),
       })
-      .to({}, { 
+      .to(frameCounterRef, {
+        current: 18,
         duration: 0.7,
-        onStart: () => setStage("COALESCE"),
-      })
-      .to({}, {
-        duration: 0.6,
-        onStart: () => setStage("IDENTITY"),
-      })
-      .to(revealProgressRef, {
-        current: 1.0,
-        duration: 2.0, // Extended transition reveal (2.0s instead of 1.0s) for epic effect
-        ease: "power3.inOut",
+        ease: "power2.inOut",
+        snap: { current: 1 },
+      }, "<");
+
+    // Sequence mechanical giant letter stamps with spring recoil
+    lettersRef.current.forEach((letter, i) => {
+      masterTl.to(letter, {
+        y: canvas.height / 2,
+        scale: 1.0,
+        opacity: 1.0,
+        duration: 0.44,
+        ease: "elastic.out(1.15, 0.65)",
         onStart: () => {
-          setStage("REVEAL");
+          if (currentStageRef.current === "BOOT") {
+            setStage("COALESCE");
+          }
+        },
+        onComplete: () => {
+          letter.stamped = true;
+          // Spike ink pressure grain for this column
+          noiseIntensityRef.current[i] = 1.0;
+          // Animate the baseline rule sliding out after stamp
+          gsap.to(letter, {
+            ruleProgress: 1.0,
+            duration: 0.28,
+            ease: "power3.out",
+          });
+        }
+      }, `+=0.04`);
+
+      // Advance frame counter with each stamp
+      masterTl.to(frameCounterRef, {
+        current: 18 + Math.round(((i + 1) / 6) * 72),
+        duration: 0.44,
+        ease: "power2.out",
+        snap: { current: 1 },
+      }, "<");
+    });
+
+    // Fade out vertical column layout grid lines after the letter stamps complete
+    const gridObj = { opacity: 1.0 };
+    masterTl.to(gridObj, {
+      opacity: 0.0,
+      duration: 0.45,
+      ease: "power2.inOut",
+      onUpdate: () => {
+        gridOpacityRef.current = gridObj.opacity;
+      },
+    })
+    // Advance counter to 100 during the grid fade
+    .to(frameCounterRef, {
+      current: 100,
+      duration: 0.45,
+      ease: "power2.inOut",
+      snap: { current: 1 },
+    }, "<")
+    // Stage 4: Layout Splitting Slide Reveal with heavy click mechanical tension build & snap release
+    .to(revealProgressRef, {
+      current: -0.012, // Pullback compression
+      duration: 0.25,
+      ease: "power2.out",
+      onStart: () => {
+        setStage("REVEAL");
+      },
+    }, "+=0.65")
+      .to(revealProgressRef, {
+        current: 1.0, // Heavy release slide
+        duration: 1.35,
+        ease: "power4.inOut",
+          onComplete: () => {
+          // Kill the render loop and clear the canvas immediately —
+          // prevents ghost column lines from showing over the homepage
+          cancelAnimationFrame(frame);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          onCompleteRef.current?.();
+          setDone(true);
         },
       });
 
@@ -375,260 +227,453 @@ export function LoadingScreen({
     let lastTime = performance.now();
     let revealStartedCalled = false;
 
+    // Fast LCG pseudo-random number generator — seeded per column so grain
+    // pattern is stable across frames (no flickering), only opacity changes.
+    const lcg = (seed: number) => {
+      let s = seed;
+      return () => {
+        s = (1664525 * s + 1013904223) & 0xffffffff;
+        return (s >>> 0) / 0xffffffff;
+      };
+    };
+
+    // Elegant printer's grayscale test bar
+    const drawGrayscaleTarget = (cx: number, cy: number, opacity: number) => {
+      ctx.save();
+      ctx.globalAlpha = opacity;
+      
+      const w = 15;
+      const h = 7;
+      const spacing = 3;
+      const startX = cx - (5 * w + 4 * spacing) / 2;
+
+      const colors = [
+        "rgba(255, 255, 255, 0.7)",
+        "rgba(195, 195, 195, 0.7)",
+        "rgba(120, 120, 120, 0.7)",
+        "rgba(60, 60, 60, 0.7)",
+        "rgba(10, 10, 10, 0.7)"
+      ];
+
+      ctx.lineWidth = 0.5;
+      ctx.strokeStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.12)`;
+
+      for (let i = 0; i < 5; i++) {
+        const x = startX + i * (w + spacing);
+        ctx.fillStyle = colors[i];
+        ctx.fillRect(x, cy, w, h);
+        ctx.strokeRect(x, cy, w, h);
+      }
+
+      // Draw tiny registration crosshair above target
+      ctx.strokeStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.22)`;
+      ctx.beginPath();
+      ctx.arc(cx, cy - 10, 4, 0, Math.PI * 2);
+      ctx.moveTo(cx - 7, cy - 10); ctx.lineTo(cx + 7, cy - 10);
+      ctx.moveTo(cx, cy - 14); ctx.lineTo(cx, cy - 6);
+      ctx.stroke();
+
+      ctx.restore();
+    };
+
+    // Draws a beautiful 3D debossed drop shadow using unified alphabetic baseline alignment
+    const drawDebossedShadow = (
+      char: string,
+      x: number,
+      y: number,
+      size: number,
+      opacity: number
+    ) => {
+      ctx.save();
+      ctx.globalAlpha = opacity * 0.12;
+      ctx.fillStyle = "black";
+      ctx.font = `900 ${size}px ${fontLoaderVal}, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "alphabetic";
+      // Adjusting vertically by a scale-invariant ratio to perfectly center capital letters
+      ctx.fillText(char, x + 1.6, y + 1.6 + size * 0.33);
+      ctx.restore();
+    };
+
     const render = () => {
       const now = performance.now();
-      // Calculate delta relative to standard 60FPS target
       const dt = Math.min((now - lastTime) / 16.6667, 2.5);
       lastTime = now;
 
+      // Guard: once panels are fully gone, draw nothing
+      if (revealProgressRef.current >= 1.0) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        return;
+      }
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      const progress = revealProgressRef.current;
+      const identityProgress = identityProgressRef.current;
+      const revealProgress = revealProgressRef.current;
       const stageVal = currentStageRef.current;
 
-      if (stageVal === "REVEAL" && progress >= 0.22 && !revealStartedCalled) {
+      if (stageVal === "REVEAL" && revealProgress >= 0.22 && !revealStartedCalled) {
         revealStartedCalled = true;
         onRevealStartRef.current?.();
       }
 
-      // 1. Draw solid, themed cover overlay (Warm Ivory in light mode, Black in dark mode)
+      // 1. Draw solid, themed background paper surface as 6 separating vertical plates (Alternating reveal!)
       ctx.fillStyle = themeBackground;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      const colW = canvas.width / 6;
 
-      // 2. Wipe dissolved blocks dynamically using destination-out
-      if (stageVal === "REVEAL") {
-        ctx.save();
-        ctx.globalCompositeOperation = "destination-out";
-        ctx.fillStyle = "rgba(0, 0, 0, 1)";
-        blocksRef.current.forEach((block) => {
-          if (progress >= block.delay) {
-            ctx.fillRect(block.x, block.y, block.w, block.h);
-          }
-        });
-        ctx.restore();
-      }
-
-      // 3. Draw faint technical background drafting grids (fades out dynamically in REVEAL)
-      const gridOpacity = stageVal === "REVEAL" ? 0.04 * (1 - progress) : 0.04;
-      if (gridOpacity > 0) {
-        ctx.save();
-        // Blends active theme primary color beautifully
-        ctx.strokeStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, ${gridOpacity})`;
-        ctx.lineWidth = 1;
-        const step = 40;
-
-        for (let x = 0; x < canvas.width; x += step) {
-          ctx.beginPath();
-          ctx.moveTo(x, 0);
-          ctx.lineTo(x, canvas.height);
-          ctx.stroke();
+      for (let i = 0; i < 6; i++) {
+        const colX = i * colW;
+        let yOffset = 0;
+        if (stageVal === "REVEAL") {
+          yOffset = (i % 2 === 0) ? -canvas.height * revealProgress : canvas.height * revealProgress;
         }
 
-        for (let y = 0; y < canvas.height; y += step) {
-          ctx.beginPath();
-          ctx.moveTo(0, y);
-          ctx.lineTo(canvas.width, y);
-          ctx.stroke();
-        }
-        ctx.restore();
-      }
+        // Draw individual vertical shutter plate with 0.5px overlap to avoid subpixel lines
+        ctx.fillRect(colX, 0 + yOffset, colW + 0.5, canvas.height);
 
-      // 4. Update and render particles on top (physics updated frame-independently with dt)
-      particlesRef.current.forEach((p) => {
-        p.update(
-          stageVal, 
-          laserYRef.current, 
-          canvas.width / 2, 
-          canvas.height / 2, 
-          canvas.width, 
-          progress,
-          dt
-        );
-        p.draw(ctx, stageVal, progress);
-      });
+        // ── Ink pressure grain texture ──────────────────────────────────
+        // Decays each frame: impact spike (1.0) → resting grain (0.06)
+        // LCG seeded by column index — stable pattern, only alpha changes
+        const noiseArr = noiseIntensityRef.current;
+        const decay = 0.055 * dt; // exponential decay rate
+        noiseArr[i] = Math.max(0.06, noiseArr[i] - (noiseArr[i] - 0.06) * decay);
+        const grainAlpha = noiseArr[i];
 
-      // 5. Draw glowing laser line for Boot/Coalesce stages
-      if (stageVal === "BOOT" || stageVal === "COALESCE") {
-        ctx.save();
-        ctx.beginPath();
-        ctx.strokeStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.6)`;
-        ctx.lineWidth = 2;
-        ctx.moveTo(0, laserYRef.current);
-        ctx.lineTo(canvas.width, laserYRef.current);
-        ctx.stroke();
-        
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = themePrimary;
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      // 6. Draw active block borders and scrolling hex matrix codes
-      if (stageVal === "REVEAL") {
-        blocksRef.current.forEach((block) => {
-          if (progress >= block.delay - 0.1 && progress < block.delay) {
-            const localT = (progress - (block.delay - 0.1)) / 0.1;
-            const borderCollapse = 1 - localT;
-
-            // Shrinking border coordinate outline
-            ctx.save();
-            ctx.strokeStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, ${0.45 * borderCollapse})`;
-            ctx.lineWidth = 1;
-            const bW = block.w * borderCollapse;
-            const bH = block.h * borderCollapse;
-            const bX = block.x + (block.w - bW) / 2;
-            const bY = block.y + (block.h - bH) / 2;
-            ctx.strokeRect(bX, bY, bW, bH);
-            ctx.restore();
-
-            // Scrolling coordinate hexadecimal logs (stochastic scale by dt)
-            if (Math.random() < 0.15 * dt) {
-              block.scrollingHex = Math.floor(Math.random() * 256).toString(16).toUpperCase().padStart(2, '0');
-            }
-            ctx.save();
-            ctx.fillStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, ${0.7 * borderCollapse})`;
-            ctx.font = "8px monospace";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText(`0x${block.scrollingHex}`, block.x + block.w / 2, block.y + block.h / 2);
-            ctx.restore();
-          }
-        });
-
-        // 7. Draw Concentric mechanical CAD HUD aperture scale & rotation
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-        
-        const hudScale = 1.0 + progress * 4.0;
-        const baseRadius = 120 * hudScale;
-        const hudAlpha = Math.max(0, 1 - progress * 1.15);
-
-        if (hudAlpha > 0) {
+        if (grainAlpha > 0.07 && stageVal !== "REVEAL") {
           ctx.save();
-          ctx.globalAlpha = hudAlpha;
+          ctx.globalAlpha = grainAlpha * 0.22; // keep it subtle
+          const rand = lcg(i * 7919 + Math.floor(canvas.height)); // stable seed
+          const dotCount = Math.floor(colW * canvas.height * 0.0012); // density
+          ctx.fillStyle = `rgb(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b})`;
+          for (let d = 0; d < dotCount; d++) {
+            const gx = colX + rand() * colW;
+            const gy = yOffset + rand() * canvas.height;
+            const radius = rand() * 0.9 + 0.3;
+            ctx.beginPath();
+            ctx.arc(gx, gy, radius, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+        }
+        // ───────────────────────────────────────────────────────────────
 
-          // Crosshairs
-          ctx.strokeStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.4)`;
-          ctx.lineWidth = 1;
+        // Draw tactile cotton edge drop shadows as the vertical column shutter plates separate
+        if (stageVal === "REVEAL" && revealProgress > 0.001) {
+          ctx.save();
+          if (i % 2 === 0) {
+            // 1, 3, 5 sliding UP (cast shadow downwards onto revealed viewport)
+            const bottomEdge = canvas.height + yOffset;
+            const shadow = ctx.createLinearGradient(0, bottomEdge, 0, bottomEdge + 35);
+            shadow.addColorStop(0, "rgba(0, 0, 0, 0.35)");
+            shadow.addColorStop(1, "rgba(0, 0, 0, 0.0)");
+            ctx.fillStyle = shadow;
+            ctx.fillRect(colX, bottomEdge, colW + 0.5, 35);
+          } else {
+            // 2, 4, 6 sliding DOWN (cast shadow upwards onto revealed viewport)
+            const topEdge = yOffset;
+            const shadow = ctx.createLinearGradient(0, topEdge, 0, topEdge - 35);
+            shadow.addColorStop(0, "rgba(0, 0, 0, 0.35)");
+            shadow.addColorStop(1, "rgba(0, 0, 0, 0.0)");
+            ctx.fillStyle = shadow;
+            ctx.fillRect(colX, topEdge - 35, colW + 0.5, 35);
+          }
+          ctx.restore();
+        }
+      }
+      const isMobile = canvas.width < 640 || (canvas.width < 1024 && canvas.height > canvas.width);
+      const fontScale = isMobile ? 0.125 : 0.17;
+      const fontSize = Math.min(canvas.width * fontScale, 210);
+
+      // --- PROPORTIONAL SPLIT-SYMMETRICAL TYPOGRAPHY OFFSETS ---
+      ctx.save();
+      ctx.font = `900 ${fontSize}px ${fontLoaderVal}, sans-serif`;
+      const letters = ["J", "A", "I", "N", "A", "M"];
+      const letterWidths = letters.map(char => ctx.measureText(char).width);
+      
+      const tracking = -0.035;
+      const trackingOffset = tracking * fontSize;
+      const spacingVal = Math.max(2, -trackingOffset);
+      const letterOffsets: number[] = [];
+
+      letterOffsets[2] = -spacingVal / 2 - letterWidths[2] / 2;
+      letterOffsets[1] = letterOffsets[2] - letterWidths[2] / 2 - letterWidths[1] / 2 + trackingOffset;
+      letterOffsets[0] = letterOffsets[1] - letterWidths[1] / 2 - letterWidths[0] / 2 + trackingOffset;
+
+      letterOffsets[3] = spacingVal / 2 + letterWidths[3] / 2;
+      letterOffsets[4] = letterOffsets[3] + letterWidths[3] / 2 + letterWidths[4] / 2 + trackingOffset;
+      letterOffsets[5] = letterOffsets[4] + letterWidths[4] / 2 + letterWidths[5] / 2 + trackingOffset;
+
+      const absoluteLeft = letterOffsets[0] - letterWidths[0] / 2;
+      const absoluteRight = letterOffsets[5] + letterWidths[5] / 2;
+      ctx.restore();
+      // ---------------------------------------------------------
+
+      // 2. Draw clean, subtle vertical layout columns
+      // Lines stay visible throughout letter display (BOOT/COALESCE) and fade
+      // out in sync with the panel slide during REVEAL — independent of gridOpacityRef
+      ctx.save();
+      for (let i = 0; i < 6; i++) {
+        const colX = i * colW;
+        const colLineOpacity = stageVal === "REVEAL"
+          ? 0.09 * Math.max(0, 1.0 - revealProgress)
+          : 0.09;
+        if (colLineOpacity <= 0) continue;
+        ctx.strokeStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, ${colLineOpacity})`;
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.moveTo(colX, 0);
+        ctx.lineTo(colX, canvas.height);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // 3. Draw faint, high-end corner blueprint drafting compass circles & page safe frame
+      const draftingOpacity = stageVal === "REVEAL" ? (1.0 - revealProgress) * gridOpacityRef.current : gridOpacityRef.current;
+      if (draftingOpacity > 0.01) {
+        // Faint corner blueprint drafting compass circles
+        ctx.save();
+        ctx.strokeStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, ${draftingOpacity * 0.05})`;
+        ctx.lineWidth = 0.5;
+
+        const w = canvas.width;
+        const h = canvas.height;
+        const rad = 50;
+
+        const drawCornerCircle = (cx: number, cy: number) => {
           ctx.beginPath();
-          ctx.moveTo(centerX - baseRadius * 1.2, centerY);
-          ctx.lineTo(centerX + baseRadius * 1.2, centerY);
-          ctx.moveTo(centerX, centerY - baseRadius * 1.2);
-          ctx.lineTo(centerX, centerY + baseRadius * 1.2);
+          ctx.arc(cx, cy, rad, 0, Math.PI * 2);
           ctx.stroke();
 
-          // Gauge outline
+          ctx.save();
+          ctx.setLineDash([2, 4]);
           ctx.beginPath();
-          ctx.arc(centerX, centerY, baseRadius, 0, Math.PI * 2);
+          ctx.arc(cx, cy, rad * 0.65, 0, Math.PI * 2);
           ctx.stroke();
+          ctx.restore();
 
-          // Rotating ticks & degree labels
-          const tickCount = 72;
-          const angleOffset = progress * Math.PI * 0.4;
           ctx.beginPath();
-          for (let i = 0; i < tickCount; i++) {
-            const angle = (i / tickCount) * Math.PI * 2 + angleOffset;
-            const isMajor = i % 9 === 0;
-            const tLen = isMajor ? 12 : 5;
+          ctx.moveTo(cx - 8, cy); ctx.lineTo(cx + 8, cy);
+          ctx.moveTo(cx, cy - 8); ctx.lineTo(cx, cy + 8);
+          ctx.stroke();
+        };
 
-            const startX = centerX + Math.cos(angle) * baseRadius;
-            const startY = centerY + Math.sin(angle) * baseRadius;
-            const endX = centerX + Math.cos(angle) * (baseRadius + tLen);
-            const endY = centerY + Math.sin(angle) * (baseRadius + tLen);
+        drawCornerCircle(40, 40);
+        drawCornerCircle(w - 40, 40);
+        drawCornerCircle(40, h - 40);
+        drawCornerCircle(w - 40, h - 40);
+        ctx.restore();
 
-            ctx.moveTo(startX, startY);
-            ctx.lineTo(endX, endY);
+        // Faint page margins sheet outline (Minimal layout guides)
+        ctx.save();
+        ctx.strokeStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, ${draftingOpacity * 0.04})`;
+        ctx.lineWidth = 0.5;
 
-            if (isMajor && progress < 0.65) {
+        ctx.beginPath();
+        ctx.moveTo(40, 40);
+        ctx.lineTo(canvas.width / 2, 40);
+        ctx.lineTo(canvas.width / 2, canvas.height - 40);
+        ctx.lineTo(40, canvas.height - 40);
+        ctx.lineTo(40, 40);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2, 40);
+        ctx.lineTo(canvas.width - 40, 40);
+        ctx.lineTo(canvas.width - 40, canvas.height - 40);
+        ctx.lineTo(canvas.width / 2, canvas.height - 40);
+        ctx.lineTo(canvas.width / 2, 40);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(40, 40);
+        ctx.lineTo(canvas.width / 2, canvas.height / 2);
+        ctx.lineTo(canvas.width / 2, canvas.height / 2);
+        ctx.lineTo(canvas.width - 40, canvas.height - 40);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+
+
+      // ── NEW B: Horizontal center registration crosshair line ───────────
+      // A faint horizontal guide that frames the letters vertically —
+      // appears alongside the letters and fades with the grid.
+      if (stageVal === "COALESCE" || stageVal === "IDENTITY") {
+        const anyStamped = lettersRef.current.some(l => l.stamped);
+        if (anyStamped) {
+          const crosshairOpacity = gridOpacityRef.current * 0.07;
+          if (crosshairOpacity > 0.005) {
+            const cy = canvas.height / 2;
+            ctx.save();
+            ctx.strokeStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, ${crosshairOpacity})`;
+            ctx.lineWidth = 0.6;
+            ctx.setLineDash([6, 8]);
+            ctx.beginPath();
+            ctx.moveTo(0, cy);
+            ctx.lineTo(canvas.width, cy);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.restore();
+          }
+        }
+      }
+      // ─────────────────────────────────────────────────────────────────
+
+      // 4. Giant Stamped Editorial Typography (COALESCE / IDENTITY / REVEAL stages)
+      if (stageVal !== "BOOT") {
+        ctx.save();
+
+        lettersRef.current.forEach((letter, i) => {
+          // Keep centered inside respective vertical column with alternating vertical split yOffset
+          const colX = i * colW;
+          const colCenterX = colX + colW / 2;
+          const finalX = colCenterX;
+
+          let yOffset = 0;
+          if (stageVal === "REVEAL") {
+            yOffset = (i % 2 === 0) ? -canvas.height * revealProgress : canvas.height * revealProgress;
+          }
+          const finalY = letter.y + yOffset;
+
+          const letterOpacity = stageVal === "REVEAL" ? (1.0 - revealProgress) * letter.opacity : letter.opacity;
+          const letterScalePullback = (stageVal === "REVEAL" && revealProgress < 0) ? (1.0 + revealProgress * 2.0) : 1.0;
+          const currentFontSize = fontSize * letter.scale * letterScalePullback;
+          
+          if (letterOpacity > 0.01) {
+            // A. Draw soft 3D bottom-right debossed drop shadow FIRST
+            drawDebossedShadow(letter.char, finalX, finalY, currentFontSize, letterOpacity);
+
+            // B. Draw letter with glow and core
+            ctx.save();
+            ctx.globalAlpha = letterOpacity;
+            ctx.font = `900 ${currentFontSize}px ${fontLoaderVal}, sans-serif`;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "alphabetic";
+
+            // C. Tactile Letterpress Ink Bleed Emulsion Glow
+            const glowOpacity = stageVal === "REVEAL" ? 0.12 * (1 - revealProgress) : 0.12 * letter.opacity;
+            if (glowOpacity > 0.005) {
               ctx.save();
-              ctx.fillStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.6)`;
-              ctx.font = "8px monospace";
-              ctx.textAlign = "center";
-              ctx.textBaseline = "middle";
-              const labelX = centerX + Math.cos(angle) * (baseRadius + 22);
-              const labelY = centerY + Math.sin(angle) * (baseRadius + 22);
-              ctx.fillText(`${i * 5}°`, labelX, labelY);
+              ctx.shadowColor = themePrimary;
+              ctx.shadowBlur = 12;
+              ctx.fillStyle = themePrimary;
+              ctx.globalAlpha = glowOpacity;
+              ctx.fillText(letter.char, finalX, finalY + currentFontSize * 0.33);
               ctx.restore();
             }
-          }
-          ctx.stroke();
 
-          // Inner dashed counter-rotating circle
-          ctx.save();
-          ctx.setLineDash([8, 12]);
-          const innerRadius = baseRadius * 0.75;
-          ctx.strokeStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.35)`;
-          ctx.beginPath();
-          ctx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
-          ctx.stroke();
-          ctx.restore();
-
-          // Outer rotating hexagon
-          ctx.save();
-          const hexRadius = baseRadius * 1.5;
-          const hexAngleOffset = -progress * Math.PI * 0.2;
-          ctx.strokeStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.15)`;
-          ctx.beginPath();
-          for (let i = 0; i < 6; i++) {
-            const angle = (i / 6) * Math.PI * 2 + hexAngleOffset;
-            const hX = centerX + Math.cos(angle) * hexRadius;
-            const hY = centerY + Math.sin(angle) * hexRadius;
-            if (i === 0) ctx.moveTo(hX, hY);
-            else ctx.lineTo(hX, hY);
-          }
-          ctx.closePath();
-          ctx.stroke();
-          ctx.restore();
-
-          // Orbiting monospace physics formulas
-          const formulas = [
-            "ψ(x,t) = Ae^(i(kx-ωt))",
-            "lim(x→0) sin(x)/x = 1",
-            "E = mc² (QUANTUM_G)",
-            "∇ × B = μ₀J + μ₀ε₀(∂E/∂t)",
-            "f(x) = ∫ g(t)e^(-iωt)dt",
-            "G_μν + Λg_μν = 8πG/c⁴ T_μν"
-          ];
-          ctx.save();
-          ctx.fillStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.4)`;
-          ctx.font = "8px monospace";
-          formulas.forEach((formula, idx) => {
-            const formulaAngle = (idx / formulas.length) * Math.PI * 2 + progress * Math.PI * 0.15;
-            const fRadius = hexRadius * 1.1;
-            const fX = centerX + Math.cos(formulaAngle) * fRadius;
-            const fY = centerY + Math.sin(formulaAngle) * fRadius;
-
-            ctx.save();
-            ctx.translate(fX, fY);
-            ctx.rotate(formulaAngle + Math.PI / 2);
-            ctx.textAlign = "center";
-            ctx.fillText(formula, 0, 0);
+            // D. Main letter core
+            ctx.fillStyle = themePrimary;
+            ctx.fillText(letter.char, finalX, finalY + currentFontSize * 0.33);
             ctx.restore();
-          });
-          ctx.restore();
 
-          ctx.restore();
-        }
+            // ── NEW C: Animated baseline rule accent ──────────────────────
+            // A thin red rule slides out from center to edges under each letter
+            // once it lands — like a typographer's baseline registration mark.
+            if (letter.stamped && letter.ruleProgress > 0.01 && stageVal !== "REVEAL") {
+              const ruleY = finalY + currentFontSize * 0.38; // just below baseline
+              const halfColW = colW * 0.38; // rule extends 38% of column width each side
+              const ruleHalf = halfColW * letter.ruleProgress;
+              const ruleOpacity = Math.min(letter.ruleProgress, 1.0) * letterOpacity * 0.55;
 
+              ctx.save();
+              ctx.strokeStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, ${ruleOpacity})`;
+              ctx.lineWidth = 1.5;
+              ctx.lineCap = "round";
+              ctx.beginPath();
+              ctx.moveTo(finalX - ruleHalf, ruleY);
+              ctx.lineTo(finalX + ruleHalf, ruleY);
+              ctx.stroke();
+              ctx.restore();
+            }
+            // ─────────────────────────────────────────────────────────────
+          }
+        });
+        ctx.restore();
+      }
 
-        // 9. Stochastic screen slices (chromatic glitching) - scaled by dt
-        if (Math.random() < 0.12 * dt && progress < 0.9) {
+      // 5. Minimalist Editorial Crop Marks & Grayscale Print Target (IDENTITY / REVEAL)
+      if (stageVal === "IDENTITY" || stageVal === "REVEAL") {
+        const absoluteLeft = canvas.width / 2 + letterOffsets[0] - letterWidths[0] / 2;
+        const absoluteRight = canvas.width / 2 + letterOffsets[5] + letterWidths[5] / 2;
+        
+        const leftBound = absoluteLeft - 18;
+        const rightBound = absoluteRight + 18;
+        const topBound = canvas.height / 2 - fontSize * 0.48;
+        const bottomBound = canvas.height / 2 + fontSize * 0.48;
+
+        const dimOpacity = stageVal === "REVEAL" ? 0.7 * (1 - revealProgress) : 0.7 * identityProgress;
+
+        if (dimOpacity > 0.01) {
           ctx.save();
-          const glitchY = Math.random() * canvas.height;
-          const glitchHeight = Math.random() * 6 + 1;
-          const glitchOffset = (Math.random() - 0.5) * 35;
+          ctx.strokeStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, ${dimOpacity * 0.28})`;
+          ctx.lineWidth = 0.5;
 
-          ctx.drawImage(
-            canvas, 
-            0, glitchY, canvas.width, glitchHeight, 
-            glitchOffset, glitchY, canvas.width, glitchHeight
-          );
+          const drawCropMark = (cx: number, cy: number, dx: number, dy: number) => {
+            ctx.beginPath();
+            ctx.moveTo(cx + dx * 18, cy); ctx.lineTo(cx, cy); ctx.lineTo(cx, cy + dy * 18);
+            ctx.stroke();
+          };
+          drawCropMark(leftBound - 12, topBound - 12, 1, 1);
+          drawCropMark(rightBound + 12, topBound - 12, -1, 1);
+          drawCropMark(leftBound - 12, bottomBound + 12, 1, -1);
+          drawCropMark(rightBound + 12, bottomBound + 12, -1, -1);
+          ctx.restore();
 
-          ctx.fillStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, 0.15)`;
-          ctx.fillRect(0, glitchY, canvas.width, glitchHeight);
+          drawGrayscaleTarget(canvas.width / 2, bottomBound + 35, dimOpacity);
+        }
+      }
+
+      // ── NEW D: Monospace frame counter (bottom-right corner) ───────────
+      // Counts from 000 → 100 as the stamps load, like a film frame counter.
+      // Fades out when the reveal begins.
+      if (stageVal !== "REVEAL" || revealProgress < 0.3) {
+        const counterOpacity = stageVal === "REVEAL"
+          ? (1 - revealProgress / 0.3) * 0.45
+          : (stageVal === "BOOT" ? Math.min(1, bootProgressRef.current * 3) * 0.45 : 0.45);
+
+        if (counterOpacity > 0.01) {
+          const count = Math.min(100, Math.round(frameCounterRef.current));
+          const counterStr = String(count).padStart(3, "0");
+          const counterFontSize = Math.max(10, Math.min(13, canvas.width * 0.011));
+          const monoFont = `400 ${counterFontSize}px "JetBrains Mono", "Courier New", monospace`;
+
+          ctx.save();
+          ctx.font = monoFont;
+          ctx.textAlign = "right";
+          ctx.textBaseline = "bottom";
+          ctx.fillStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, ${counterOpacity})`;
+
+          // Counter value
+          ctx.fillText(counterStr, canvas.width - 28, canvas.height - 28);
+
+          // Label above
+          ctx.font = `400 ${counterFontSize * 0.78}px "JetBrains Mono", "Courier New", monospace`;
+          ctx.fillStyle = `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, ${counterOpacity * 0.5})`;
+          ctx.fillText("FRAME", canvas.width - 28, canvas.height - 28 - counterFontSize - 3);
+
+          // Small tick-bar progress indicator (5 segments)
+          const barW = 36;
+          const barH = 2;
+          const barX = canvas.width - 28 - barW;
+          const barY = canvas.height - 28 - counterFontSize - 10;
+          const segments = 5;
+          const filledSegments = Math.floor((count / 100) * segments);
+
+          for (let s = 0; s < segments; s++) {
+            const segX = barX + s * (barW / segments + 1);
+            const filled = s < filledSegments;
+            ctx.fillStyle = filled
+              ? `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, ${counterOpacity * 0.8})`
+              : `rgba(${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}, ${counterOpacity * 0.18})`;
+            ctx.fillRect(segX, barY, barW / segments - 1, barH);
+          }
+
           ctx.restore();
         }
       }
+      // ─────────────────────────────────────────────────────────────────
 
       frame = requestAnimationFrame(render);
     };
@@ -647,7 +692,6 @@ export function LoadingScreen({
       {!done && (
         <motion.div
           key="loader"
-          exit={{ opacity: 0, transition: { duration: 0.5 } }}
           className="fixed inset-0 z-[9999] flex flex-col bg-transparent overflow-hidden"
         >
           <canvas

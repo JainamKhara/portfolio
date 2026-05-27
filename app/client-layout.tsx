@@ -1,6 +1,6 @@
 "use client";
 
-import { Playfair_Display, DM_Sans, JetBrains_Mono } from "next/font/google";
+import { Playfair_Display, DM_Sans, JetBrains_Mono, Unbounded } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
@@ -34,6 +34,12 @@ const fontDisplay = Playfair_Display({
   weight: ["400", "700", "900"],
 });
 
+const fontLoader = Unbounded({
+  subsets: ["latin"],
+  variable: "--font-loader",
+  weight: ["900"],
+});
+
 const fontSans = DM_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -56,6 +62,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
           fontSans.variable,
           fontDisplay.variable,
           fontMono.variable,
+          fontLoader.variable,
           loading && "overflow-hidden",
         )}
       >
