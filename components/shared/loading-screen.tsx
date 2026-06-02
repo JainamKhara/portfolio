@@ -5,6 +5,19 @@ import { motion, AnimatePresence } from "framer-motion";
 import { gsap } from "@/lib/gsap";
 
 type Stage = "BOOT" | "COALESCE" | "IDENTITY" | "REVEAL";
+const LOADER_LETTERS = ["J", "A", "I", "N", "A", "M"] as const;
+const COLUMN_DELAYS = [0.18, 0.1, 0, 0, 0.1, 0.18] as const;
+const REVEAL_START_THRESHOLD = 0.62;
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
+}
+
+function getPlateProgress(index: number, revealProgress: number) {
+  if (revealProgress <= 0) return revealProgress;
+  const delay = COLUMN_DELAYS[index];
+  return clamp((revealProgress - delay) / (1 - delay), 0, 1);
+}
 
 // Parses hex and rgb strings returned by computed styles
 function parseColor(color: string): { r: number; g: number; b: number } {
@@ -80,6 +93,7 @@ export function LoadingScreen({
   const currentStageRef = useRef<Stage>("BOOT");
   const onRevealStartRef = useRef(onRevealStart);
   const onCompleteRef = useRef(onComplete);
+  const reducedMotionRef = useRef(false);
 
   // Mechanical Letter Stamping references
   const lettersRef = useRef<LetterState[]>([]);
@@ -95,6 +109,17 @@ export function LoadingScreen({
   useEffect(() => {
     currentStageRef.current = stage;
   }, [stage]);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updateMotionPreference = () => {
+      reducedMotionRef.current = media.matches;
+    };
+
+    updateMotionPreference();
+    media.addEventListener("change", updateMotionPreference);
+    return () => media.removeEventListener("change", updateMotionPreference);
+  }, []);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -114,6 +139,14 @@ export function LoadingScreen({
     const fontLoaderVal =
       computedStyle.getPropertyValue("--font-loader").trim() ||
       '"Unbounded", "DM Sans", "Inter", sans-serif';
+    const prefersReducedMotion = reducedMotionRef.current;
+
+    bootProgressRef.current = 0;
+    identityProgressRef.current = 0;
+    revealProgressRef.current = 0;
+    frameCounterRef.current = 0;
+    gridOpacityRef.current = 1.0;
+    noiseIntensityRef.current = [0, 0, 0, 0, 0, 0];
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -125,10 +158,10 @@ export function LoadingScreen({
     resize();
 
     // Initialize letter stamping parameters (with ruleProgress)
-    lettersRef.current = ["J", "A", "I", "N", "A", "M"].map((char) => ({
+    lettersRef.current = LOADER_LETTERS.map((char) => ({
       char,
-      y: -300,
-      scale: 3.8,
+      y: prefersReducedMotion ? canvas.height / 2 : -300,
+      scale: prefersReducedMotion ? 1.02 : 3.8,
       opacity: 0,
       stamped: false,
       ruleProgress: 0,
@@ -137,116 +170,217 @@ export function LoadingScreen({
     // Sequential Letterpress Stamping GSAP timeline
     const masterTl = gsap.timeline();
 
-    masterTl
-      // Stage 1: Boot — scan line sweeps top to bottom, frame counter climbs to 18
-      .to(bootProgressRef, {
-        current: 1.0,
-        duration: 0.7,
-        ease: "power2.inOut",
-        onStart: () => setStage("BOOT"),
-      })
-      .to(
-        frameCounterRef,
-        {
-          current: 18,
-          duration: 0.7,
-          ease: "power2.inOut",
-          snap: { current: 1 },
-        },
-        "<",
-      );
-
-    // Sequence mechanical giant letter stamps with spring recoil
-    lettersRef.current.forEach((letter, i) => {
-      masterTl.to(
-        letter,
-        {
-          y: canvas.height / 2,
-          scale: 1.0,
-          opacity: 1.0,
-          duration: 0.44,
-          ease: "elastic.out(1.15, 0.65)",
-          onStart: () => {
-            if (currentStageRef.current === "BOOT") {
-              setStage("COALESCE");
-            }
-          },
-          onComplete: () => {
-            letter.stamped = true;
-            // Spike ink pressure grain for this column
-            noiseIntensityRef.current[i] = 1.0;
-            // Animate the baseline rule sliding out after stamp
-            gsap.to(letter, {
-              ruleProgress: 1.0,
-              duration: 0.28,
-              ease: "power3.out",
-            });
-          },
-        },
-        `+=0.04`,
-      );
-
-      // Advance frame counter with each stamp
-      masterTl.to(
-        frameCounterRef,
-        {
-          current: 18 + Math.round(((i + 1) / 6) * 72),
-          duration: 0.44,
-          ease: "power2.out",
-          snap: { current: 1 },
-        },
-        "<",
-      );
-    });
-
-    // Fade out vertical column layout grid lines after the letter stamps complete
     const gridObj = { opacity: 1.0 };
-    masterTl
-      .to(gridObj, {
-        opacity: 0.0,
-        duration: 0.45,
-        ease: "power2.inOut",
-        onUpdate: () => {
-          gridOpacityRef.current = gridObj.opacity;
-        },
-      })
-      // Advance counter to 100 during the grid fade
-      .to(
-        frameCounterRef,
-        {
-          current: 100,
-          duration: 0.45,
+    if (prefersReducedMotion) {
+      masterTl
+        .to(bootProgressRef, {
+          current: 1.0,
+          duration: 0.35,
           ease: "power2.inOut",
-          snap: { current: 1 },
-        },
-        "<",
-      )
-      // Stage 4: Layout Splitting Slide Reveal with heavy click mechanical tension build & snap release
-      .to(
-        revealProgressRef,
-        {
-          current: -0.012, // Pullback compression
-          duration: 0.25,
+          onStart: () => setStage("BOOT"),
+        })
+        .to(
+          frameCounterRef,
+          {
+            current: 24,
+            duration: 0.35,
+            ease: "power2.inOut",
+            snap: { current: 1 },
+          },
+          "<",
+        )
+        .to(
+          lettersRef.current,
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.24,
+            stagger: 0.04,
+            ease: "power1.out",
+            onStart: () => setStage("IDENTITY"),
+          },
+          "+=0.06",
+        )
+        .add(() => {
+          lettersRef.current.forEach((letter, i) => {
+            letter.stamped = true;
+            letter.ruleProgress = 1;
+            noiseIntensityRef.current[i] = 0.16;
+          });
+        })
+        .to(identityProgressRef, {
+          current: 1,
+          duration: 0.22,
           ease: "power2.out",
+        })
+        .to(gridObj, {
+          opacity: 0.14,
+          duration: 0.18,
+          ease: "power2.out",
+          onUpdate: () => {
+            gridOpacityRef.current = gridObj.opacity;
+          },
+        })
+        .to(
+          frameCounterRef,
+          {
+            current: 100,
+            duration: 0.18,
+            ease: "power2.out",
+            snap: { current: 1 },
+          },
+          "<",
+        )
+        .to(revealProgressRef, {
+          current: 1,
+          duration: 0.5,
+          ease: "power2.inOut",
           onStart: () => {
             setStage("REVEAL");
           },
-        },
-        "+=0.65",
-      )
-      .to(revealProgressRef, {
-        current: 1.0, // Heavy release slide
-        duration: 1.35,
-        ease: "power4.inOut",
-        onComplete: () => {
-          // Kill the render loop and clear the canvas immediately —
-          // prevents ghost column lines from showing over the homepage
-          cancelAnimationFrame(frame);
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          onCompleteRef.current?.();
-          setDone(true);
-        },
+          onComplete: () => {
+            cancelAnimationFrame(frame);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            onCompleteRef.current?.();
+            setDone(true);
+          },
+        });
+    } else {
+      masterTl
+        // Stage 1: Boot — scan line sweeps top to bottom, frame counter climbs to 18
+        .to(bootProgressRef, {
+          current: 1.0,
+          duration: 0.55,
+          ease: "power2.inOut",
+          onStart: () => setStage("BOOT"),
+        })
+        .to(
+          frameCounterRef,
+          {
+            current: 18,
+            duration: 0.55,
+            ease: "power2.inOut",
+            snap: { current: 1 },
+          },
+          "<",
+        );
+
+      // Sequence mechanical giant letter stamps with controlled overshoot
+      lettersRef.current.forEach((letter, i) => {
+        masterTl.to(
+          letter,
+          {
+            y: canvas.height / 2 - 18,
+            scale: 1.16,
+            opacity: 0.92,
+            duration: 0.18,
+            ease: "power4.out",
+            onStart: () => {
+              if (currentStageRef.current === "BOOT") {
+                setStage("COALESCE");
+              }
+            },
+          },
+          i === 0 ? "+=0.04" : "<+=0.05",
+        );
+
+        masterTl.to(
+          letter,
+          {
+            y: canvas.height / 2 + 6,
+            scale: 0.985,
+            opacity: 1,
+            duration: 0.1,
+            ease: "power2.in",
+          },
+          ">",
+        );
+
+        masterTl.to(
+          letter,
+          {
+            y: canvas.height / 2,
+            scale: 1.0,
+            duration: 0.14,
+            ease: "power2.out",
+            onComplete: () => {
+              letter.stamped = true;
+              noiseIntensityRef.current[i] = 1.0;
+              gsap.to(letter, {
+                ruleProgress: 1.0,
+                duration: 0.24,
+                ease: "power3.out",
+              });
+            },
+          },
+          ">",
+        );
+
+        masterTl.to(
+          frameCounterRef,
+          {
+            current: 18 + Math.round(((i + 1) / LOADER_LETTERS.length) * 72),
+            duration: 0.22,
+            ease: "power2.out",
+            snap: { current: 1 },
+          },
+          "<",
+        );
       });
+
+      masterTl
+        .to(gridObj, {
+          opacity: 0.18,
+          duration: 0.35,
+          ease: "power2.out",
+          onUpdate: () => {
+            gridOpacityRef.current = gridObj.opacity;
+          },
+        })
+        .to(
+          frameCounterRef,
+          {
+            current: 100,
+            duration: 0.35,
+            ease: "power2.out",
+            snap: { current: 1 },
+          },
+          "<",
+        )
+        .to(identityProgressRef, {
+          current: 1,
+          duration: 0.3,
+          ease: "power2.out",
+          onStart: () => {
+            setStage("IDENTITY");
+          },
+        })
+        .to({}, { duration: 0.22 })
+        // Stage 4: a pressurized split reveal that opens from the center out
+        .to(
+          revealProgressRef,
+          {
+            current: -0.02,
+            duration: 0.16,
+            ease: "power2.out",
+            onStart: () => {
+              setStage("REVEAL");
+            },
+          },
+          "+=0.08",
+        )
+        .to(revealProgressRef, {
+          current: 1.0,
+          duration: 1.05,
+          ease: "expo.inOut",
+          onComplete: () => {
+            cancelAnimationFrame(frame);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            onCompleteRef.current?.();
+            setDone(true);
+          },
+        });
+    }
 
     let frame: number;
     let lastTime = performance.now();
@@ -298,11 +432,8 @@ export function LoadingScreen({
       const revealProgress = revealProgressRef.current;
       const stageVal = currentStageRef.current;
 
-      if (
-        stageVal === "REVEAL" &&
-        revealProgress >= 0.22 &&
-        !revealStartedCalled
-      ) {
+      const revealThreshold = prefersReducedMotion ? 0.12 : REVEAL_START_THRESHOLD;
+      if (stageVal === "REVEAL" && revealProgress >= revealThreshold && !revealStartedCalled) {
         revealStartedCalled = true;
         onRevealStartRef.current?.();
       }
@@ -315,15 +446,30 @@ export function LoadingScreen({
       for (let i = 0; i < 6; i++) {
         const colX = i * colW;
         let yOffset = 0;
+        let xOffset = 0;
+        let plateOpacity = 1;
         if (stageVal === "REVEAL") {
-          yOffset =
-            i % 2 === 0
-              ? -canvas.height * revealProgress
-              : canvas.height * revealProgress;
+          const plateProgress = getPlateProgress(i, revealProgress);
+          if (plateProgress < 0) {
+            const pullback = Math.abs(plateProgress);
+            yOffset = (i % 2 === 0 ? 1 : -1) * canvas.height * pullback * 0.035;
+          } else if (prefersReducedMotion) {
+            yOffset = (i % 2 === 0 ? -1 : 1) * 18 * plateProgress;
+            plateOpacity = 1 - plateProgress;
+          } else {
+            const verticalDirection = i % 2 === 0 ? -1 : 1;
+            const horizontalDirection = i < 3 ? -1 : 1;
+            yOffset = verticalDirection * canvas.height * plateProgress;
+            xOffset = horizontalDirection * colW * 0.22 * Math.pow(plateProgress, 1.18);
+            plateOpacity = 1 - plateProgress * 0.08;
+          }
         }
 
         // Draw individual vertical shutter plate with 0.5px overlap to avoid subpixel lines
-        ctx.fillRect(colX, 0 + yOffset, colW + 0.5, canvas.height);
+        ctx.save();
+        ctx.globalAlpha = plateOpacity;
+        ctx.fillRect(colX + xOffset, yOffset, colW + 0.5, canvas.height);
+        ctx.restore();
 
         // ── Ink pressure grain texture ──────────────────────────────────
         // Decays each frame: impact spike (1.0) → resting grain (0.06)
@@ -369,7 +515,7 @@ export function LoadingScreen({
             shadow.addColorStop(0, "rgba(0, 0, 0, 0.35)");
             shadow.addColorStop(1, "rgba(0, 0, 0, 0.0)");
             ctx.fillStyle = shadow;
-            ctx.fillRect(colX, bottomEdge, colW + 0.5, 35);
+            ctx.fillRect(colX + xOffset, bottomEdge, colW + 0.5, 35);
           } else {
             // 2, 4, 6 sliding DOWN (cast shadow upwards onto revealed viewport)
             const topEdge = yOffset;
@@ -382,7 +528,7 @@ export function LoadingScreen({
             shadow.addColorStop(0, "rgba(0, 0, 0, 0.35)");
             shadow.addColorStop(1, "rgba(0, 0, 0, 0.0)");
             ctx.fillStyle = shadow;
-            ctx.fillRect(colX, topEdge - 35, colW + 0.5, 35);
+            ctx.fillRect(colX + xOffset, topEdge - 35, colW + 0.5, 35);
           }
           ctx.restore();
         }
@@ -396,8 +542,7 @@ export function LoadingScreen({
       // --- PROPORTIONAL SPLIT-SYMMETRICAL TYPOGRAPHY OFFSETS ---
       ctx.save();
       ctx.font = `900 ${fontSize}px ${fontLoaderVal}, sans-serif`;
-      const letters = ["J", "A", "I", "N", "A", "M"];
-      const letterWidths = letters.map((char) => ctx.measureText(char).width);
+      const letterWidths = LOADER_LETTERS.map((char) => ctx.measureText(char).width);
 
       const tracking = -0.035;
       const trackingOffset = tracking * fontSize;
@@ -554,20 +699,28 @@ export function LoadingScreen({
           // Keep centered inside respective vertical column with alternating vertical split yOffset
           const colX = i * colW;
           const colCenterX = colX + colW / 2;
-          const finalX = colCenterX;
+          let revealXOffset = 0;
 
           let yOffset = 0;
           if (stageVal === "REVEAL") {
-            yOffset =
-              i % 2 === 0
-                ? -canvas.height * revealProgress
-                : canvas.height * revealProgress;
+            const plateProgress = getPlateProgress(i, revealProgress);
+            if (plateProgress < 0) {
+              const pullback = Math.abs(plateProgress);
+              yOffset = (i % 2 === 0 ? 1 : -1) * canvas.height * pullback * 0.035;
+            } else if (prefersReducedMotion) {
+              yOffset = (i % 2 === 0 ? -1 : 1) * 18 * plateProgress;
+            } else {
+              yOffset = (i % 2 === 0 ? -1 : 1) * canvas.height * plateProgress;
+              revealXOffset =
+                (i < 3 ? -1 : 1) * colW * 0.22 * Math.pow(plateProgress, 1.18);
+            }
           }
+          const finalX = colCenterX + revealXOffset;
           const finalY = letter.y + yOffset;
 
           const letterOpacity =
             stageVal === "REVEAL"
-              ? (1.0 - revealProgress) * letter.opacity
+              ? (1.0 - Math.max(0, getPlateProgress(i, revealProgress))) * letter.opacity
               : letter.opacity;
           const letterScalePullback =
             stageVal === "REVEAL" && revealProgress < 0
