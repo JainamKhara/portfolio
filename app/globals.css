@@ -93,6 +93,15 @@
   --lanyard-stop-1:            #8A1310;
   --lanyard-stop-2:            #D9281C;
   --lanyard-stop-3:            #A31C14;
+
+  /* Loader Design System variables */
+  --loader-bg:                 #E63329;
+  --loader-grid:               rgba(255, 255, 255, 0.08);
+  --loader-subgrid:            rgba(255, 255, 255, 0.03);
+  --loader-guide-center:       rgba(255, 255, 255, 0.25);
+  --loader-guide-side:         rgba(255, 255, 255, 0.14);
+  --loader-corner:             rgba(255, 255, 255, 0.35);
+  --loader-circle-opacity:     0.08;
 }
 
 .dark {
@@ -143,6 +152,15 @@
   --lanyard-stop-1:            #520B09;
   --lanyard-stop-2:            #D9281C;
   --lanyard-stop-3:            #7F150F;
+
+  /* Loader Design System variables */
+  --loader-bg:                 #E63329;
+  --loader-grid:               rgba(255, 255, 255, 0.08);
+  --loader-subgrid:            rgba(255, 255, 255, 0.03);
+  --loader-guide-center:       rgba(255, 255, 255, 0.25);
+  --loader-guide-side:         rgba(255, 255, 255, 0.14);
+  --loader-corner:             rgba(255, 255, 255, 0.35);
+  --loader-circle-opacity:     0.08;
 }
 
 /* ─── Base ─── */
@@ -329,4 +347,16 @@
 .section-label {
   font-size: 0.8rem !important;
   letter-spacing: 0.25em;
+}
+
+/* ─── Loader Name Text Responsive Sizing ─── */
+.loader-name-text {
+  font-family: var(--font-mono), monospace;
+  font-weight: 700;
+  font-size: clamp(1.1rem, 7.2vw, 1.8rem);
+}
+@media (min-width: 768px) {
+  .loader-name-text {
+    font-size: clamp(2.5rem, 10vw, 10rem);
+  }
 }

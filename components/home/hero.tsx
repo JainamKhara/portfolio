@@ -5,9 +5,8 @@ import { motion } from "framer-motion";
 import { gsap, useGSAP } from "@/lib/gsap";
 import Link from "next/link";
 import { IDCard } from "@/components/home/id-card";
-import { useLoading } from "@/lib/loading-context";
-
-
+import { useLoaderDone } from "../PageLoader/useLoaderDone";
+import { useState, useEffect } from "react";
 
 const tickerItems = [
   "Full-Stack", "·", "Machine Learning", "·", "Next.js", "·", "React", "·", 
@@ -22,12 +21,19 @@ export function Hero() {
   const nameLineRef = useRef<HTMLDivElement>(null);
   const watermarkRef = useRef<HTMLDivElement>(null);
   const tickerStripRef = useRef<HTMLDivElement>(null);
-  const { isLoading } = useLoading();
+  const done = useLoaderDone();
+  const [isSkipped, setIsSkipped] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && sessionStorage.getItem("jk_loaded") === "true") {
+      setIsSkipped(true);
+    }
+  }, []);
 
   /* GSAP: Infinite Ticker with Dynamic Hover Friction */
   useGSAP(
     () => {
-      if (!tickerRef.current || !tickerStripRef.current || isLoading) return;
+      if (!tickerRef.current || !tickerStripRef.current || !done) return;
       const ticker = tickerRef.current;
       const strip = tickerStripRef.current;
       const scrollWidth = ticker.scrollWidth / 3;
@@ -56,13 +62,13 @@ export function Hero() {
         scrollAnim.kill();
       };
     },
-    { scope: containerRef, dependencies: [isLoading] },
+    { scope: containerRef, dependencies: [done] },
   );
 
   /* GSAP: 3D Watermark Parallax & Scroll Layout Parallax */
   useGSAP(
     () => {
-      if (!containerRef.current || !watermarkRef.current || isLoading) return;
+      if (!containerRef.current || !watermarkRef.current || !done) return;
       const container = containerRef.current;
       const watermark = watermarkRef.current;
 
@@ -100,7 +106,7 @@ export function Hero() {
         container.removeEventListener("mousemove", onMouseMove);
       };
     },
-    { scope: containerRef, dependencies: [isLoading] },
+    { scope: containerRef, dependencies: [done] },
   );
 
 
@@ -108,14 +114,14 @@ export function Hero() {
   /* GSAP: Rule expansion */
   useGSAP(
     () => {
-      if (!nameLineRef.current || isLoading) return;
+      if (!nameLineRef.current || !done) return;
       gsap.fromTo(
         nameLineRef.current,
         { scaleX: 0, transformOrigin: "left" },
-        { scaleX: 1, duration: 0.8, ease: "expo.out", delay: 0.5 },
+        { scaleX: 1, duration: 0.8, ease: "expo.out", delay: isSkipped ? 0.5 : 0.6 },
       );
     },
-    { scope: containerRef, dependencies: [isLoading] },
+    { scope: containerRef, dependencies: [done, isSkipped] },
   );
 
 
@@ -130,7 +136,7 @@ export function Hero() {
           {/* Availability badge */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
-            animate={!isLoading ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+            animate={done ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             className="flex items-center gap-4 mb-10"
           >
@@ -158,7 +164,7 @@ export function Hero() {
               className="absolute -left-6 -top-6 select-none pointer-events-none"
               style={{ perspective: 1000 }}
               initial={{ opacity: 0 }}
-              animate={!isLoading ? { opacity: 1 } : { opacity: 0 }}
+              animate={done ? { opacity: 1 } : { opacity: 0 }}
               transition={{ duration: 0.8, delay: 0.25 }}
             >
               <span
@@ -178,11 +184,11 @@ export function Hero() {
                 className="font-display font-black leading-[1.2] tracking-tight block"
                 style={{ fontSize: "clamp(4.5rem,12vw,10rem)" }}
                 initial={{ y: "108%" }}
-                animate={!isLoading ? { y: "0%" } : { y: "108%" }}
+                animate={done ? { y: "0%" } : { y: "108%" }}
                 transition={{
                   duration: 0.7,
                   ease: [0.22, 1, 0.36, 1],
-                  delay: 0.2,
+                  delay: isSkipped ? 0.05 : 0.15,
                 }}
               >
                 Jainam
@@ -202,11 +208,11 @@ export function Hero() {
                   WebkitTextStroke: "1.5px #D9281C",
                 }}
                 initial={{ y: "108%" }}
-                animate={!isLoading ? { y: "0%" } : { y: "108%" }}
+                animate={done ? { y: "0%" } : { y: "108%" }}
                 transition={{
                   duration: 0.7,
                   ease: [0.22, 1, 0.36, 1],
-                  delay: 0.28,
+                  delay: isSkipped ? 0.08 : 0.27,
                 }}
               >
                 Khara
@@ -216,8 +222,8 @@ export function Hero() {
             {/* Role Subtitle */}
             <motion.p
               initial={{ opacity: 0, y: 10 }}
-              animate={!isLoading ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-              transition={{ duration: 0.6, delay: 0.38 }}
+              animate={done ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+              transition={{ duration: 0.6, delay: isSkipped ? 0.12 : 0.38 }}
               className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.24em] text-foreground/80 font-medium mt-5 mb-1.5"
             >
               Full-Stack Developer · ML Practitioner
@@ -231,45 +237,54 @@ export function Hero() {
             />
           </div>
 
-          {/* Bio + CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={!isLoading ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          {/* Bio */}
+          <motion.p
+            initial={{ opacity: 0, y: 18 }}
+            animate={done ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
             transition={{
-              duration: 0.6,
-              ease: [0.22, 1, 0.36, 1],
-              delay: 0.45,
+              duration: 0.45,
+              ease: "easeOut",
+              delay: isSkipped ? 0.15 : 0.4,
             }}
+            className="text-foreground/80 text-sm leading-relaxed max-w-[38ch] mb-8"
           >
-            <p className="text-foreground/80 text-sm leading-relaxed max-w-[38ch] mb-8">
-              Computer Science & Engineering student at SAL Institute of Technology and Engineering Research.<br></br>
-              I engineer scalable fullstack products and intelligent systems —
-              with obsessive attention to detail.
-            </p>
+            Computer Science & Engineering student at SAL Institute of Technology and Engineering Research.<br></br>
+            I engineer scalable fullstack products and intelligent systems —
+            with obsessive attention to detail.
+          </motion.p>
 
-            <div className="flex flex-wrap gap-3">
-              <div className="inline-block">
-                <Link
-                  href="/projects"
-                  data-cursor="hover"
-                  className="inline-flex items-center gap-2.5 bg-primary text-white font-mono text-[10px] uppercase tracking-widest px-6 py-3.5 hover:bg-[#c22016] hover:text-white transition-colors duration-300 group"
-                >
-                  View Work
-                  <span className="group-hover:translate-x-1 transition-transform duration-300">
-                    →
-                  </span>
-                </Link>
-              </div>
-              <div className="inline-block">
-                <a
-                  href="/Jainam_Khara_CV.pdf"
-                  download
-                  data-cursor="hover"
-                  className="inline-flex items-center gap-2 border border-border font-mono text-[10px] uppercase tracking-widest px-6 py-3.5 hover:border-primary hover:text-primary hover:bg-primary/5 transition-colors duration-300"
-                >
-                  <b>CV ↗</b>
-                </a>
-              </div>
+          {/* CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={done ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+            transition={{
+              duration: 0.45,
+              ease: "easeOut",
+              delay: isSkipped ? 0.2 : 0.48,
+            }}
+            className="flex flex-wrap gap-3"
+          >
+            <div className="inline-block">
+              <Link
+                href="/projects"
+                data-cursor="hover"
+                className="inline-flex items-center gap-2.5 bg-primary text-white font-mono text-[10px] uppercase tracking-widest px-6 py-3.5 hover:bg-[#c22016] hover:text-white transition-colors duration-300 group"
+              >
+                View Work
+                <span className="group-hover:translate-x-1 transition-transform duration-300">
+                  →
+                </span>
+              </Link>
+            </div>
+            <div className="inline-block">
+              <a
+                href="/Jainam_Khara_CV.pdf"
+                download
+                data-cursor="hover"
+                className="inline-flex items-center gap-2 border border-border font-mono text-[10px] uppercase tracking-widest px-6 py-3.5 hover:border-primary hover:text-primary hover:bg-primary/5 transition-colors duration-300"
+              >
+                <b>CV ↗</b>
+              </a>
             </div>
           </motion.div>
 
@@ -279,12 +294,12 @@ export function Hero() {
         {/* Right: hanging ID card */}
         <div className="lg:col-span-5 xl:col-span-4 order-2 flex justify-center lg:justify-end self-start mt-40 lg:mt-0">
           <motion.div
-            initial={{ opacity: 0, y: 35 }}
-            animate={!isLoading ? { opacity: 1, y: 0 } : { opacity: 0, y: 35 }}
+            initial={{ opacity: 0, x: 60 }}
+            animate={done ? { opacity: 1, x: 0 } : { opacity: 0, x: 60 }}
             transition={{
-              duration: 0.8,
-              ease: [0.22, 1, 0.36, 1],
-              delay: 0.45,
+              duration: 0.5,
+              ease: "easeOut",
+              delay: isSkipped ? 0.1 : 0.3,
             }}
             className="relative z-20 w-full max-w-[31rem] h-[39rem] sm:h-[42rem] md:h-[45rem] lg:h-[49rem] lg:-mt-24 xl:-mt-24 overflow-visible"
           >
@@ -296,9 +311,12 @@ export function Hero() {
       {/* ── Tech ticker strip ── */}
       <motion.div
         ref={tickerStripRef}
-        initial={{ opacity: 0, y: 15 }}
-        animate={!isLoading ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
-        transition={{ duration: 0.6, ease: "easeOut", delay: 0.5 }}
+        initial={{ opacity: 0 }}
+        animate={done ? { opacity: 1 } : { opacity: 0 }}
+        transition={{
+          duration: 0.4,
+          delay: isSkipped ? 0.25 : 0.6,
+        }}
         className="border-t border-border h-9 flex items-center overflow-hidden relative z-10 select-none bg-background cursor-grab active:cursor-grabbing"
       >
         <div ref={tickerRef} className="flex items-center whitespace-nowrap">

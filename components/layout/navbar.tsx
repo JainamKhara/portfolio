@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import gsap from "gsap";
 import { ThemeSwitch } from "@/components/theme-switch";
+import { useLoaderDone } from "../PageLoader/useLoaderDone";
 
 const NAV = [
   { label: "Projects", href: "/projects" },
@@ -93,6 +94,14 @@ export function Navbar() {
   const logoRef = useRef<HTMLAnchorElement>(null);
   const logoSpanRef = useRef<HTMLSpanElement>(null);
   const menuBtnRef = useRef<HTMLButtonElement>(null);
+  const done = useLoaderDone();
+  const [isSkipped, setIsSkipped] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && sessionStorage.getItem("jk_loaded") === "true") {
+      setIsSkipped(true);
+    }
+  }, []);
 
   useEffect(() => {
     const btn = menuBtnRef.current;
@@ -137,9 +146,9 @@ export function Navbar() {
   return (
     <>
       <motion.header
-        initial={{ y: -72, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
+        initial={{ clipPath: "inset(0 0 100% 0)", opacity: 0 }}
+        animate={done ? { clipPath: "inset(0 0 0% 0)", opacity: 1 } : { clipPath: "inset(0 0 100% 0)", opacity: 0 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: isSkipped ? 0.05 : 0.2 }}
         className={cn(
           "fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 lg:px-8 transition-[background-color,border-color,box-shadow,height] duration-500 border-b border-border/40",
           scrolled ? "h-14 shadow-[0_2px_15px_rgba(0,0,0,0.02)]" : "h-16 lg:h-20",

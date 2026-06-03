@@ -12,7 +12,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
-import { LoadingScreen } from "@/components/shared/loading-screen";
+import { PageLoader } from "@/components/PageLoader";
 import { LoadingProvider, useLoading } from "@/lib/loading-context";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -21,10 +21,7 @@ const CustomCursor = dynamic(
   { ssr: false },
 );
 
-const CADCrosshair = dynamic(
-  () => import("@/components/cad-crosshair").then((mod) => mod.CADCrosshair),
-  { ssr: false },
-);
+
 
 /* ── Fonts ── */
 const fontDisplay = Playfair_Display({
@@ -129,7 +126,7 @@ function LayoutContent({
   return (
     <>
       {loading && (
-        <LoadingScreen 
+        <PageLoader 
           onRevealStart={handleRevealStart} 
           onComplete={handleLoadingComplete} 
         />
@@ -141,8 +138,7 @@ function LayoutContent({
       {/* Custom cursor (desktop only) */}
       {mounted && <CustomCursor />}
 
-      {/* CAD Crosshair guide (desktop only) */}
-      {mounted && <CADCrosshair />}
+
 
       <SmoothScrollProvider>
         <div
