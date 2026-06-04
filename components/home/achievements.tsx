@@ -179,7 +179,7 @@ export function Achievements() {
   return (
     <section
       ref={sectionRef}
-      className="py-12 md:py-16 px-6 md:px-12 lg:px-20 relative bg-background overflow-hidden"
+      className="pt-10 pb-10 md:pt-12 md:pb-12 lg:pt-12 lg:pb-12 px-6 md:px-12 lg:px-20 relative bg-background overflow-hidden"
     >
       {/* Structural clean architectural borders */}
       <div className="absolute inset-x-6 md:inset-x-12 lg:inset-x-20 top-0 h-[1px] bg-border/40 pointer-events-none" />
@@ -187,10 +187,10 @@ export function Achievements() {
       <div className="absolute inset-y-0 right-6 md:right-12 lg:right-20 w-[1px] bg-border/10 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <RevealLine className="mb-16" />
+        <RevealLine className="mb-8 md:mb-10" />
 
         {/* Editorial Header Block */}
-        <div className="mb-20">
+        <div className="mb-10 md:mb-12">
           <p className="section-label mb-4 opacity-0 font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
             <DecoderText text="BY THE NUMBERS" delay={0.2} />
           </p>

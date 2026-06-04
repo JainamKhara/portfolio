@@ -227,17 +227,17 @@ export function FeaturedProjects() {
   }, { scope: sectionRef });
 
   return (
-    <section ref={sectionRef} className="relative bg-background pt-12 md:pt-16 overflow-hidden">
+    <section ref={sectionRef} className="relative bg-background pt-10 pb-0 md:pt-12 lg:pt-12 overflow-hidden">
       {/* Structural Brutalist paper borders connecting sections */}
       <div className="absolute inset-x-6 md:inset-x-12 lg:inset-x-20 top-0 h-[1px] bg-border/40 pointer-events-none" />
       <div className="absolute inset-y-0 left-6 md:left-12 lg:left-20 w-[1px] bg-border/10 pointer-events-none" />
       <div className="absolute inset-y-0 right-6 md:right-12 lg:right-20 w-[1px] bg-border/10 pointer-events-none" />
 
-      <div className="px-6 md:px-12 lg:px-20 pb-24 md:pb-32">
+      <div className="px-6 md:px-12 lg:px-20">
         <div className="max-w-7xl mx-auto relative z-10">
           
           {/* Subtle line break divider */}
-          <RevealLine className="mb-16" />
+          <RevealLine className="mb-8 md:mb-10" />
 
           {/* Section title (Simple editorial header) */}
           <div className="section-header flex items-end justify-between pb-12 md:pb-16">

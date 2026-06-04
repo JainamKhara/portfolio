@@ -450,10 +450,10 @@ export function SkillsShowcase() {
   }, []);
 
   return (
-    <section className="py-12 md:py-16 px-6 md:px-12 lg:px-20 bg-card overflow-hidden relative">
+    <section className="pt-10 pb-10 md:pt-12 md:pb-12 lg:pt-12 lg:pb-12 px-6 md:px-12 lg:px-20 bg-card overflow-hidden relative">
       <div ref={ref} className="max-w-7xl mx-auto">
         {/* Animated Blueprint divider reveal lines */}
-        <RevealLine className="mb-16" />
+        <RevealLine className="mb-8 md:mb-10" />
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-16 lg:items-start">
           
@@ -543,7 +543,7 @@ export function SkillsShowcase() {
           </div>
 
           {/* Right panel: Gallery Framed 3D WebGL Orb */}
-          <div className="hidden lg:flex h-[450px] w-full relative items-center justify-center bg-secondary/5 dark:bg-zinc-900/5 rounded-sm border border-border/30 dark:border-border/10 overflow-hidden shadow-[inset_0_4px_16px_rgba(0,0,0,0.02)] dark:shadow-[inset_0_4px_16px_rgba(0,0,0,0.18)] group/orb mt-24">
+          <div className="hidden lg:flex h-[450px] w-full relative items-center justify-center bg-secondary/5 dark:bg-zinc-900/5 rounded-sm border border-border/30 dark:border-border/10 overflow-hidden shadow-[inset_0_4px_16px_rgba(0,0,0,0.02)] dark:shadow-[inset_0_4px_16px_rgba(0,0,0,0.18)] group/orb mt-10 md:mt-12">
             
             {/* Gallery Labels */}
             <div className="absolute top-4 left-4 font-mono text-[9px] text-muted-foreground/30 font-semibold select-none tracking-widest">

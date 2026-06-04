@@ -130,7 +130,7 @@ export function Hero() {
       ref={containerRef}
       className="relative w-full bg-background overflow-hidden pt-16 lg:pt-24"
     >
-      <div className="container mx-auto px-8 md:px-14 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:items-center lg:min-h-[calc(100vh-80px)] pt-12 md:pt-20 pb-24 md:pb-32 lg:pb-40">
+      <div className="container mx-auto px-8 md:px-14 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:items-center lg:min-h-[calc(100vh-64px)] pt-12 md:pt-16 pb-10 md:pb-12 lg:pb-12">
         {/* Left: Content panel */}
         <div className="lg:col-span-7 xl:col-span-8 order-1 flex flex-col justify-center">
           {/* Availability badge */}

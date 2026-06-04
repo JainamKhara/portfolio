@@ -31,7 +31,7 @@ function NavLink({ item, isActive }: NavLinkProps) {
       data-cursor="hover"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative h-full flex items-center justify-center font-mono text-[10.5px] font-bold uppercase tracking-[0.2em] select-none overflow-visible transition-colors duration-300 border-r border-border/40 first:border-l shrink-0 min-w-fit"
+      className="relative h-full flex items-center justify-center font-mono text-[11px] font-bold uppercase tracking-[0.2em] select-none overflow-visible transition-colors duration-300 border-r border-border/40 first:border-l shrink-0 min-w-fit"
       style={{ perspective: 1000, transformStyle: "preserve-3d" }}
     >
       {/* 3D Vertical Flipping Card Section (Normal flow to size the link correctly) */}
@@ -71,7 +71,7 @@ function NavLink({ item, isActive }: NavLinkProps) {
               ? "text-white"
               : isActive
               ? "text-primary"
-              : "text-foreground/70"
+              : "text-foreground"
           )}
           style={{ transform: "translateZ(1px)" }} // Tiny positive Z offset to guarantee absolute layered clarity
         >
@@ -151,11 +151,11 @@ export function Navbar() {
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: isSkipped ? 0.05 : 0.2 }}
         className={cn(
           "fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 lg:px-8 transition-[background-color,border-color,box-shadow,height] duration-500 border-b border-border/40",
-          scrolled ? "h-14 shadow-[0_2px_15px_rgba(0,0,0,0.02)]" : "h-16 lg:h-20",
+          scrolled ? "h-14 shadow-[0_2px_15px_rgba(0,0,0,0.02)]" : "h-16",
         )}
       >
         {/* Background Layer with Backdrop Filter (Isolated to prevent nested 3D flattening) */}
-        <div className="absolute inset-0 bg-background/80 backdrop-blur-xl -z-10 pointer-events-none" />
+        <div className="absolute inset-0 bg-[#F5F4F0]/90 dark:bg-[#030303]/90 backdrop-blur-md -z-10 pointer-events-none" />
         {/* Brand Segment (High-contrast Serif Display Typography with Right Border divider) */}
         <div className="flex items-center h-full border-r border-border/40 pr-8 md:pr-12">
           <Link
@@ -166,9 +166,57 @@ export function Navbar() {
           >
             <span
               ref={logoSpanRef}
-              className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-primary text-white font-mono font-bold text-[10px] shadow-lg shadow-primary/20"
+              className="inline-flex items-center justify-center w-9 h-9 text-foreground relative select-none"
             >
-              JK
+              <svg
+                className="w-full h-full text-foreground"
+                viewBox="0 0 32 32"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                {/* Subtle blueprint frame grid box */}
+                <rect
+                  x="2"
+                  y="2"
+                  width="28"
+                  height="28"
+                  className="stroke-border/40 origin-center transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:stroke-primary/25 group-hover:scale-[1.04]"
+                  strokeWidth="0.8"
+                  strokeDasharray="3 3"
+                />
+                
+                {/* Left Code Bracket (<) */}
+                <path
+                  d="M 10 10 L 4 16 L 10 22"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="origin-center transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-x-[2.5px] group-hover:-rotate-[6deg]"
+                />
+                
+                {/* The Slash (/) in Vermilion Red */}
+                <line
+                  x1="13.5"
+                  y1="23.5"
+                  x2="18.5"
+                  y2="8.5"
+                  stroke="#D9281C"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  className="origin-center transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:rotate-[15deg] group-hover:scale-[1.05]"
+                />
+                
+                {/* Right Code Bracket (>) */}
+                <path
+                  d="M 22 10 L 28 16 L 22 22"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="origin-center transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:translate-x-[2.5px] group-hover:rotate-[6deg]"
+                />
+              </svg>
             </span>
             <span className="hidden sm:inline-block font-display font-black text-xl italic tracking-tight text-foreground">
               Jainam
@@ -193,7 +241,7 @@ export function Navbar() {
           <Link
             href="/contact"
             data-cursor="hover"
-            className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] px-6 py-2.5 bg-foreground text-background hover:bg-primary hover:text-white transition-all duration-300 border border-foreground/10 hover:border-primary hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#D9281C]"
+            className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] px-6 py-2.5 bg-foreground text-background hover:bg-primary hover:text-white transition-all duration-300 border border-foreground/10 hover:border-primary hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#D9281C]"
           >
             Hire me
           </Link>
