@@ -175,12 +175,15 @@ export function Hero() {
               </span>
             </motion.div>
 
+            {/* SEO Heading: Single semantic H1 for search indexation of the owner's name */}
+            <h1 className="sr-only">Jainam Khara | Full Stack Developer & Machine Learning Engineer Portfolio</h1>
+
             {/* "Jainam" */}
             <div
               className="overflow-hidden"
               style={{ padding: "0.5em 0.2em", margin: "0 -0.2em" }}
             >
-              <motion.h1
+              <motion.div
                 className="font-display font-black leading-[1.2] tracking-tight block"
                 style={{ fontSize: "clamp(4.5rem,12vw,10rem)" }}
                 initial={{ y: "108%" }}
@@ -192,7 +195,7 @@ export function Hero() {
                 }}
               >
                 Jainam
-              </motion.h1>
+              </motion.div>
             </div>
 
             {/* "Khara." — outline stroke */}
@@ -200,7 +203,7 @@ export function Hero() {
               className="overflow-hidden"
               style={{ padding: "0.5em 0.2em", margin: "-0.45em -0.2em" }}
             >
-              <motion.h1
+              <motion.div
                 className="font-display font-black italic leading-[1.2] tracking-tight block"
                 style={{
                   fontSize: "clamp(4.5rem,12vw,10rem)",
@@ -216,7 +219,7 @@ export function Hero() {
                 }}
               >
                 Khara
-              </motion.h1>
+              </motion.div>
             </div>
 
             {/* Role Subtitle */}

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   // Basic metadata
   applicationName: "Jainam Khara Portfolio",
   authors: [{ name: "Jainam Khara" }],
-  keywords: ["Full Stack Developer", "Next.js Developer", "React Developer", "Machine Learning", "Android Developer", "Portfolio", "Web Development", "App Development", "AI/ML Enthusiast"],
+  keywords: ["Full Stack Developer", "Next.js Developer", "React Developer", "Machine Learning", "Android Developer", "Portfolio", "Web Development", "App Development", "AI/ML Enthusiast", "Jainam", "Khara", "Jainam Khara"],
   alternates: {
     canonical: "https://jainamkhara.app", 
   },
@@ -56,5 +56,40 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <ClientLayout>{children}</ClientLayout>;
+  return (
+    <ClientLayout>
+      {children}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            "name": "Jainam Khara",
+            "url": "https://jainamkhara.app",
+            "image": "https://jainamkhara.app/images/og-image.png",
+            "sameAs": [
+              "https://github.com/JainamKhara",
+              "https://www.linkedin.com/in/jainamkhara/"
+            ],
+            "jobTitle": "Full Stack Developer & Machine Learning Engineer",
+            "description": "Jainam Khara is a Full-Stack Web & Mobile Developer and Machine Learning Enthusiast. Explore my portfolio website for drop-of-hope, skribbl-clone, and other projects.",
+            "knowsAbout": [
+              "Full Stack Development",
+              "Next.js",
+              "React",
+              "TypeScript",
+              "Node.js",
+              "Python",
+              "Machine Learning",
+              "Android Development",
+              "PostgreSQL",
+              "Docker",
+              "System Design"
+            ]
+          })
+        }}
+      />
+    </ClientLayout>
+  );
 }
