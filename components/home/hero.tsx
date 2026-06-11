@@ -128,7 +128,7 @@ export function Hero() {
   return (
     <section
       ref={containerRef}
-      className="relative w-full bg-background overflow-hidden pt-16 lg:pt-24"
+      className="relative w-full bg-transparent overflow-hidden pt-16 lg:pt-24"
     >
       <div className="container mx-auto px-8 md:px-14 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:items-center lg:min-h-[calc(100vh-64px)] pt-12 md:pt-16 pb-10 md:pb-12 lg:pb-12">
         {/* Left: Content panel */}
@@ -317,7 +317,7 @@ export function Hero() {
           duration: 0.4,
           delay: isSkipped ? 0.25 : 0.6,
         }}
-        className="border-t border-border h-9 flex items-center overflow-hidden relative z-10 select-none bg-background cursor-grab active:cursor-grabbing"
+        className="border-t border-border h-9 flex items-center overflow-hidden relative z-10 select-none bg-transparent cursor-grab active:cursor-grabbing"
       >
         <div ref={tickerRef} className="flex items-center whitespace-nowrap">
           {[...tickerItems, ...tickerItems, ...tickerItems].map((item, i) => (

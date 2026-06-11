@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 
 export function CustomCursor() {
-  const dotRef  = useRef<HTMLDivElement>(null);
+  const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
-  /* Step 1: mount only on pointer-fine (mouse) devices */
+  /* Step 1: mount only on pointer-fine (mouse) desktop devices */
   useEffect(() => {
     const checkIsTouch = () => {
       if (typeof window === "undefined") return false;
@@ -24,191 +24,164 @@ export function CustomCursor() {
     }
   }, []);
 
-  /* Step 2: RAF loop after confirmed mouse device */
+  /* Step 2: RAF tracking loop with fluid outer ring physics */
   useEffect(() => {
     if (!visible) return;
-    const dot  = dotRef.current!; // safe: rendered only when visible=true
+
+    const dot = dotRef.current!;
     const ring = ringRef.current!;
 
-    /* Position state stored in plain variables for maximum 120fps performance */
-    let mouseX = window.innerWidth  / 2;
+    // Mouse coordinates (client viewport coordinates)
+    let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
-    let ringX  = mouseX;
-    let ringY  = mouseY;
     let lastMouseX = mouseX;
     let lastMouseY = mouseY;
-    let currentStretch = 1;
-    let currentRotation = 0;
     
+    // Ring physical coordinates
+    let ringX = mouseX;
+    let ringY = mouseY;
+    let ringSize = 26;
+
+    let isHovering = false;
+    let isClicking = false;
     let alphaCur = 0;
     let alphaTarget = 0;
-    let isHover = false;
     let rafId: number;
 
-    /* ── Initialise dot wrapper styles ── */
+    // Stylize the pointer dot
     Object.assign(dot.style, {
-      position:      "fixed",
-      top:           "0",
-      left:          "0",
-      width:         "7px",
-      height:        "7px",
-      marginLeft:    "-3.5px",
-      marginTop:     "-3.5px",
-      background:    "#D9281C",
-      borderRadius:  "50%",
+      position: "fixed",
+      top: "0",
+      left: "0",
+      width: "6px",
+      height: "6px",
+      marginLeft: "-3px",
+      marginTop: "-3px",
+      background: "#D9281C",
+      borderRadius: "50%",
       pointerEvents: "none",
-      zIndex:        "99999",
-      opacity:       "0",
-      willChange:    "transform, opacity",
-      boxShadow:     "0 0 8px rgba(217, 40, 28, 0.6)",
-    } as CSSStyleDeclaration);
+      zIndex: "99999",
+      opacity: "0",
+      willChange: "transform, opacity",
+      boxShadow: "0 0 6px rgba(217, 40, 28, 0.4)",
+    });
 
-    /* ── Initialise ring container styles ── */
+    // Stylize the outer ring
     Object.assign(ring.style, {
-      position:      "fixed",
-      top:           "0",
-      left:          "0",
-      width:         "26px",
-      height:        "26px",
-      marginLeft:    "-13px",
-      marginTop:     "-13px",
-      border:        "1.5px solid rgba(217, 40, 28, 0.8)",
-      borderRadius:  "50%",
-      background:    "transparent",
+      position: "fixed",
+      top: "0",
+      left: "0",
+      width: "26px",
+      height: "26px",
+      marginLeft: "-13px",
+      marginTop: "-13px",
+      border: "1.5px solid rgba(217, 40, 28, 0.45)",
+      borderRadius: "50%",
       pointerEvents: "none",
-      zIndex:        "99998",
-      opacity:       "0",
-      willChange:    "transform, opacity",
-      boxShadow:     "0 0 4px rgba(217, 40, 28, 0.15)",
-      transition:    "width .2s cubic-bezier(0.22, 1, 0.36, 1), height .2s cubic-bezier(0.22, 1, 0.36, 1), margin .2s cubic-bezier(0.22, 1, 0.36, 1), background .2s cubic-bezier(0.22, 1, 0.36, 1)",
-    } as CSSStyleDeclaration);
+      zIndex: "99998",
+      opacity: "0",
+      boxSizing: "border-box",
+      backgroundColor: "transparent",
+      willChange: "transform, width, height, border-radius, background-color, opacity",
+      transition: "background-color 0.3s ease, border-color 0.3s ease",
+    });
 
-    /* ── Apply hover state ── */
-    function setHoverState(next: boolean) {
-      if (next === isHover) return;
-      isHover = next;
-      if (isHover) {
-        Object.assign(ring.style, {
-          width: "42px",
-          height: "42px",
-          marginLeft: "-21px",
-          marginTop: "-21px",
-          background: "rgba(217, 40, 28, 0.06)",
-          borderColor: "rgba(217, 40, 28, 0.95)",
-          boxShadow: "0 0 10px rgba(217, 40, 28, 0.3)",
-        });
-      } else {
-        Object.assign(ring.style, {
-          width: "26px",
-          height: "26px",
-          marginLeft: "-13px",
-          marginTop: "-13px",
-          background: "transparent",
-          borderColor: "rgba(217, 40, 28, 0.8)",
-          boxShadow: "0 0 4px rgba(217, 40, 28, 0.15)",
-        });
-      }
-    }
-
-    /* ── RAF animation loop ── */
-    function tick() {
-      // 1. Lerp position coordinates
-      const dxPos = mouseX - ringX;
-      const dyPos = mouseY - ringY;
-      
-      if (Math.abs(dxPos) < 0.1 && Math.abs(dyPos) < 0.1) {
-        ringX = mouseX;
-        ringY = mouseY;
-      } else {
-        ringX += dxPos * 0.14;
-        ringY += dyPos * 0.14;
-      }
-
-      // 2. Velocity calculations for dynamic blueprint stretch
+    const tick = () => {
+      // Calculate velocity for subtle reactive breathing
       const dxVel = mouseX - lastMouseX;
       const dyVel = mouseY - lastMouseY;
       const speed = Math.sqrt(dxVel * dxVel + dyVel * dyVel);
-      
       lastMouseX = mouseX;
       lastMouseY = mouseY;
 
-      // Target stretch limit (clamped to prevent distortion)
-      const targetStretch = 1 + Math.min(speed * 0.015, 0.55);
-      const targetRotation = speed > 0.6 ? Math.atan2(dyVel, dxVel) : currentRotation;
+      // 1. Target coordinates are always exactly the mouse position
+      const targetX = mouseX;
+      const targetY = mouseY;
 
-      // Elastic LERP damping
-      currentStretch += (targetStretch - currentStretch) * 0.12;
-      currentRotation += (targetRotation - currentRotation) * 0.12;
+      // 2. Calculate target ring size (stays a perfect circle, scales slightly on hover)
+      let targetSize = 26;
+      if (isHovering) {
+        targetSize = 38; // Clean, slightly larger circle on hover
+      } else {
+        // Subtle expansion based on speed
+        targetSize = 26 + Math.min(speed * 0.12, 8);
+      }
 
-      const squash = 1 / currentStretch;
+      // 3. Smooth Lerp interpolation for fluid tracking
+      const posLerp = 0.2;
+      ringX += (targetX - ringX) * posLerp;
+      ringY += (targetY - ringY) * posLerp;
+      ringSize += (targetSize - ringSize) * 0.2;
 
-      // 3. Smooth fade opacity
-      alphaCur += (alphaTarget - alphaCur) * 0.1;
+      // 4. Opacity tracking
+      alphaCur += (alphaTarget - alphaCur) * 0.12;
       const a = alphaCur.toFixed(3);
 
-      // 4. Apply transformations to components
-      ring.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) rotate(${currentRotation}rad) scale(${currentStretch}, ${squash})`;
-      ring.style.opacity   = a;
+      // 5. Apply transforms
+      let transformStr = `translate3d(${ringX}px, ${ringY}px, 0)`;
+      if (isClicking) {
+        transformStr += ` scale(0.8)`;
+      }
+
+      ring.style.transform = transformStr;
+      ring.style.width = `${ringSize}px`;
+      ring.style.height = `${ringSize}px`;
+      ring.style.marginLeft = `${-ringSize / 2}px`;
+      ring.style.marginTop = `${-ringSize / 2}px`;
+      ring.style.opacity = a;
 
       dot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
-      dot.style.opacity   = isHover ? "0" : a;
+      dot.style.opacity = a; // Keep inner dot visible for precise pointing
 
       rafId = requestAnimationFrame(tick);
-    }
+    };
+
     tick();
 
-    /* ── Event listeners ── */
-    function onMove(e: PointerEvent) {
+    // Event listeners
+    const onMouseMove = (e: PointerEvent) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
       alphaTarget = 1;
+
+      // Scan for interactive tags
       const t = e.target as HTMLElement;
-      setHoverState(!!(t && t.closest && t.closest("a, button, [data-cursor='hover']")));
-    }
+      const hoverTarget = t?.closest("a, button, [role='button'], [data-cursor='hover']");
 
-    /* ── Dynamic concentric click ripple trigger ── */
-    function onClick(e: MouseEvent) {
-      const ripple = document.createElement("div");
-      Object.assign(ripple.style, {
-        position: "fixed",
-        left: "0",
-        top: "0",
-        width: "52px",
-        height: "52px",
-        marginLeft: "-26px",
-        marginTop: "-26px",
-        border: "1.5px solid #D9281C",
-        borderRadius: "50%",
-        pointerEvents: "none",
-        zIndex: "99997",
-        transform: `translate3d(${e.clientX}px, ${e.clientY}px, 0) scale(0.1)`,
-        opacity: "0.85",
-        willChange: "transform, opacity",
-        transition: "transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.4s cubic-bezier(0.215, 0.61, 0.355, 1)",
-      });
-      document.body.appendChild(ripple);
+      if (hoverTarget) {
+        isHovering = true;
+        Object.assign(ring.style, {
+          borderColor: "#D9281C",
+          backgroundColor: "rgba(217, 40, 28, 0.08)",
+        });
+      } else {
+        isHovering = false;
+        Object.assign(ring.style, {
+          borderColor: "rgba(217, 40, 28, 0.45)",
+          backgroundColor: "transparent",
+        });
+      }
+    };
 
-      // Trigger animation
-      requestAnimationFrame(() => {
-        ripple.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) scale(2.2)`;
-        ripple.style.opacity = "0";
-      });
+    const onPointerDown = () => {
+      isClicking = true;
+    };
 
-      // Cleanup
-      setTimeout(() => {
-        ripple.remove();
-      }, 450);
-    }
+    const onPointerUp = () => {
+      isClicking = false;
+    };
 
-    window.addEventListener("pointermove", onMove, { capture: true });
-    window.addEventListener("click", onClick, { capture: true });
+    window.addEventListener("pointermove", onMouseMove, { capture: true, passive: true });
+    window.addEventListener("pointerdown", onPointerDown, { capture: true, passive: true });
+    window.addEventListener("pointerup", onPointerUp, { capture: true, passive: true });
     window.addEventListener("mouseleave", () => { alphaTarget = 0; });
     window.addEventListener("mouseenter", () => { alphaTarget = 1; });
 
     return () => {
       cancelAnimationFrame(rafId);
-      window.removeEventListener("pointermove", onMove, { capture: true });
-      window.removeEventListener("click", onClick, { capture: true });
+      window.removeEventListener("pointermove", onMouseMove, { capture: true });
+      window.removeEventListener("pointerdown", onPointerDown, { capture: true });
+      window.removeEventListener("pointerup", onPointerUp, { capture: true });
     };
   }, [visible]);
 
@@ -216,8 +189,12 @@ export function CustomCursor() {
 
   return (
     <>
-      <div ref={dotRef} style={{ pointerEvents: "none" }} aria-hidden="true" />
+      {/* Interactive Floating Ring */}
       <div ref={ringRef} style={{ pointerEvents: "none" }} aria-hidden="true" />
+      
+      {/* Snappy Center Dot */}
+      <div ref={dotRef} style={{ pointerEvents: "none" }} aria-hidden="true" />
+
       <style>{`
         @media (min-width: 1024px) and (pointer: fine) {
           * { cursor: none !important; }
@@ -226,5 +203,3 @@ export function CustomCursor() {
     </>
   );
 }
-
-

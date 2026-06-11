@@ -109,7 +109,7 @@ export default function ExperiencePage() {
   );
 
   return (
-    <div ref={pageRef} className="min-h-screen bg-background">
+    <div ref={pageRef} className="min-h-screen bg-transparent">
       {/* Page hero */}
       <div className="relative border-b border-border overflow-hidden">
         <div

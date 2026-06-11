@@ -21,6 +21,11 @@ const CustomCursor = dynamic(
   { ssr: false },
 );
 
+const InteractiveBackground = dynamic(
+  () => import("@/components/interactive-background").then((mod) => mod.InteractiveBackground),
+  { ssr: false },
+);
+
 
 
 /* ── Fonts ── */
@@ -134,6 +139,9 @@ function LayoutContent({
 
       {/* Grain texture */}
       <div className="grain" aria-hidden="true" />
+
+      {/* Interactive Background Grid */}
+      {mounted && <InteractiveBackground />}
 
       {/* Custom cursor (desktop only) */}
       {mounted && <CustomCursor />}

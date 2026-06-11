@@ -218,7 +218,7 @@ export function Navbar() {
                 />
               </svg>
             </span>
-            <span className="hidden sm:inline-block font-display font-black text-xl italic tracking-tight text-foreground">
+            <span className="hidden sm:inline-block font-display font-black text-xl italic tracking-tight text-[#D9281C]">
               Jainam
             </span>
           </Link>

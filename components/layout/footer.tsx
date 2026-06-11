@@ -37,7 +37,7 @@ export function Footer() {
   }, []);
 
   return (
-    <footer className="relative border-t border-border bg-card overflow-hidden">
+    <footer className="relative border-t border-border bg-transparent overflow-hidden">
       {/* Structural Brutalist paper borders matching website sections */}
       <div className="absolute inset-y-0 left-6 md:left-12 lg:left-20 w-[1px] bg-border/10 pointer-events-none" />
       <div className="absolute inset-y-0 right-6 md:right-12 lg:right-20 w-[1px] bg-border/10 pointer-events-none" />

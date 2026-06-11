@@ -450,7 +450,7 @@ export function SkillsShowcase() {
   }, []);
 
   return (
-    <section className="pt-10 pb-10 md:pt-12 md:pb-12 lg:pt-12 lg:pb-12 px-6 md:px-12 lg:px-20 bg-card overflow-hidden relative">
+    <section className="pt-10 pb-10 md:pt-12 md:pb-12 lg:pt-12 lg:pb-12 px-6 md:px-12 lg:px-20 bg-transparent overflow-hidden relative">
       <div ref={ref} className="max-w-7xl mx-auto">
         {/* Animated Blueprint divider reveal lines */}
         <RevealLine className="mb-8 md:mb-10" />

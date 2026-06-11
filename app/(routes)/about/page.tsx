@@ -65,7 +65,7 @@ export default function AboutPage() {
   }, { scope: sectionRef });
 
   return (
-    <div ref={sectionRef} className="min-h-screen bg-background">
+    <div ref={sectionRef} className="min-h-screen bg-transparent">
 
       {/* ── Page hero strip ── */}
       <div className="relative border-b border-border overflow-hidden">

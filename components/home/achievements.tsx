@@ -179,7 +179,7 @@ export function Achievements() {
   return (
     <section
       ref={sectionRef}
-      className="pt-10 pb-10 md:pt-12 md:pb-12 lg:pt-12 lg:pb-12 px-6 md:px-12 lg:px-20 relative bg-background overflow-hidden"
+      className="pt-10 pb-10 md:pt-12 md:pb-12 lg:pt-12 lg:pb-12 px-6 md:px-12 lg:px-20 relative bg-transparent overflow-hidden"
     >
       {/* Structural clean architectural borders */}
       <div className="absolute inset-x-6 md:inset-x-12 lg:inset-x-20 top-0 h-[1px] bg-border/40 pointer-events-none" />

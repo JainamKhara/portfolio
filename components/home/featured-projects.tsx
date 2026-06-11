@@ -227,7 +227,7 @@ export function FeaturedProjects() {
   }, { scope: sectionRef });
 
   return (
-    <section ref={sectionRef} className="relative bg-background pt-10 pb-0 md:pt-12 lg:pt-12 overflow-hidden">
+    <section ref={sectionRef} className="relative bg-transparent pt-10 pb-0 md:pt-12 lg:pt-12 overflow-hidden">
       {/* Structural Brutalist paper borders connecting sections */}
       <div className="absolute inset-x-6 md:inset-x-12 lg:inset-x-20 top-0 h-[1px] bg-border/40 pointer-events-none" />
       <div className="absolute inset-y-0 left-6 md:left-12 lg:left-20 w-[1px] bg-border/10 pointer-events-none" />
