@@ -26,6 +26,11 @@ const InteractiveBackground = dynamic(
   { ssr: false },
 );
 
+const InkReveal = dynamic(
+  () => import("@/components/ui/ink-reveal").then((mod) => mod.default),
+  { ssr: false },
+);
+
 
 
 /* ── Fonts ── */
@@ -142,6 +147,18 @@ function LayoutContent({
 
       {/* Interactive Background Grid */}
       {mounted && <InteractiveBackground />}
+
+      {/* Ink Reveal Cursor Trail */}
+      {mounted && (
+        <InkReveal
+          mode="paint"
+          inkColor={[217, 40, 28]}
+          brushSize={70}
+          lifetime={900}
+          globalTrack={true}
+          className="fixed inset-0 z-0 pointer-events-none opacity-45"
+        />
+      )}
 
       {/* Custom cursor (desktop only) */}
       {mounted && <CustomCursor />}

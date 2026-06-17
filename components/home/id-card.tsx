@@ -243,6 +243,106 @@ export function IDCard() {
     }
   }, [getAttachmentPoint, getTransformOrigin]);
 
+  const runningRef = useRef(false);
+
+  const wakeUp = useCallback(() => {
+    if (runningRef.current) return;
+    runningRef.current = true;
+
+    let previous = performance.now();
+    const tick = (now: number) => {
+      if (!runningRef.current) return;
+
+      const dt = Math.min((now - previous) / 16.6667, 2);
+      previous = now;
+
+      const layout = layoutRef.current;
+      const sim = simRef.current;
+
+      if (sim.ready && layout.cardHeight) {
+        if (!sim.dragging) {
+          const attachmentPoint = getAttachmentPoint(sim, layout);
+          const attachX = attachmentPoint.x;
+          const swingDx = clamp(
+            attachX - layout.anchorX,
+            -layout.strapLength * 0.94,
+            layout.strapLength * 0.94,
+          );
+          const hangingY =
+            layout.anchorY +
+            Math.sqrt(
+              Math.max(
+                layout.strapLength * layout.strapLength - swingDx * swingDx,
+                0,
+              ),
+            );
+          const desiredY = hangingY - ATTACHMENT_OFFSET_Y;
+          const restingInfluence = reducedMotionRef.current ? 0.015 : 0.026;
+
+          if (!reducedMotionRef.current) {
+            sim.vx += Math.sin(now / 980) * 0.02 * dt;
+          }
+
+          sim.vx += (layout.restX - sim.x) * restingInfluence * dt;
+          sim.vy += (desiredY - sim.y) * 0.038 * dt;
+          sim.vx *= reducedMotionRef.current ? 0.9 : 0.955;
+          sim.vy *= reducedMotionRef.current ? 0.9 : 0.96;
+          sim.x += sim.vx * dt;
+          sim.y += sim.vy * dt;
+
+          const targetAngle = clamp(swingDx * 0.1 + sim.vx * 2.6, -22, 22);
+          sim.angularVelocity += (targetAngle - sim.angle) * 0.12 * dt;
+          sim.angularVelocity *= reducedMotionRef.current ? 0.76 : 0.86;
+          sim.angle += sim.angularVelocity * dt;
+
+          // Sleep check:
+          const distToRest = Math.hypot(sim.x - layout.restX, sim.y - desiredY);
+          const speed = Math.hypot(sim.vx, sim.vy);
+          const angSpeed = Math.abs(sim.angularVelocity);
+          const angleDiff = Math.abs(sim.angle);
+
+          if (
+            distToRest < 0.15 &&
+            speed < 0.025 &&
+            angSpeed < 0.012 &&
+            angleDiff < 0.06
+          ) {
+            // Snap to absolute rest
+            sim.x = layout.restX;
+            sim.y = desiredY;
+            sim.vx = 0;
+            sim.vy = 0;
+            sim.angle = 0;
+            sim.angularVelocity = 0;
+
+            renderScene();
+            runningRef.current = false;
+            return;
+          }
+        } else {
+          const attachmentPoint = getAttachmentPoint(sim, layout);
+          const attachX = attachmentPoint.x;
+          const targetAngle = clamp(
+            (attachX - layout.anchorX) * 0.15 +
+              sim.vx * 2.6 +
+              (sim.grabPointX - layout.cardWidth / 2) * 0.04,
+            -26,
+            26,
+          );
+          sim.angularVelocity += (targetAngle - sim.angle) * 0.24 * dt;
+          sim.angularVelocity *= 0.84;
+          sim.angle += sim.angularVelocity * dt;
+        }
+
+        renderScene();
+      }
+
+      window.requestAnimationFrame(tick);
+    };
+
+    window.requestAnimationFrame(tick);
+  }, [getAttachmentPoint, renderScene]);
+
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     const updateMotionPreference = () => {
@@ -327,6 +427,7 @@ export function IDCard() {
       }
 
       renderScene();
+      wakeUp();
     };
 
     const resizeObserver = new ResizeObserver(syncLayout);
@@ -338,75 +439,11 @@ export function IDCard() {
   }, [getAttachmentPoint, renderScene, isMobile]);
 
   useEffect(() => {
-    let frameId = 0;
-    let previous = performance.now();
-
-    const loop = (now: number) => {
-      const dt = Math.min((now - previous) / 16.6667, 2);
-      previous = now;
-
-      const layout = layoutRef.current;
-      const sim = simRef.current;
-
-      if (sim.ready && layout.cardHeight) {
-        if (!sim.dragging) {
-          const attachmentPoint = getAttachmentPoint(sim, layout);
-          const attachX = attachmentPoint.x;
-          const swingDx = clamp(
-            attachX - layout.anchorX,
-            -layout.strapLength * 0.94,
-            layout.strapLength * 0.94,
-          );
-          const hangingY =
-            layout.anchorY +
-            Math.sqrt(
-              Math.max(
-                layout.strapLength * layout.strapLength - swingDx * swingDx,
-                0,
-              ),
-            );
-          const desiredY = hangingY - ATTACHMENT_OFFSET_Y;
-          const restingInfluence = reducedMotionRef.current ? 0.015 : 0.026;
-
-          if (!reducedMotionRef.current) {
-            sim.vx += Math.sin(now / 980) * 0.02 * dt;
-          }
-
-          sim.vx += (layout.restX - sim.x) * restingInfluence * dt;
-          sim.vy += (desiredY - sim.y) * 0.038 * dt;
-          sim.vx *= reducedMotionRef.current ? 0.9 : 0.955;
-          sim.vy *= reducedMotionRef.current ? 0.9 : 0.96;
-          sim.x += sim.vx * dt;
-          sim.y += sim.vy * dt;
-
-          const targetAngle = clamp(swingDx * 0.1 + sim.vx * 2.6, -22, 22);
-          sim.angularVelocity += (targetAngle - sim.angle) * 0.12 * dt;
-          sim.angularVelocity *= reducedMotionRef.current ? 0.76 : 0.86;
-          sim.angle += sim.angularVelocity * dt;
-        } else {
-          const attachmentPoint = getAttachmentPoint(sim, layout);
-          const attachX = attachmentPoint.x;
-          const targetAngle = clamp(
-            (attachX - layout.anchorX) * 0.15 +
-              sim.vx * 2.6 +
-              (sim.grabPointX - layout.cardWidth / 2) * 0.04,
-            -26,
-            26,
-          );
-          sim.angularVelocity += (targetAngle - sim.angle) * 0.24 * dt;
-          sim.angularVelocity *= 0.84;
-          sim.angle += sim.angularVelocity * dt;
-        }
-
-        renderScene();
-      }
-
-      frameId = window.requestAnimationFrame(loop);
+    wakeUp();
+    return () => {
+      runningRef.current = false;
     };
-
-    frameId = window.requestAnimationFrame(loop);
-    return () => window.cancelAnimationFrame(frameId);
-  }, [getAttachmentPoint, renderScene, isMobile]);
+  }, [wakeUp]);
 
   const getPointFromClient = useCallback((clientX: number, clientY: number) => {
     const rect = stageRef.current?.getBoundingClientRect();
@@ -426,7 +463,8 @@ export function IDCard() {
     sim.pointerId = null;
     sim.angularVelocity += sim.vx * 0.28;
     setIsDragging(false);
-  }, []);
+    wakeUp();
+  }, [wakeUp]);
 
   useEffect(() => {
     const handlePointerMove = (event: PointerEvent) => {
@@ -463,6 +501,7 @@ export function IDCard() {
       sim.lastPointerAt = now;
 
       renderScene();
+      wakeUp();
       if (event.cancelable) {
         event.preventDefault();
       }
@@ -506,6 +545,7 @@ export function IDCard() {
     sim.grabPointY = point.y - sim.y;
     sim.lastPointerAt = performance.now();
     setIsDragging(true);
+    wakeUp();
     if (event.cancelable) {
       event.preventDefault();
     }
@@ -547,11 +587,13 @@ export function IDCard() {
             <stop offset="100%" stopColor="rgba(255,255,255,0)" />
           </linearGradient>
           
-          {/* 3D repeating woven ribbed polyester fabric texture pattern */}
-          <pattern id="lanyard-weave" width="4" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">
-            <rect width="4" height="8" fill="transparent" />
-            <line x1="0" y1="0" x2="4" y2="0" stroke="rgba(0, 0, 0, 0.28)" strokeWidth="1.6" />
-            <line x1="0" y1="4" x2="4" y2="4" stroke="rgba(255, 255, 255, 0.14)" strokeWidth="1.6" />
+          {/* High-fidelity twill weave fabric texture pattern */}
+          <pattern id="lanyard-weave" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(25)">
+            <rect width="6" height="6" fill="none" />
+            <line x1="0" y1="0" x2="6" y2="0" stroke="rgba(0, 0, 0, 0.35)" strokeWidth="2.2" />
+            <line x1="0" y1="3" x2="6" y2="3" stroke="rgba(255, 255, 255, 0.16)" strokeWidth="1.8" />
+            <line x1="0" y1="1.5" x2="6" y2="1.5" stroke="rgba(0, 0, 0, 0.15)" strokeWidth="1" />
+            <line x1="0" y1="4.5" x2="6" y2="4.5" stroke="rgba(255, 255, 255, 0.08)" strokeWidth="1" />
           </pattern>
 
           {/* Premium gunmetal and chrome linear gradients for clasp hardware */}
@@ -694,26 +736,7 @@ export function IDCard() {
           />
         </g>
 
-        {/* Clean, high-end matte silicone editorial screen printing */}
-        <text
-          fill="rgba(255, 255, 255, 0.88)"
-          stroke="rgba(0, 0, 0, 0.28)"
-          strokeWidth="0.5"
-          paintOrder="stroke"
-          fontSize="9.2"
-          fontFamily="var(--font-mono)"
-          fontWeight="600"
-          letterSpacing="2.8"
-          opacity="0.94"
-        >
-          <textPath
-            href={`#${strapPathId}`}
-            startOffset="50%"
-            textAnchor="middle"
-          >
-            JAINAM KHARA  //  CREATIVE DEVELOPER  //  JAINAM KHARA  //  CREATIVE DEVELOPER  //  JAINAM KHARA  //  CREATIVE DEVELOPER
-          </textPath>
-        </text>
+
 
         {/* Dynamically swinging gunmetal/chrome Swivel snap hook clasp */}
         <g ref={strapClipRef} className="pointer-events-none">
@@ -753,22 +776,37 @@ export function IDCard() {
         className="pointer-events-none absolute top-0 z-20 -translate-x-1/2"
         style={{ left: layoutState.anchorX }}
       >
-        <div className="mx-auto h-2.5 w-10 rounded-full bg-primary/10 blur-md" />
-        <div className="relative mx-auto mt-0 flex w-[5.2rem] flex-col items-center">
-          <div className="absolute -top-1 h-4.5 w-4.5 rounded-full border border-white/10 bg-[radial-gradient(circle_at_35%_30%,rgba(255,255,255,0.88),rgba(80,80,80,0.88)_42%,rgba(10,10,10,0.96)_100%)] shadow-[0_7px_14px_rgba(8,8,16,0.32)]" />
+        <div className="mx-auto h-3 w-12 rounded-full bg-black/15 blur-md" />
+        <div className="relative mx-auto mt-0 flex w-[5.5rem] flex-col items-center">
+          {/* Wall Mount Pin / Polished Metal Dome Rivet */}
+          <div className="absolute -top-1.5 h-6 w-6 rounded-full border border-white/20 bg-[radial-gradient(circle_at_30%_25%,#ffffff_0%,#e4e4e7_20%,#a1a1aa_45%,#52525b_75%,#18181b_100%)] shadow-[0_5px_12px_rgba(0,0,0,0.45),inset_0_-1.5px_2px_rgba(0,0,0,0.7)]">
+            <div className="absolute left-[5px] top-[4px] h-[3px] w-[5px] rotate-[-15deg] rounded-full bg-white/60 blur-[0.3px]" />
+            <div className="absolute inset-[7px] rounded-full border border-white/5 bg-gradient-to-br from-zinc-600 to-zinc-950 opacity-40" />
+          </div>
+
           <div
             ref={mountSwingRef}
-            className="relative mt-[0.45rem] flex flex-col items-center origin-top transition-transform duration-75 ease-out"
+            className="relative mt-[0.55rem] flex flex-col items-center origin-top transition-transform duration-75 ease-out"
           >
-            <div className="h-[0.42rem] w-[0.18rem] rounded-full bg-[linear-gradient(180deg,rgba(200,200,200,0.94)_0%,rgba(30,30,30,0.9)_100%)]" />
-            <div className="relative mt-[0.18rem] h-[0.92rem] w-full rounded-[999px] border border-white/12 bg-[linear-gradient(180deg,rgba(220,220,220,0.98)_0%,rgba(120,120,120,0.92)_30%,rgba(20,20,20,0.95)_100%)] shadow-[0_7px_14px_rgba(6,6,12,0.28)]">
-              <div className="absolute left-1/2 top-1/2 h-[0.22rem] w-[3rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[linear-gradient(180deg,rgba(10,10,10,0.96)_0%,rgba(5,5,5,1)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]" />
-              <div className="absolute left-1/2 top-1/2 h-[0.06rem] w-[1.7rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/12" />
-              <div className="absolute inset-x-3 top-[0.11rem] h-px bg-white/65" />
+            {/* Metal connector loop holding the breakaway buckle */}
+            <div className="h-[0.45rem] w-[0.22rem] rounded-full bg-gradient-to-r from-zinc-300 via-zinc-500 to-zinc-800 border-x border-black/40 shadow-[0_2px_4px_rgba(0,0,0,0.15)]" />
+            
+            {/* Breakaway buckle / matte black polymer clasp */}
+            <div className="relative mt-[0.12rem] h-[0.95rem] w-[3.8rem] rounded-[3px] border border-zinc-950 bg-gradient-to-b from-zinc-800 via-zinc-900 to-black shadow-[0_4px_8px_rgba(0,0,0,0.4),inset_0_1px_1.5px_rgba(255,255,255,0.15)]">
+              <div className="absolute -left-[3px] top-[2px] bottom-[2px] w-[3px] rounded-l-[1.5px] border-y border-l border-zinc-950 bg-zinc-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]" />
+              <div className="absolute -right-[3px] top-[2px] bottom-[2px] w-[3px] rounded-r-[1.5px] border-y border-r border-zinc-950 bg-zinc-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]" />
+              <div className="absolute left-1/2 top-0 bottom-0 w-[1.5px] -translate-x-1/2 bg-zinc-950" />
+              <div className="absolute left-2.5 right-2.5 top-[2px] bottom-[2px] rounded-[1.5px] border border-zinc-950 bg-zinc-950/40 flex items-center justify-between px-1">
+                <div className="h-[2px] w-[4px] rounded-sm bg-zinc-700/60" />
+                <div className="h-[2px] w-[4px] rounded-sm bg-zinc-700/60" />
+              </div>
+              <div className="absolute inset-x-2.5 top-[1px] h-[1px] bg-white/10" />
             </div>
-            <div className="relative mt-[0.16rem] flex h-[0.34rem] w-[1.5rem] items-center justify-center rounded-full bg-[linear-gradient(180deg,rgba(200,200,200,0.96)_0%,rgba(40,40,40,0.92)_100%)] shadow-[0_4px_8px_rgba(8,8,14,0.24)]">
-              <div className="h-[0.08rem] w-[0.78rem] rounded-full bg-[rgba(10,10,10,0.7)]" />
-              <div className="absolute left-1/2 top-full h-[0.42rem] w-[0.16rem] -translate-x-1/2 rounded-full bg-[linear-gradient(180deg,rgba(100,100,100,0.95)_0%,rgba(15,15,15,0.94)_100%)]" />
+            
+            {/* Bottom attachment oval steel ring */}
+            <div className="relative mt-[0.14rem] flex h-[0.45rem] w-[1.8rem] items-center justify-center rounded-[4px] border border-zinc-950 bg-gradient-to-b from-zinc-100 via-zinc-400 to-zinc-700 shadow-[0_3px_6px_rgba(0,0,0,0.3),inset_0_1px_1px_rgba(255,255,255,0.3)]">
+              <div className="h-[0.18rem] w-[1.1rem] rounded-[2px] bg-black shadow-[inset_0_1.5px_2px_rgba(0,0,0,0.9)]" />
+              <div className="absolute left-1/2 top-1/2 h-[0.38rem] w-[0.24rem] -translate-x-1/2 rounded-full border border-zinc-950 bg-gradient-to-b from-zinc-300 via-zinc-100 to-zinc-600 shadow-[0_2px_4px_rgba(0,0,0,0.3)]" />
             </div>
           </div>
         </div>

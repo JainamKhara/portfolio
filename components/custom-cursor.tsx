@@ -146,7 +146,9 @@ export function CustomCursor() {
 
       // Scan for interactive tags
       const t = e.target as HTMLElement;
-      const hoverTarget = t?.closest("a, button, [role='button'], [data-cursor='hover']");
+      const hoverTarget = (t && typeof t.nodeType === "number" && t.nodeType === 1)
+        ? Element.prototype.closest.call(t, "a, button, [role='button'], [data-cursor='hover']")
+        : null;
 
       if (hoverTarget) {
         isHovering = true;
