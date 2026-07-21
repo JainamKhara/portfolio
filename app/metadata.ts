@@ -2,6 +2,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://jainamkhara.app"),
   title: "Jainam Khara | Portfolio",
   description: "Full Stack Developer & Machine Learning Enthusiast",
   icons: {

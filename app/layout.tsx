@@ -3,6 +3,7 @@ import { ClientLayout } from "./client-layout";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://jainamkhara.app"),
   title: "Jainam Khara | Full Stack Developer & ML Enthusiast",
   description: "Full Stack Developer & Machine Learning Enthusiast with expertise in Next.js, React and Android.",
   

@@ -217,14 +217,14 @@ export function LoadingScreen({ onRevealStart, onComplete }: LoadingScreenProps)
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         >
           {/* JAINAM row (Black tiles with white letters) */}
-          <div className="relative flex gap-[6px] md:gap-[12px] items-center">
+          <div className="relative flex gap-[8px] md:gap-[16px] items-center">
             {lettersJainam.map((char, i) => (
               <motion.div
                 key={i}
-                className="flex items-center justify-center bg-[#0A0A0A] shadow-[4px_4px_0px_rgba(0,0,0,0.18)]"
+                className="flex items-center justify-center bg-[#0A0A0A] shadow-[6px_6px_0px_rgba(0,0,0,0.22)]"
                 style={{
-                  width: "clamp(48px, 9vw, 110px)",
-                  height: "clamp(48px, 9vw, 110px)",
+                  width: "clamp(64px, 12vw, 136px)",
+                  height: "clamp(64px, 12vw, 136px)",
                   border: "2px solid #0A0A0A",
                 }}
                 initial={{ scale: 0.6, opacity: 0, y: 15 }}
@@ -242,7 +242,7 @@ export function LoadingScreen({ onRevealStart, onComplete }: LoadingScreenProps)
                   startDelay={delaysJainam[i]}
                   className="font-display font-black text-white leading-none block"
                   style={{
-                    fontSize: "clamp(28px, 5.5vw, 64px)",
+                    fontSize: "clamp(38px, 7vw, 80px)",
                   }}
                 />
               </motion.div>
@@ -250,17 +250,17 @@ export function LoadingScreen({ onRevealStart, onComplete }: LoadingScreenProps)
           </div>
 
           {/* Spacer */}
-          <div className="h-[24px] md:h-[32px]" />
+          <div className="h-[32px] md:h-[48px]" />
 
           {/* KHARA row (White tiles with black letters) */}
-          <div className="relative flex gap-[6px] md:gap-[12px] items-center">
+          <div className="relative flex gap-[8px] md:gap-[16px] items-center">
             {lettersKhara.map((char, i) => (
               <motion.div
                 key={i}
-                className="flex items-center justify-center bg-white shadow-[4px_4px_0px_rgba(0,0,0,0.18)]"
+                className="flex items-center justify-center bg-white shadow-[6px_6px_0px_rgba(0,0,0,0.22)]"
                 style={{
-                  width: "clamp(48px, 9vw, 110px)",
-                  height: "clamp(48px, 9vw, 110px)",
+                  width: "clamp(64px, 12vw, 136px)",
+                  height: "clamp(64px, 12vw, 136px)",
                   border: "2px solid #0A0A0A",
                 }}
                 initial={{ scale: 0.6, opacity: 0, y: 15 }}
@@ -278,7 +278,7 @@ export function LoadingScreen({ onRevealStart, onComplete }: LoadingScreenProps)
                   startDelay={delaysKhara[i]}
                   className="font-display font-black text-black leading-none block"
                   style={{
-                    fontSize: "clamp(28px, 5.5vw, 64px)",
+                    fontSize: "clamp(38px, 7vw, 80px)",
                   }}
                 />
               </motion.div>
