@@ -368,7 +368,7 @@ export function SkillsShowcase() {
               [CATEGORY_MORPHIC_SPECTRUM]
             </div>
             <div className="absolute bottom-4 right-4 font-mono text-[10px] text-primary font-bold select-none tracking-widest uppercase">
-              // {activeCategory}
+              {"// "}{activeCategory}
             </div>
             {mounted && (
               <div className="h-full w-full cursor-grab active:cursor-grabbing">

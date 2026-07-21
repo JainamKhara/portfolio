@@ -8,12 +8,6 @@ import { IDCard } from "@/components/home/id-card";
 import { useLoaderDone } from "../PageLoader/useLoaderDone";
 import { useState, useEffect } from "react";
 
-const tickerItems = [
-  "Full-Stack", "·", "Machine Learning", "·", "Next.js", "·", "React", "·", 
-  "TypeScript", "·", "Node.js", "·", "Python", "·", "TailwindCSS", "·", 
-  "GSAP", "·", "Framer Motion", "·", "Three.js", "·", "PostgreSQL", "·", 
-  "Docker", "·", "Cloud Native", "·", "Git", "·", "System Design", "·"
-];
 
 export function Hero() {
   const containerRef = useRef<HTMLElement>(null);

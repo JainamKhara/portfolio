@@ -436,7 +436,7 @@ export function IDCard() {
     syncLayout();
 
     return () => resizeObserver.disconnect();
-  }, [getAttachmentPoint, renderScene, isMobile]);
+  }, [getAttachmentPoint, renderScene, isMobile, wakeUp]);
 
   useEffect(() => {
     wakeUp();
@@ -527,7 +527,7 @@ export function IDCard() {
       window.removeEventListener("pointerup", handlePointerEnd);
       window.removeEventListener("pointercancel", handlePointerEnd);
     };
-  }, [endDrag, getPointFromClient, renderScene]);
+  }, [endDrag, getPointFromClient, renderScene, wakeUp]);
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (!event.isPrimary) return;
