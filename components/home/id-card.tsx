@@ -10,7 +10,7 @@ import {
 import { IDCardUI } from "./id-card-ui";
 import { useLoading } from "@/lib/loading-context";
 const ATTACHMENT_OFFSET_Y = 28;
-const ANCHOR_Y = 18;
+const ANCHOR_Y = 20;
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);

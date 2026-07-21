@@ -43,7 +43,7 @@ export const projects: Project[] = [
       "Dual authentication flow supporting both guest-play and continuous profile sync via Clerk.",
       "Responsive, themed user interface with polished Dark/Light mode toggle and animated game-over feedback."
     ],
-    image: "/images/projects/skribbl-clone/skribbl-clone.jpg",
+    image: "/images/projects/skribbl-clone/skribbl-clone.png",
     github: "https://github.com/JainamKhara/skribbl-clone",
     // liveUrl: "https://drop-of-hope.vercel.app",
     featured: true
@@ -63,6 +63,6 @@ export const projects: Project[] = [
     image: "/images/projects/vehiql/vehiql.png",
     github: "https://github.com/jainamKhara/vehiql",
     // liveUrl: "https://vehiql.com",
-    featured: false
+    featured: true
   },
 ];

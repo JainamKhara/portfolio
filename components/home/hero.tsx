@@ -21,6 +21,7 @@ export function Hero() {
   const nameLineRef = useRef<HTMLDivElement>(null);
   const watermarkRef = useRef<HTMLDivElement>(null);
   const tickerStripRef = useRef<HTMLDivElement>(null);
+  const spotlightRef = useRef<HTMLDivElement>(null);
   const done = useLoaderDone();
   const [isSkipped, setIsSkipped] = useState(false);
 
@@ -124,13 +125,56 @@ export function Hero() {
     { scope: containerRef, dependencies: [done, isSkipped] },
   );
 
+  /* GSAP: Cursor-following spotlight inside hero */
+  useGSAP(
+    () => {
+      const container = containerRef.current;
+      const spotlight = spotlightRef.current;
+      if (!container || !spotlight || !done) return;
+
+      const onMouseMove = (e: MouseEvent) => {
+        const rect = container.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        gsap.to(spotlight, {
+          background: `radial-gradient(600px circle at ${x}% ${y}%, rgba(217,40,28,0.06) 0%, transparent 70%)`,
+          duration: 0.6,
+          ease: "power2.out",
+        });
+      };
+      const onMouseLeave = () => {
+        gsap.to(spotlight, { opacity: 0, duration: 0.8, ease: "power2.out" });
+      };
+      const onMouseEnter = () => {
+        gsap.to(spotlight, { opacity: 1, duration: 0.4, ease: "power2.out" });
+      };
+
+      container.addEventListener("mousemove", onMouseMove);
+      container.addEventListener("mouseleave", onMouseLeave);
+      container.addEventListener("mouseenter", onMouseEnter);
+
+      return () => {
+        container.removeEventListener("mousemove", onMouseMove);
+        container.removeEventListener("mouseleave", onMouseLeave);
+        container.removeEventListener("mouseenter", onMouseEnter);
+      };
+    },
+    { scope: containerRef, dependencies: [done] },
+  );
+
 
   return (
     <section
       ref={containerRef}
-      className="relative w-full bg-transparent overflow-hidden pt-16 lg:pt-24"
+      className="relative w-full bg-transparent overflow-hidden pt-12 lg:pt-16"
     >
-      <div className="container mx-auto px-8 md:px-14 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:items-center lg:min-h-[calc(100vh-64px)] pt-12 md:pt-16 pb-10 md:pb-12 lg:pb-12">
+      {/* GSAP Cursor Spotlight */}
+      <div
+        ref={spotlightRef}
+        className="absolute inset-0 pointer-events-none z-0 opacity-0"
+        style={{ background: "radial-gradient(600px circle at 50% 50%, rgba(217,40,28,0.06) 0%, transparent 70%)" }}
+      />
+      <div className="container mx-auto px-8 md:px-14 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:items-center lg:min-h-[calc(100vh-64px)] pt-8 md:pt-12 pb-16 md:pb-20 lg:pb-24">
         {/* Left: Content panel */}
         <div className="lg:col-span-7 xl:col-span-8 order-1 flex flex-col justify-center">
           {/* Availability badge */}
@@ -138,7 +182,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 10 }}
             animate={done ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="flex items-center gap-4 mb-10"
+            className="flex items-center gap-4 mb-4"
           >
             <div className="flex items-center gap-2">
               <span className="relative flex h-2 w-2">
@@ -294,7 +338,7 @@ export function Hero() {
         </div>
 
 
-        {/* Right: hanging ID card */}
+        {/* Right: hanging ID card — hook attaches at the navbar bottom edge */}
         <div className="lg:col-span-5 xl:col-span-4 order-2 flex justify-center lg:justify-end self-start mt-40 lg:mt-0">
           <motion.div
             initial={{ opacity: 0, x: 60 }}
@@ -304,40 +348,12 @@ export function Hero() {
               ease: "easeOut",
               delay: isSkipped ? 0.1 : 0.3,
             }}
-            className="relative z-20 w-full max-w-[31rem] h-[39rem] sm:h-[42rem] md:h-[45rem] lg:h-[49rem] lg:-mt-24 xl:-mt-24 overflow-visible"
+            className="relative z-20 w-full max-w-[31rem] h-[39rem] sm:h-[42rem] md:h-[45rem] lg:h-[49rem] lg:-mt-[5rem] xl:-mt-[3rem] overflow-visible"
           >
             <IDCard />
           </motion.div>
         </div>
       </div>
-
-      {/* ── Tech ticker strip ── */}
-      <motion.div
-        ref={tickerStripRef}
-        initial={{ opacity: 0 }}
-        animate={done ? { opacity: 1 } : { opacity: 0 }}
-        transition={{
-          duration: 0.4,
-          delay: isSkipped ? 0.25 : 0.6,
-        }}
-        className="border-t border-border h-9 flex items-center overflow-hidden relative z-10 select-none bg-transparent cursor-grab active:cursor-grabbing"
-      >
-        <div ref={tickerRef} className="flex items-center whitespace-nowrap">
-          {[...tickerItems, ...tickerItems, ...tickerItems].map((item, i) => (
-            <span
-              key={i}
-              className={`inline-block px-3 font-mono text-[10px] tracking-widest ${
-                item === "·"
-                  ? "text-primary/30"
-                  : "text-foreground/80 uppercase"
-              }`}
-            >
-              {item}
-            </span>
-          ))}
-        </div>
-      </motion.div>
-
     </section>
   );
 }
