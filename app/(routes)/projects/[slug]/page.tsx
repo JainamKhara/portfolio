@@ -75,14 +75,14 @@ export default function ProjectPage() {
                 >
                   <div className="rounded-none overflow-hidden border border-border group relative">
                     <Image
-                      src={project.image}
-                      alt={project.title}
-                      className="object-cover w-full h-auto grayscale hover:grayscale-0 transition-all duration-1000"
-                      width={1200}
-                      height={600}
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1000px"
-                      priority
-                    />
+                       src={project.image}
+                       alt={project.title}
+                       className="object-cover w-full h-auto transition-all duration-1000"
+                       width={1200}
+                       height={600}
+                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1000px"
+                       priority
+                     />
                     <div className="absolute inset-0 border-[10px] border-background/0 group-hover:border-background/10 transition-all duration-700 pointer-events-none" />
                   </div>
                 </motion.div>

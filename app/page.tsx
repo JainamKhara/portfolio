@@ -219,7 +219,7 @@ export default function HomePage() {
                     src={project.image}
                     alt={project.title}
                     fill
-                    className="object-contain object-center group-hover:scale-105 transition-transform duration-700 ease-out p-1.5"
+                    className="object-cover object-center grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
                     sizes="(max-width: 768px) 88vw, 660px"
                     priority
                   />

@@ -51,18 +51,53 @@ export const projects: Project[] = [
   {
     id: "vehiql",
     title: "Vehiql",
-    description: " Full Stack AI Car Rental Marketplace",
+    description: "Full Stack AI Car Rental Marketplace",
     longDescription: "Vehiql is a modern, AI-powered car marketplace built with Next.js 15. It allows users to browse cars, save their favorite vehicles, book test drives, and interact with AI features. It includes a comprehensive back-office for dealership and working hours management.",
     technologies: ["Next.js", "TailwindCSS", "React", "Shadcn/ui", "Supabase", "Prisma", "Clerk", "Gemini AI", "Arcjet"],
     functionality: [
-      // "Built for 150+ artists to mint and sell NFTs with Solidity and IPFS",
-      // "Enabled 300+ transactions and 30% faster monetization via Polygon",
-      // "Implemented role-based access and interactive features like community hubs, increasing session duration by 65%",
-      // "Eliminated third-party dependencies and automated royalty payouts, reducing overhead and platform latency by 30%"
+      "AI-driven car recommendation wizard based on user search and driving habits.",
+      "Complete booking flows for reserving test drives with integrated calendar sync.",
+      "Dual client/dealer portal system for car listings management, specifications, and dealer metrics.",
+      "Integrated Arcjet security rules for rate limiting, bot protection, and signup protection."
     ],
     image: "/images/projects/vehiql/vehiql.png",
     github: "https://github.com/jainamKhara/vehiql",
-    // liveUrl: "https://vehiql.com",
+    featured: false
+  },
+  {
+    id: "rotomdex",
+    title: "RotomDex",
+    description: "A competitive-grade Pokédex and tactical companion built with Live PokéAPI and Neon PostgreSQL.",
+    longDescription: "RotomDex is a full-stack competitive Pokédex application powered by a serverless PostgreSQL database (Neon) and Prisma ORM. Beyond a basic lookup tool, it features deep stats visualization, type-coverage calculations, side-by-side comparison tools, custom team builders, and a silhouette-based 'Who's That Pokémon?' guessing game to test recognition skills.",
+    technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS v4", "Prisma", "PostgreSQL", "Neon", "TanStack Query", "NextAuth.js", "Zustand", "Recharts", "Framer Motion"],
+    functionality: [
+      "Real-time lookup and advanced multi-filter search for all 1,025 Pokémon across Gen 1-9.",
+      "Interactive Team Builder allowing up to 6 members with automated type coverage weakness/resistance mapping.",
+      "Side-by-side head-to-head comparison tool with dynamic scaling stat bars and move intersections.",
+      "Interactive 'Who's That Pokémon?' silhouette guessing game with score streaks and random roster gen.",
+      "Detail pages with dynamic stats radar, complete movesets, abilities, and complex evolution chain trigger maps."
+    ],
+    image: "/images/projects/rotomdex/rotomdex.png",
+    github: "https://github.com/JainamKhara/rotomdex",
+    liveUrl: "https://rotomdex-web.vercel.app",
+    featured: true
+  },
+  {
+    id: "space-explorer",
+    title: "Deep Space Explorer",
+    description: "An immersive, high-performance 3D solar system simulation featuring celestial physics and cinematic post-processing.",
+    longDescription: "Deep Space Explorer is an immersive 3D solar simulation bringing astronomical data to life. It features high-fidelity rendering, instanced asteroid belts rendering thousands of objects smoothly at 60 FPS, dynamic solar flare particle effects, and cinematic post-processing (Bloom, Tone Mapping, chromatic aberration). It features interactive camera orbits, moon/planet HUD inspectors, and a glassmorphic dashboard control panel.",
+    technologies: ["Next.js", "Three.js", "React Three Fiber", "React Three Drei", "Postprocessing", "Zustand", "Tailwind CSS v4", "TypeScript", "Framer Motion"],
+    functionality: [
+      "Fully navigable 3D solar system with smooth orbital controls and realistic lighting/shadow models.",
+      "High-performance instanced rendering of an Asteroid Belt rendering thousands of unique assets.",
+      "Dynamic celestial HUD displaying real-time data like gravity, mass, orbital periods, and temperature.",
+      "Integrated settings panel to adjust visual fidelity (Bloom intensity, chromatic aberration) and toggle gravity/orbit lines.",
+      "Immersive reactive space ambient soundscapes matching scene focus and planet selection."
+    ],
+    image: "/images/projects/space-explorer/space-explorer.png",
+    github: "https://github.com/jainamKhara/space-explorer",
+    liveUrl: "https://space-explorer-hub.vercel.app",
     featured: true
   },
 ];
