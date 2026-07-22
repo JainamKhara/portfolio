@@ -156,7 +156,7 @@ function LayoutContent({
           brushSize={70}
           lifetime={900}
           globalTrack={true}
-          className="fixed inset-0 z-0 pointer-events-none opacity-45"
+          className="fixed inset-0 z-[99990] pointer-events-none opacity-45"
         />
       )}
 

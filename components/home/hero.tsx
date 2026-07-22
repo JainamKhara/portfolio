@@ -162,12 +162,6 @@ export function Hero() {
       ref={containerRef}
       className="relative w-full bg-transparent overflow-hidden pt-12 lg:pt-16"
     >
-      {/* GSAP Cursor Spotlight */}
-      <div
-        ref={spotlightRef}
-        className="absolute inset-0 pointer-events-none z-0 opacity-0"
-        style={{ background: "radial-gradient(600px circle at 50% 50%, rgba(217,40,28,0.06) 0%, transparent 70%)" }}
-      />
       <div className="container mx-auto px-8 md:px-14 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:items-center lg:min-h-[calc(100vh-64px)] pt-8 md:pt-12 pb-16 md:pb-20 lg:pb-24">
         {/* Left: Content panel */}
         <div className="lg:col-span-7 xl:col-span-8 order-1 flex flex-col justify-center">

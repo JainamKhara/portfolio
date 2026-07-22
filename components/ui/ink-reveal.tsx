@@ -273,7 +273,7 @@ export default function InkReveal({
       style={{
         position: style?.position || (className?.includes("fixed") ? "fixed" : "absolute"),
         inset: 0,
-        zIndex: 1,
+        zIndex: style?.zIndex ?? (className?.includes("z-[") ? undefined : 1),
         cursor: "none",
         ...style,
       }}

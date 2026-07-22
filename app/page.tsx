@@ -128,9 +128,9 @@ export default function HomePage() {
           The outer bg/style is handled by an absolutely-positioned backdrop instead. */}
       <div
         ref={pinSectionRef}
-        className="relative w-full h-screen flex flex-col justify-between pt-24 pb-12 z-10"
+        className="relative w-full h-screen flex flex-col justify-between pt-24 pb-12 z-10 bg-background"
       >
-        {/* Background fill (separate from pin target so it doesn't cause overflow issues) */}
+        {/* Background fill */}
         <div className="absolute inset-0 bg-secondary/15 dark:bg-zinc-950/60 pointer-events-none" />
 
         {/* Clean Editorial Section Header — GSAP clip-path word lift */}
@@ -174,33 +174,33 @@ export default function HomePage() {
         <div className="relative w-full flex-1 flex items-center overflow-hidden">
           <div
             ref={horizontalTrackRef}
-            className="flex items-center gap-8 md:gap-12 px-8 md:px-14 lg:px-20 min-w-max will-change-transform"
+            className="flex items-center gap-10 md:gap-16 px-10 md:px-20 lg:px-28 min-w-max will-change-transform py-6"
           >
             {featuredProjects.map((project, i) => (
               <div
                 key={project.id}
-                className="h-project-card w-[88vw] sm:w-[520px] md:w-[600px] lg:w-[660px] shrink-0 group border border-border/40 bg-background dark:bg-zinc-900 hover:border-primary/60 shadow-lg transition-[border-color,box-shadow] duration-500 p-6 md:p-7 flex flex-col justify-between relative overflow-hidden"
+                className="h-project-card w-[85vw] sm:w-[500px] md:w-[580px] lg:w-[620px] shrink-0 group border border-border/30 bg-background/80 dark:bg-zinc-900/60 backdrop-blur-sm hover:border-primary/50 shadow-sm hover:shadow-xl transition-all duration-500 p-7 md:p-8 flex flex-col justify-between relative overflow-hidden"
               >
                 {/* Top vermilion accent line */}
-                <div className="absolute top-0 inset-x-0 h-[2.5px] bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+                <div className="absolute top-0 inset-x-0 h-[2px] bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
 
                 {/* Project Header Info */}
-                <div className="space-y-2.5">
+                <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-xs text-primary font-bold">
                         0{i + 1}
                       </span>
                       <span className="text-muted-foreground/30 font-mono text-xs">/</span>
-                      <span className="font-mono text-xs text-muted-foreground/60">
+                      <span className="font-mono text-xs text-muted-foreground/50">
                         0{featuredProjects.length}
                       </span>
                     </div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {project.technologies.slice(0, 4).map((tech) => (
+                    <div className="flex flex-wrap gap-2">
+                      {project.technologies.slice(0, 3).map((tech) => (
                         <span
                           key={tech}
-                          className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 border border-border/30 bg-secondary/10 text-foreground/80"
+                          className="font-mono text-[9px] uppercase tracking-widest px-2.5 py-1 bg-secondary/30 text-muted-foreground font-semibold"
                         >
                           {tech}
                         </span>
@@ -208,38 +208,37 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  <h3 className="font-display font-bold text-2xl md:text-3xl text-foreground group-hover:text-primary transition-colors duration-300">
+                  <h3 className="font-display font-black text-2xl md:text-3xl tracking-tight text-foreground group-hover:text-primary transition-colors duration-300">
                     {project.title}
                   </h3>
                 </div>
 
-                {/* Uncropped Full Image Display */}
-                <div className="relative w-full aspect-[16/9] border border-border/30 my-3.5 bg-black/5 dark:bg-black/40 overflow-hidden">
+                {/* Clean Image Card Preview */}
+                <div className="relative w-full aspect-[16/9] border border-border/20 my-4 bg-secondary/20 overflow-hidden">
                   <Image
                     src={project.image}
                     alt={project.title}
                     fill
                     className="object-cover object-center grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
-                    sizes="(max-width: 768px) 88vw, 660px"
+                    sizes="(max-width: 768px) 85vw, 620px"
                     priority
                   />
-                  <div className="absolute inset-0 bg-primary/5 pointer-events-none" />
                 </div>
 
                 {/* Project Description & Action Buttons */}
-                <div className="space-y-3 shrink-0">
+                <div className="space-y-4 shrink-0">
                   <p className="text-xs md:text-sm text-muted-foreground leading-relaxed line-clamp-2">
                     {project.description}
                   </p>
 
-                  <div className="flex items-center gap-2.5 pt-2 border-t border-border/20">
+                  <div className="flex items-center gap-3 pt-3 border-t border-border/15">
                     {project.liveUrl && (
                       <a
                         href={project.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         data-cursor="hover"
-                        className="inline-flex items-center gap-1.5 bg-foreground text-background font-mono text-[9px] uppercase tracking-widest px-3.5 py-2 hover:bg-primary hover:text-white transition-colors font-bold"
+                        className="inline-flex items-center gap-2 bg-foreground text-background font-mono text-[9px] uppercase tracking-widest px-4 py-2.5 hover:bg-primary hover:text-white transition-all duration-300 font-bold"
                       >
                         Live Demo ↗
                       </a>
@@ -247,21 +246,10 @@ export default function HomePage() {
                     <Link
                       href={`/projects/${project.id}`}
                       data-cursor="hover"
-                      className="inline-flex items-center gap-1.5 border border-border/40 hover:border-primary text-foreground hover:text-primary font-mono text-[9px] uppercase tracking-widest px-3.5 py-2 transition-colors font-bold"
+                      className="inline-flex items-center gap-2 border border-border/40 hover:border-primary text-foreground hover:text-primary font-mono text-[9px] uppercase tracking-widest px-4 py-2.5 transition-all duration-300 font-bold"
                     >
-                      Case Study
+                      Case Study →
                     </Link>
-                    {project.github && (
-                      <a
-                        href={project.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        data-cursor="hover"
-                        className="inline-flex items-center gap-1.5 border border-border/20 text-muted-foreground hover:text-foreground font-mono text-[9px] uppercase tracking-widest px-3 py-2 transition-colors"
-                      >
-                        GitHub ↗
-                      </a>
-                    )}
                   </div>
                 </div>
               </div>

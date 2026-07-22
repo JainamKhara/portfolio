@@ -169,14 +169,14 @@ export function Achievements() {
         </div>
 
         {/* REFINED VERTICAL EDITORIAL LIST INDEX */}
-        <div className="border-t-2 border-border flex flex-col w-full mt-10">
+        <div className="border-t border-border/30 flex flex-col w-full mt-10">
           {milestones.map((m, i) => {
             const isHovered = hoveredRow === i;
 
             return (
               <div
                 key={m.label}
-                className="index-row group relative border-b border-border/40 py-10 md:py-12 bg-background/30 hover:bg-primary/5 transition-all duration-300 overflow-hidden"
+                className="index-row group relative border-b border-border/20 py-8 md:py-10 transition-colors duration-300 overflow-hidden"
                 onMouseEnter={() => setHoveredRow(i)}
                 onMouseLeave={() => setHoveredRow(null)}
               >

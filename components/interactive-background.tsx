@@ -93,16 +93,5 @@ export function InteractiveBackground() {
     };
   }, [mounted, resolvedTheme]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 z-0 pointer-events-none opacity-80"
-      style={{
-        transform: "translate3d(0, 0, 0)",
-        willChange: "transform",
-        backfaceVisibility: "hidden",
-      }}
-      aria-hidden="true"
-    />
-  );
+  return null;
 }

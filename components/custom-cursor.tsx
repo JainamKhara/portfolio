@@ -85,7 +85,6 @@ export function CustomCursor() {
       zIndex: "99999",
       opacity: "0",
       willChange: "transform, opacity",
-      boxShadow: "0 0 8px #D9281C, 0 0 16px rgba(217, 40, 28, 0.5)",
     });
 
     // Stylize the outer morphing shape (smoke generator)
@@ -104,9 +103,8 @@ export function CustomCursor() {
       zIndex: "99998",
       opacity: "0",
       boxSizing: "border-box",
-      boxShadow: "0 0 12px rgba(217, 40, 28, 0.4)",
       willChange: "transform, width, height, border-radius, opacity",
-      transition: "background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease",
+      transition: "background-color 0.2s ease, border-color 0.2s ease",
     });
 
     const tick = () => {
@@ -266,14 +264,12 @@ export function CustomCursor() {
         Object.assign(ring.style, {
           borderColor: "#D9281C",
           backgroundColor: "rgba(217, 40, 28, 0.28)",
-          boxShadow: "0 0 20px rgba(217, 40, 28, 0.65)",
         });
       } else {
         isHovering = false;
         Object.assign(ring.style, {
           borderColor: "rgba(217, 40, 28, 0.8)",
           backgroundColor: "rgba(217, 40, 28, 0.18)",
-          boxShadow: "0 0 12px rgba(217, 40, 28, 0.4)",
         });
       }
     };
