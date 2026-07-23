@@ -2,8 +2,8 @@
 
 import { useRef, useState } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { DecoderText } from "@/components/decoder-text";
-import { AnimatedIcon } from "@/components/animated-icon";
+import { DecoderText } from "@/components/shared/decoder-text";
+import { AnimatedIcon } from "@/components/shared/animated-icon";
 
 interface MilestoneData {
   iconName: "cube" | "atom" | "synapse";

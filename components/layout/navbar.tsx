@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import gsap from "gsap";
-import { ThemeSwitch } from "@/components/theme-switch";
+import { ThemeSwitch } from "./theme-switch";
 import { useLoaderDone } from "../PageLoader/useLoaderDone";
 
 const NAV = [
