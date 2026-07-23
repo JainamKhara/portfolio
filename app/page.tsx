@@ -53,6 +53,7 @@ export default function HomePage() {
           end: () => `+=${getScrollAmount()}`,
           invalidateOnRefresh: true,
           anticipatePin: 1,
+          refreshPriority: 2,
           onEnter: () => {
             gsap.to(cards, {
               opacity: 1,
@@ -67,8 +68,9 @@ export default function HomePage() {
 
       // Force layout recalculation after fonts/images settle
       const timeout = setTimeout(() => {
+        ScrollTrigger.sort();
         ScrollTrigger.refresh();
-      }, 600);
+      }, 300);
 
       return () => {
         clearTimeout(timeout);
@@ -270,22 +272,22 @@ export default function HomePage() {
       </div>
 
       {/* ── Full Width Section Separator 02 (Between Featured Projects & Tech Stack) ── */}
-      <div className="relative z-30 bg-transparent">
+      <div className="relative z-20 bg-background py-4">
         <SectionDivider />
       </div>
 
       {/* 3. Tech Stack & Skills Section */}
-      <div className="relative z-20 bg-transparent">
+      <div className="relative z-10 bg-background">
         <SkillsShowcase />
       </div>
 
       {/* ── Full Width Section Separator 03 (Between Tech Stack & Milestones) ── */}
-      <div className="relative z-30 bg-transparent">
+      <div className="relative z-20 bg-background py-4">
         <SectionDivider />
       </div>
 
       {/* 4. Achievements & Milestones Section */}
-      <div className="relative z-20 bg-transparent">
+      <div className="relative z-10 bg-background">
         <Achievements />
       </div>
     </div>

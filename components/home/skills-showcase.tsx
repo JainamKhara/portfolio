@@ -290,15 +290,33 @@ export function SkillsShowcase() {
     const pinTarget = pinTargetRef.current;
     if (!pinTarget) return;
 
+    const leftCol = pinTarget.querySelector(".skills-left-col");
+    const rightCol = pinTarget.querySelector(".skills-right-col");
+    if (leftCol && rightCol) {
+      gsap.set([leftCol, rightCol], { opacity: 0, y: 35 });
+    }
+
     const trigger = ScrollTrigger.create({
       trigger: pinTarget,
       pin: true,
       pinSpacing: true,
       start: "top top",
-      end: "+=2400",
+      end: "+=2200",
       scrub: 1,
       invalidateOnRefresh: true,
       anticipatePin: 1,
+      refreshPriority: 1,
+      onEnter: () => {
+        if (leftCol && rightCol) {
+          gsap.to([leftCol, rightCol], {
+            opacity: 1,
+            y: 0,
+            duration: 0.75,
+            stagger: 0.14,
+            ease: "power3.out",
+          });
+        }
+      },
       onUpdate: (self) => {
         const progress = self.progress;
         const total = CATEGORIES.length;
@@ -307,6 +325,9 @@ export function SkillsShowcase() {
         setActiveCategory((current) => (current !== nextCat ? nextCat : current));
       },
     });
+
+    ScrollTrigger.sort();
+    ScrollTrigger.refresh();
 
     return () => {
       trigger.kill();
@@ -342,7 +363,7 @@ export function SkillsShowcase() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
           {/* Left Column: Vertical Stacked Interactive Accordion Rows */}
-          <div className="lg:col-span-6 space-y-2">
+          <div className="skills-left-col lg:col-span-6 space-y-2">
             {CATEGORIES.map((cat, idx) => {
               const isOpen = activeCategory === cat;
               const catSkills = skills[cat];
@@ -417,7 +438,7 @@ export function SkillsShowcase() {
           </div>
 
           {/* Right Column: WebGL Interactive Particle Orb Display */}
-          <div className="lg:col-span-6 hidden lg:flex h-[620px] w-full items-center justify-center bg-secondary/5 dark:bg-zinc-900/20 border border-border/30 overflow-hidden group/orb relative">
+          <div className="skills-right-col lg:col-span-6 hidden lg:flex h-[620px] w-full items-center justify-center bg-secondary/5 dark:bg-zinc-900/20 border border-border/30 overflow-hidden group/orb relative">
             {mounted && (
               <div className="h-full w-full cursor-grab active:cursor-grabbing">
                 <Canvas camera={{ position: [0, 0, 2.50], fov: 48 }}>
