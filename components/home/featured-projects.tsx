@@ -6,8 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { projects } from "@/data/projects";
 import { ArrowUpRight } from "lucide-react";
-import { DecoderText } from "@/components/decoder-text";
-import { RevealLine } from "@/components/reveal-line";
+import { DecoderText } from "@/components/shared/decoder-text";
+import { RevealLine } from "@/components/shared/reveal-line";
 
 const featured = projects.filter((p) => p.featured);
 

@@ -14,7 +14,7 @@ import {
   Linkedin,
   Send
 } from "lucide-react";
-import { SectionDivider } from "@/components/section-divider";
+import { SectionDivider } from "@/components/shared/section-divider";
 
 export function Footer() {
   const ref = useRef<HTMLDivElement>(null);
@@ -142,7 +142,7 @@ export function Footer() {
                 {[
                   { label: "Resume / CV", href: "/Jainam_Khara_CV.pdf", isExternal: true, icon: FileText },
                   { label: "GitHub", href: "https://github.com/JainamKhara", isExternal: true, icon: Github },
-                  { label: "LinkedIn", href: "https://linkedin.com/in/jainam-khara-3864a7251", isExternal: true, icon: Linkedin },
+                  { label: "LinkedIn", href: "https://www.linkedin.com/in/jainamkhara", isExternal: true, icon: Linkedin },
                   { label: "Email Client", href: "mailto:kharajaynam@gmail.com", isExternal: false, icon: Mail },
                 ].map((item) => {
                   const Icon = item.icon;

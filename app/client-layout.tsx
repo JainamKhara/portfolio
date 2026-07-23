@@ -17,12 +17,12 @@ import { LoadingProvider, useLoading } from "@/lib/loading-context";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const CustomCursor = dynamic(
-  () => import("@/components/custom-cursor").then((mod) => mod.CustomCursor),
+  () => import("@/components/shared/custom-cursor").then((mod) => mod.CustomCursor),
   { ssr: false },
 );
 
 const InteractiveBackground = dynamic(
-  () => import("@/components/interactive-background").then((mod) => mod.InteractiveBackground),
+  () => import("@/components/shared/interactive-background").then((mod) => mod.InteractiveBackground),
   { ssr: false },
 );
 

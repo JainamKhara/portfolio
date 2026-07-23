@@ -25,6 +25,7 @@ The landing page features an asymmetric layout with interactive physics-based el
 
 - **🪪 Interactive Physics ID Badge** - Draggable lanyard with realistic gravity, momentum, and spring-based animations
 - **🎬 Mechanical Letterpress Loading Screen** - Typographic boot sequence with sequential letter stamping, baseline rules, and vertical shutter reveal
+- **⚡ Technical SEO & Structured Data** - Schema.org JSON-LD `Person` entity markup, dynamic XML sitemaps, OpenGraph/Twitter cards, and Google Search Console verification
 - **📜 Staggered Scroll Reveals** - Content cascades onto screen with smooth spring physics and calculated delays
 - **🎛️ Tech Grid with Adaptive Contrast** - Intelligent styling with grayscale-to-color hover transitions
 - **🌓 Dark/Light Theme System** - Blueprint aesthetic with seamless theme switching maintaining perfect contrast
@@ -47,35 +48,40 @@ The landing page features an asymmetric layout with interactive physics-based el
 
 ---
 
-
 ## 🛠️ Technology Stack
 
 ### Core Framework
+
 - **Next.js 15** - App Router, server components, optimized builds
 - **React 19** - Latest features, concurrent rendering
 - **TypeScript** - Type safety throughout the codebase
 
 ### Styling & Design
+
 - **Tailwind CSS 4** - Utility-first CSS framework
 - **shadcn/ui** - High-quality, accessible component primitives
 - **Lucide React** - Beautiful, consistent icon library
 
 ### Animation & Motion
+
 - **GSAP 3.15** - Advanced animation sequencing, spring dynamics, scroll triggers
 - **Framer Motion 12.9** - React component animations with variants and gestures
 - **React** - Built-in animation hooks and transitions
 
 ### 3D & Graphics
+
 - **Three.js** - WebGL 3D graphics and particle systems
 - **React Three Fiber (R3F)** - Three.js components in React
 - **Drei** - Useful React Three Fiber abstractions
 
 ### Forms & Validation
+
 - **React Hook Form 7.56** - Performant form state management
 - **Zod 3.24** - TypeScript-first schema validation
 - **Resend SDK 6.10** - Email delivery service
 
 ### Interaction & Performance
+
 - **Lenis 1.3** - Smooth, momentum-based scrolling
 - **Intersection Observer API** - Scroll-triggered animations
 - **Next Themes** - Dark mode/light mode management
@@ -99,10 +105,12 @@ The landing page features an asymmetric layout with interactive physics-based el
 │   │   └── page.tsx
 │   ├── api/
 │   │   └── contact/            # Email API endpoint (Resend)
-│   ├── client-layout.tsx       # Theme provider, Lenis setup
+│   ├── client-layout.tsx       # Theme provider, Lenis scroll loop
 │   ├── globals.css             # Global styles and custom fonts
-│   ├── layout.tsx              # Root HTML layout
-│   └── page.tsx                # Home landing page
+│   ├── layout.tsx              # Root HTML layout, SEO metadata, JSON-LD Schema
+│   ├── page.tsx                # Home landing page
+│   ├── robots.ts               # Dynamic robots.txt crawler directives
+│   └── sitemap.ts              # Dynamic XML sitemap generator
 │
 ├── components/
 │   ├── home/
@@ -118,11 +126,21 @@ The landing page features an asymmetric layout with interactive physics-based el
 │   ├── contact/                # Contact form with validation
 │   ├── projects/               # Project cards and details
 │   ├── layout/
-│   │   ├── navbar.tsx          # Top navigation and theme toggle
-│   │   └── footer.tsx          # Footer with links
+│   │   ├── navbar.tsx          # Top navigation bar
+│   │   ├── footer.tsx          # Footer with links
+│   │   └── theme-switch.tsx    # Dark/light theme toggle
 │   ├── shared/
-│   │   ├── loading-screen.tsx  # Mechanical letterpress animation with canvas rendering
-│   │   └── scroll-to-top.tsx   # Scroll utilities
+│   │   ├── animated-icon.tsx   # SVG animated icon
+│   │   ├── custom-cursor.tsx   # Custom desktop cursor
+│   │   ├── decoder-text.tsx    # Text scramble reveal effect
+│   │   ├── interactive-background.tsx # Canvas background grid
+│   │   ├── loading-screen.tsx  # Mechanical letterpress animation
+│   │   ├── reveal-line.tsx     # Sweep line primitive
+│   │   ├── scroll-progress.tsx # Top scroll progress indicator
+│   │   ├── scroll-to-top.tsx   # Scroll to top float button
+│   │   ├── section-divider.tsx # Section separator line
+│   │   ├── smooth-scroll-provider.tsx # Lenis + GSAP scroll sync
+│   │   └── tech-icon.tsx       # SVG technology logo renderer
 │   └── ui/                     # shadcn UI components
 │
 ├── data/
@@ -156,18 +174,21 @@ The landing page features an asymmetric layout with interactive physics-based el
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - **Node.js** v18.18+ or v20+
 - **npm**, **pnpm**, or **yarn**
 
 ### Installation Steps
 
 1. **Clone the repository**
+
 ```bash
 git clone https://github.com/JainamKhara/portfolio.git
 cd portfolio
 ```
 
 2. **Install dependencies**
+
 ```bash
 npm install
 ```
@@ -175,6 +196,7 @@ npm install
 3. **Set up environment variables**
 
 Create a `.env.local` file in the project root:
+
 ```env
 RESEND_API_KEY=your_resend_api_key_here
 ```
@@ -182,6 +204,7 @@ RESEND_API_KEY=your_resend_api_key_here
 Get your Resend API key at [resend.com](https://resend.com)
 
 4. **Run the development server**
+
 ```bash
 npm run dev
 ```
@@ -189,6 +212,7 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000) in your browser. The page will auto-refresh as you make changes.
 
 5. **Build for production**
+
 ```bash
 npm run build
 npm start
@@ -196,11 +220,10 @@ npm start
 
 ---
 
-
-
 ## 💡 Animation & Interaction Details
 
 ### GSAP Implementation
+
 - Timeline-based animation sequences with mechanical spring recoil
 - **Letterpress Loading Animation**: Sequential letter stamping (Boot → Coalesce → Identity → Reveal stages) with:
   - Individual letter elastic animations with custom spring tension
@@ -213,12 +236,14 @@ npm start
 - Elastic animations with customizable tension and friction
 
 ### Framer Motion
+
 - Component enter/exit animations
 - Gesture-based interactions and drag handlers
 - Layout animations for smooth DOM updates
 - Coordinated parent-child animations
 
 ### Canvas & Graphics
+
 - High-performance 2D canvas rendering for loading screen typography
 - Debossed drop shadows with alphabetic baseline alignment
 - Ink texture simulation with seeded pseudo-random grain patterns
@@ -226,13 +251,13 @@ npm start
 - Dynamic color parsing from CSS theme tokens
 
 ### Performance Optimizations
+
 - GPU-accelerated animations (transform/opacity only)
 - Intersection Observer for scroll-triggered animations
 - Lazy loading of components and images
 - Optimized bundle size with tree-shaking
 
 ---
-
 
 ## 📬 Connect & Support
 
@@ -271,4 +296,3 @@ Interested in learning the techniques used?
 This project is distributed under the **MIT License**. See [LICENSE](LICENSE) for more information.
 
 You are free to use, modify, and distribute this code for personal or commercial projects.
-

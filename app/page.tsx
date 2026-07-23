@@ -5,7 +5,7 @@ import { gsap, useGSAP, ScrollTrigger } from "@/lib/gsap";
 import { Hero } from "@/components/home/hero";
 import { SkillsShowcase } from "@/components/home/skills-showcase";
 import { Achievements } from "@/components/home/achievements";
-import { SectionDivider } from "@/components/section-divider";
+import { SectionDivider } from "@/components/shared/section-divider";
 import { projects } from "@/data/projects";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";

@@ -4,10 +4,10 @@ import { useRef, useState, useEffect } from "react";
 import { gsap, useGSAP, ScrollTrigger } from "@/lib/gsap";
 import { motion, AnimatePresence } from "framer-motion";
 import { skills, SkillCategory } from "@/data/skills";
-import { TechIcon } from "@/components/tech-icon";
+import { TechIcon } from "@/components/shared/tech-icon";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { DecoderText } from "@/components/decoder-text";
+import { DecoderText } from "@/components/shared/decoder-text";
 import { ChevronDown } from "lucide-react";
 
 const CATEGORIES = Object.keys(skills) as SkillCategory[];
