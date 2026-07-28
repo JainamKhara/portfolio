@@ -9,6 +9,8 @@ import { useLoaderDone } from "../PageLoader/useLoaderDone";
 import { useState, useEffect } from "react";
 
 
+import GridScan from "@/components/ui/grid-scan";
+
 export function Hero() {
   const containerRef = useRef<HTMLElement>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
@@ -162,7 +164,27 @@ export function Hero() {
       ref={containerRef}
       className="relative w-full bg-transparent overflow-hidden pt-12 lg:pt-16"
     >
-      <div className="container mx-auto px-8 md:px-14 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:items-center lg:min-h-[calc(100vh-64px)] pt-8 md:pt-12 pb-16 md:pb-20 lg:pb-24">
+      <div 
+        className="absolute inset-0 pointer-events-none z-0 opacity-90"
+        style={{
+          maskImage: "radial-gradient(circle at 25% 45%, rgba(0,0,0,0.15) 0%, rgba(0,0,0,1) 65%)",
+          WebkitMaskImage: "radial-gradient(circle at 25% 45%, rgba(0,0,0,0.15) 0%, rgba(0,0,0,1) 65%)"
+        }}
+      >
+        <GridScan
+          sensitivity={0.55}
+          lineThickness={1.2}
+          linesColor="#524866"
+          gridScale={0.1}
+          scanColor="#D9281C"
+          scanOpacity={0.7}
+          enablePost
+          bloomIntensity={0.8}
+          chromaticAberration={0.002}
+          noiseIntensity={0.01}
+        />
+      </div>
+      <div className="container relative z-10 mx-auto px-8 md:px-14 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:items-center lg:min-h-[calc(100vh-64px)] pt-8 md:pt-12 pb-16 md:pb-20 lg:pb-24">
         {/* Left: Content panel */}
         <div className="lg:col-span-7 xl:col-span-8 order-1 flex flex-col justify-center">
           {/* Availability badge */}
