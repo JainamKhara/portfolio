@@ -154,14 +154,8 @@ export function Navbar() {
           scrolled ? "h-14 shadow-lg" : "h-16",
         )}
       >
-        {/* Subtle Architectural Diagonal Pattern Accent Strip */}
-        <div 
-          className="absolute inset-0 bg-secondary/30 dark:bg-zinc-950/80 -z-10 pointer-events-none"
-          style={{
-            backgroundImage: "radial-gradient(rgba(217, 40, 28, 0.15) 1px, transparent 1px)",
-            backgroundSize: "16px 16px"
-          }}
-        />
+        {/* Background Layer with Backdrop Filter */}
+        <div className="absolute inset-0 bg-secondary/80 dark:bg-zinc-950/90 backdrop-blur-xl -z-10 pointer-events-none" />
         {/* Brand Segment (High-contrast Serif Display Typography with Right Border divider) */}
         <div className="flex items-center h-full border-r border-border/40 pr-8 md:pr-12">
           <Link
