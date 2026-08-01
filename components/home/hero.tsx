@@ -9,7 +9,6 @@ import { useLoaderDone } from "../PageLoader/useLoaderDone";
 import { useState, useEffect } from "react";
 
 
-import GridScan from "@/components/ui/grid-scan";
 
 export function Hero() {
   const containerRef = useRef<HTMLElement>(null);

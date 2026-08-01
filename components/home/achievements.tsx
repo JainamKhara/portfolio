@@ -60,7 +60,8 @@ export function Achievements() {
       const hud = hudRef.current;
       if (!pinTarget || !hud) return;
 
-      const stageNodes = pinTarget.querySelectorAll(".stage-nav-item");
+      // stageNodes removed
+
 
       const trigger = ScrollTrigger.create({
         trigger: pinTarget,
