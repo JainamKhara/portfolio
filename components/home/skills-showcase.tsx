@@ -285,7 +285,7 @@ export function SkillsShowcase() {
     }
   }, { scope: containerRef });
 
-  /* ── GSAP: PINNED SCROLL SEQUENCER (Clean Pinning like Featured Projects) ── */
+  /* ── GSAP: PINNED SCROLL SEQUENCER (Responsive Pinning) ── */
   useGSAP(() => {
     const pinTarget = pinTargetRef.current;
     if (!pinTarget) return;
@@ -300,8 +300,8 @@ export function SkillsShowcase() {
       trigger: pinTarget,
       pin: true,
       pinSpacing: true,
-      start: "top top",
-      end: "+=2200",
+      start: "top top+=80px",
+      end: "+=1800",
       scrub: 1,
       invalidateOnRefresh: true,
       anticipatePin: 1,
@@ -339,28 +339,28 @@ export function SkillsShowcase() {
   return (
     <div
       ref={pinTargetRef}
-      className="relative w-full h-screen flex flex-col justify-between py-14 px-6 md:px-12 lg:px-20 bg-background z-10 overflow-hidden"
+      className="relative w-full lg:h-screen pt-10 sm:pt-16 pb-6 sm:pb-12 px-4 sm:px-6 md:px-12 lg:px-20 bg-background z-10 overflow-hidden flex flex-col justify-start"
     >
       {/* Background fill to prevent pinned underlying bleed */}
       <div className="absolute inset-0 bg-secondary/10 dark:bg-zinc-950/60 pointer-events-none" />
 
-      <div ref={containerRef} className="max-w-7xl mx-auto w-full relative z-10 my-auto">
+      <div ref={containerRef} className="max-w-7xl mx-auto w-full relative z-10">
         
         {/* Header Block */}
-        <div className="mb-4">
-          <p className="section-label mb-1.5 opacity-0 font-mono text-[10px] uppercase tracking-widest text-primary/70 font-semibold">
+        <div className="mb-4 sm:mb-6 pt-2 sm:pt-4">
+          <p className="section-label mb-1.5 font-mono text-[10px] uppercase tracking-widest text-primary/70 font-semibold">
             <DecoderText text="CAPABILITIES & TECH STACK" delay={0.2} />
           </p>
           <h2
-            className="font-display font-black text-3xl md:text-5xl leading-none flex flex-wrap"
-            style={{ fontSize: "clamp(2rem,4.5vw,3.8rem)" }}
+            className="font-display font-black text-3xl sm:text-4xl md:text-5xl leading-tight flex flex-wrap"
+            style={{ fontSize: "clamp(2rem, 4.5vw, 3.8rem)" }}
           >
             {renderSplitHeading("Technical Mastery")}
           </h2>
         </div>
 
         {/* Dynamic Accordion Stack with 3D Orb Integration */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Left Column: Vertical Stacked Interactive Accordion Rows */}
           <div className="skills-left-col lg:col-span-6 space-y-2">
@@ -410,20 +410,20 @@ export function SkillsShowcase() {
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                       >
-                        <div className="px-4 pb-4 md:px-5 md:pb-5 pt-2 border-t border-border/15 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                        <div className="px-3 pb-3 sm:px-5 sm:pb-5 pt-2 border-t border-border/15 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-3">
                           {catSkills.map((skill) => (
                             <div
                               key={skill.name}
-                              className="group/item p-3.5 border border-border/30 bg-background/90 hover:border-primary/60 hover:bg-primary/[0.04] transition-all duration-300 flex flex-col items-center justify-center text-center cursor-default shadow-sm hover:shadow-md"
+                              className="group/item p-2.5 sm:p-3.5 border border-border/30 bg-background/90 hover:border-primary/60 hover:bg-primary/[0.04] transition-all duration-300 flex flex-col items-center justify-center text-center cursor-default shadow-sm hover:shadow-md"
                             >
-                              <div className="p-2.5 rounded-lg bg-secondary/30 group-hover/item:bg-primary/10 transition-colors mb-2">
+                              <div className="p-2 sm:p-2.5 rounded-lg bg-secondary/30 group-hover/item:bg-primary/10 transition-colors mb-1.5 sm:mb-2">
                                 <TechIcon
                                   logoKey={skill.logoKey}
                                   name={skill.name}
-                                  className="h-9 w-9 grayscale group-hover/item:grayscale-0 group-hover/item:scale-110 transition-all duration-300 shrink-0"
+                                  className="h-7 w-7 sm:h-9 sm:w-9 grayscale group-hover/item:grayscale-0 group-hover/item:scale-110 transition-all duration-300 shrink-0"
                                 />
                               </div>
-                              <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-foreground/80 group-hover/item:text-primary transition-colors truncate max-w-full">
+                              <span className="font-mono text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-foreground/80 group-hover/item:text-primary transition-colors truncate max-w-full">
                                 {skill.name}
                               </span>
                             </div>

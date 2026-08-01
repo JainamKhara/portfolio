@@ -130,7 +130,7 @@ export default function HomePage() {
           The outer bg/style is handled by an absolutely-positioned backdrop instead. */}
       <div
         ref={pinSectionRef}
-        className="relative w-full h-screen flex flex-col justify-between pt-24 pb-12 z-10 bg-background"
+        className="relative w-full min-h-screen lg:h-screen flex flex-col justify-between pt-12 sm:pt-24 pb-8 sm:pb-12 z-10 bg-background"
       >
         {/* Background fill */}
         <div className="absolute inset-0 bg-secondary/15 dark:bg-zinc-950/60 pointer-events-none" />
@@ -171,24 +171,23 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Horizontal Track Container
-            overflow-hidden here is fine since this element is NOT the pin target */}
+        {/* Horizontal Track Container */}
         <div className="relative w-full flex-1 flex items-center overflow-hidden">
           <div
             ref={horizontalTrackRef}
-            className="flex items-center gap-10 md:gap-16 px-10 md:px-20 lg:px-28 min-w-max will-change-transform py-6"
+            className="flex items-stretch gap-6 sm:gap-10 md:gap-16 px-6 sm:px-10 md:px-20 lg:px-28 min-w-max will-change-transform py-4 sm:py-6"
           >
             {featuredProjects.map((project, i) => (
               <div
                 key={project.id}
-                className="h-project-card w-[85vw] sm:w-[500px] md:w-[580px] lg:w-[620px] shrink-0 group border border-border/30 bg-background/80 dark:bg-zinc-900/60 backdrop-blur-sm hover:border-primary/50 shadow-sm hover:shadow-xl transition-all duration-500 p-7 md:p-8 flex flex-col justify-between relative overflow-hidden"
+                className="h-project-card w-[82vw] max-w-[340px] sm:w-[480px] sm:max-w-none md:w-[560px] lg:w-[620px] shrink-0 group border border-border/30 bg-background/80 dark:bg-zinc-900/60 backdrop-blur-sm hover:border-primary/50 shadow-sm hover:shadow-xl transition-all duration-500 p-5 sm:p-7 md:p-8 flex flex-col justify-between relative overflow-hidden"
               >
                 {/* Top vermilion accent line */}
                 <div className="absolute top-0 inset-x-0 h-[2px] bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
 
                 {/* Project Header Info */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
+                <div className="space-y-2 sm:space-y-3">
+                  <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-xs text-primary font-bold">
                         0{i + 1}
@@ -198,11 +197,11 @@ export default function HomePage() {
                         0{featuredProjects.length}
                       </span>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      {project.technologies.slice(0, 3).map((tech) => (
+                    <div className="flex flex-wrap gap-1 sm:gap-2 justify-end">
+                      {project.technologies.slice(0, 2).map((tech) => (
                         <span
                           key={tech}
-                          className="font-mono text-[9px] uppercase tracking-widest px-2.5 py-1 bg-secondary/30 text-muted-foreground font-semibold"
+                          className="font-mono text-[8.5px] sm:text-[9px] uppercase tracking-wider px-2 py-0.5 sm:px-2.5 sm:py-1 bg-secondary/30 text-muted-foreground font-semibold"
                         >
                           {tech}
                         </span>
@@ -210,37 +209,37 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  <h3 className="font-display font-black text-2xl md:text-3xl tracking-tight text-foreground group-hover:text-primary transition-colors duration-300">
+                  <h3 className="font-display font-black text-xl sm:text-2xl md:text-3xl tracking-tight text-foreground group-hover:text-primary transition-colors duration-300 line-clamp-1">
                     {project.title}
                   </h3>
                 </div>
 
                 {/* Clean Image Card Preview */}
-                <div className="relative w-full aspect-[16/9] border border-border/20 my-4 bg-secondary/20 overflow-hidden">
+                <div className="relative w-full aspect-[16/9] border border-border/20 my-3 sm:my-4 bg-secondary/20 overflow-hidden">
                   <Image
                     src={project.image}
                     alt={project.title}
                     fill
                     className="object-cover object-center grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
-                    sizes="(max-width: 768px) 85vw, 620px"
+                    sizes="(max-width: 640px) 320px, (max-width: 768px) 480px, 620px"
                     priority
                   />
                 </div>
 
                 {/* Project Description & Action Buttons */}
-                <div className="space-y-4 shrink-0">
+                <div className="space-y-3 sm:space-y-4 shrink-0">
                   <p className="text-xs md:text-sm text-muted-foreground leading-relaxed line-clamp-2">
                     {project.description}
                   </p>
 
-                  <div className="flex items-center gap-3 pt-3 border-t border-border/15">
+                  <div className="flex items-center gap-2 sm:gap-3 pt-3 border-t border-border/15">
                     {project.liveUrl && (
                       <a
                         href={project.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         data-cursor="hover"
-                        className="inline-flex items-center gap-2 bg-foreground text-background font-mono text-[9px] uppercase tracking-widest px-4 py-2.5 hover:bg-primary hover:text-white transition-all duration-300 font-bold"
+                        className="inline-flex items-center gap-1.5 sm:gap-2 bg-foreground text-background font-mono text-[9px] uppercase tracking-widest px-3 sm:px-4 py-2 sm:py-2.5 hover:bg-primary hover:text-white transition-all duration-300 font-bold"
                       >
                         Live Demo ↗
                       </a>
@@ -248,7 +247,7 @@ export default function HomePage() {
                     <Link
                       href={`/projects/${project.id}`}
                       data-cursor="hover"
-                      className="inline-flex items-center gap-2 border border-border/40 hover:border-primary text-foreground hover:text-primary font-mono text-[9px] uppercase tracking-widest px-4 py-2.5 transition-all duration-300 font-bold"
+                      className="inline-flex items-center gap-1.5 sm:gap-2 border border-border/40 hover:border-primary text-foreground hover:text-primary font-mono text-[9px] uppercase tracking-widest px-3 sm:px-4 py-2 sm:py-2.5 transition-all duration-300 font-bold"
                     >
                       Case Study →
                     </Link>
@@ -272,7 +271,7 @@ export default function HomePage() {
       </div>
 
       {/* ── Full Width Section Separator 02 (Between Featured Projects & Tech Stack) ── */}
-      <div className="relative z-20 bg-background py-4">
+      <div className="relative z-20 bg-background">
         <SectionDivider />
       </div>
 
@@ -282,7 +281,7 @@ export default function HomePage() {
       </div>
 
       {/* ── Full Width Section Separator 03 (Between Tech Stack & Milestones) ── */}
-      <div className="relative z-20 bg-background py-4">
+      <div className="relative z-20 bg-background">
         <SectionDivider />
       </div>
 

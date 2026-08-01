@@ -65,7 +65,7 @@ export function SectionDivider() {
   );
 
   return (
-    <div className="w-full relative py-12 md:py-16 bg-transparent select-none pointer-events-none z-30">
+    <div className="w-full relative py-4 sm:py-6 bg-transparent select-none pointer-events-none z-30">
       <div className="w-full relative flex items-center justify-center">
         {/* Soft background glow pulse */}
         <div className="absolute inset-x-0 h-4 bg-primary/10 blur-md rounded-full pointer-events-none" />

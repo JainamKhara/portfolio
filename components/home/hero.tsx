@@ -164,27 +164,8 @@ export function Hero() {
       ref={containerRef}
       className="relative w-full bg-transparent overflow-hidden pt-12 lg:pt-16"
     >
-      <div 
-        className="absolute inset-0 pointer-events-none z-0 opacity-90"
-        style={{
-          maskImage: "radial-gradient(circle at 25% 45%, rgba(0,0,0,0.15) 0%, rgba(0,0,0,1) 65%)",
-          WebkitMaskImage: "radial-gradient(circle at 25% 45%, rgba(0,0,0,0.15) 0%, rgba(0,0,0,1) 65%)"
-        }}
-      >
-        <GridScan
-          sensitivity={0.55}
-          lineThickness={1.2}
-          linesColor="#524866"
-          gridScale={0.1}
-          scanColor="#D9281C"
-          scanOpacity={0.7}
-          enablePost
-          bloomIntensity={0.8}
-          chromaticAberration={0.002}
-          noiseIntensity={0.01}
-        />
-      </div>
-      <div className="container relative z-10 mx-auto px-8 md:px-14 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:items-center lg:min-h-[calc(100vh-64px)] pt-8 md:pt-12 pb-16 md:pb-20 lg:pb-24">
+      {/* Subtle cursor spotlight effect */}
+      <div className="container relative z-10 mx-auto px-4 sm:px-8 md:px-14 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 lg:items-center min-h-[calc(100vh-64px)] pt-4 sm:pt-8 md:pt-12 pb-12 md:pb-20 lg:pb-24">
         {/* Left: Content panel */}
         <div className="lg:col-span-7 xl:col-span-8 order-1 flex flex-col justify-center">
           {/* Availability badge */}
@@ -192,19 +173,19 @@ export function Hero() {
             initial={{ opacity: 0, y: 10 }}
             animate={done ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="flex items-center gap-4 mb-4"
+            className="flex flex-wrap items-center gap-2 sm:gap-4 mb-4"
           >
             <div className="flex items-center gap-2">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary" />
               </span>
-              <span className="font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.25em] text-muted-foreground/70">
+              <span className="font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.25em] text-foreground font-bold">
                 Available for work
               </span>
             </div>
-            <span className="h-3 w-px bg-border" />
-              <span className="font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.25em] text-muted-foreground/70">
+            <span className="hidden sm:inline-block h-3 w-px bg-border" />
+              <span className="font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.25em] text-foreground font-bold">
                 Ahmedabad · IN
               </span>
           </motion.div>
@@ -223,7 +204,7 @@ export function Hero() {
             >
               <span
                 className="font-display font-black leading-none text-foreground/[0.018] block"
-                style={{ fontSize: "clamp(8rem,18vw,16rem)" }}
+                style={{ fontSize: "clamp(6rem,18vw,16rem)" }}
               >
                 JK
               </span>
@@ -235,11 +216,11 @@ export function Hero() {
             {/* "Jainam" */}
             <div
               className="overflow-hidden"
-              style={{ padding: "0.5em 0.2em", margin: "0 -0.2em" }}
+              style={{ padding: "0.1em 0", margin: "0" }}
             >
               <motion.div
-                className="font-display font-black leading-[1.2] tracking-tight block"
-                style={{ fontSize: "clamp(4.5rem,12vw,10rem)" }}
+                className="font-display font-black leading-[1.05] sm:leading-[1.15] tracking-tight block text-foreground"
+                style={{ fontSize: "clamp(3.5rem, 11vw, 10rem)" }}
                 initial={{ y: "108%" }}
                 animate={done ? { y: "0%" } : { y: "108%" }}
                 transition={{
@@ -255,14 +236,14 @@ export function Hero() {
             {/* "Khara." — outline stroke */}
             <div
               className="overflow-hidden"
-              style={{ padding: "0.5em 0.2em", margin: "-0.45em -0.2em" }}
+              style={{ padding: "0.1em 0", margin: "0" }}
             >
               <motion.div
-                className="font-display font-black italic leading-[1.2] tracking-tight block"
+                className="font-display font-black italic leading-[1.05] sm:leading-[1.15] tracking-tight block"
                 style={{
-                  fontSize: "clamp(4.5rem,12vw,10rem)",
+                  fontSize: "clamp(3.5rem, 11vw, 10rem)",
                   color: "transparent",
-                  WebkitTextStroke: "1.5px #D9281C",
+                  WebkitTextStroke: "2px #D9281C",
                 }}
                 initial={{ y: "108%" }}
                 animate={done ? { y: "0%" } : { y: "108%" }}
@@ -281,7 +262,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 10 }}
               animate={done ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
               transition={{ duration: 0.6, delay: isSkipped ? 0.12 : 0.38 }}
-              className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.24em] text-foreground/80 font-medium mt-5 mb-1.5"
+              className="font-mono text-[9.5px] sm:text-[11px] uppercase tracking-[0.2em] sm:tracking-[0.24em] text-foreground font-bold mt-4 sm:mt-5 mb-1.5"
             >
               Full-Stack Developer · ML Practitioner
             </motion.p>
@@ -303,7 +284,7 @@ export function Hero() {
               ease: "easeOut",
               delay: isSkipped ? 0.15 : 0.4,
             }}
-            className="text-foreground/80 text-sm leading-relaxed max-w-[38ch] mb-8"
+            className="text-foreground font-medium text-xs sm:text-sm leading-relaxed max-w-[38ch] mb-8"
           >
             Computer Science & Engineering student at SAL Institute of Technology and Engineering Research.<br></br>
             I engineer scalable fullstack products and intelligent systems —
@@ -349,7 +330,7 @@ export function Hero() {
 
 
         {/* Right: hanging ID card — hook attaches at the navbar bottom edge */}
-        <div className="lg:col-span-5 xl:col-span-4 order-2 flex justify-center lg:justify-end self-start mt-40 lg:mt-0">
+        <div className="lg:col-span-5 xl:col-span-4 order-2 flex justify-center lg:justify-end self-start mt-4 lg:mt-0 w-full overflow-visible">
           <motion.div
             initial={{ opacity: 0, x: 60 }}
             animate={done ? { opacity: 1, x: 0 } : { opacity: 0, x: 60 }}
@@ -358,7 +339,7 @@ export function Hero() {
               ease: "easeOut",
               delay: isSkipped ? 0.1 : 0.3,
             }}
-            className="relative z-20 w-full max-w-[31rem] h-[39rem] sm:h-[42rem] md:h-[45rem] lg:h-[49rem] lg:-mt-[5rem] xl:-mt-[3rem] overflow-visible"
+            className="relative z-20 w-full max-w-[21rem] sm:max-w-[24rem] md:max-w-[28rem] lg:max-w-[31rem] min-h-[38rem] sm:min-h-[42rem] md:min-h-[45rem] lg:min-h-[49rem] lg:-mt-[5rem] xl:-mt-[3rem] overflow-visible"
           >
             <IDCard />
           </motion.div>

@@ -150,12 +150,18 @@ export function Navbar() {
         animate={done ? { clipPath: "inset(0 0 0% 0)", opacity: 1 } : { clipPath: "inset(0 0 100% 0)", opacity: 0 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: isSkipped ? 0.05 : 0.2 }}
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 lg:px-8 transition-[background-color,border-color,box-shadow,height] duration-500 border-b border-border/40",
-          scrolled ? "h-14 shadow-[0_2px_15px_rgba(0,0,0,0.02)]" : "h-16",
+          "fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 lg:px-8 transition-all duration-500 border-b-2 border-primary/80 bg-background/95 backdrop-blur-xl",
+          scrolled ? "h-14 shadow-lg" : "h-16",
         )}
       >
-        {/* Background Layer with Backdrop Filter (Isolated to prevent nested 3D flattening) */}
-        <div className="absolute inset-0 bg-[#F5F4F0]/90 dark:bg-[#030303]/90 backdrop-blur-md -z-10 pointer-events-none" />
+        {/* Subtle Architectural Diagonal Pattern Accent Strip */}
+        <div 
+          className="absolute inset-0 bg-secondary/30 dark:bg-zinc-950/80 -z-10 pointer-events-none"
+          style={{
+            backgroundImage: "radial-gradient(rgba(217, 40, 28, 0.15) 1px, transparent 1px)",
+            backgroundSize: "16px 16px"
+          }}
+        />
         {/* Brand Segment (High-contrast Serif Display Typography with Right Border divider) */}
         <div className="flex items-center h-full border-r border-border/40 pr-8 md:pr-12">
           <Link
