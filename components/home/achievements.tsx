@@ -13,7 +13,7 @@ const milestoneStages = [
     suffix: "+",
     badge: "PRODUCTION DEPLOYMENTS",
     subtext: "Fullstack apps, ML systems, and real-time microservices deployed to production environments.",
-    details: ["Drop Of Hope", "Skribbl Clone", "Vehiql", "Planet Shopify", "Student Management System"],
+    details: ["SurSangeet", "Drop Of Hope", "Skribbl Clone", "Vehiql", "Planet Shopify", "Student Management System"],
     statLabel: "LIVE SERVICES",
     iconName: "cube" as const,
   },

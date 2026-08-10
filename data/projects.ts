@@ -100,4 +100,36 @@ export const projects: Project[] = [
     liveUrl: "https://space-explorer-hub.vercel.app",
     featured: true
   },
+  {
+    id: "sur-sangeet",
+    title: "Sur-Sangeet",
+    description: "An AI/ML-powered music discovery platform and interactive studio deck utilizing 5D KNN vector cosine matching across 18,000+ tracks.",
+    longDescription: "Sur-Sangeet is a full-stack, AI/ML-powered music discovery platform and interactive studio deck. It utilizes K-Nearest Neighbors (KNN) with Cosine Distance vector matching across 18,154 real Spotify & YouTube tracks in a 5-dimensional audio vector space (danceability, energy, acousticness, valence, tempo) to construct personalized playlists based on real-time acoustic preferences. Features an interactive 5D vector calibration wizard, a tactile Hi-Fi analog turntable player deck with spinning vinyl disc and tonearm physics, and YouTube audio streaming.",
+    technologies: [
+      "Next.js 16",
+      "TypeScript",
+      "Tailwind CSS",
+      "FastAPI",
+      "Python",
+      "Scikit-Learn",
+      "PostgreSQL",
+      "Neon",
+      "SQLAlchemy",
+      "Zustand",
+      "TanStack Query",
+      "YouTube API",
+      "Framer Motion"
+    ],
+    functionality: [
+      "Interactive 5D Vector Calibration Wizard for fine-tuning target mood, activity, danceability, energy, acousticness, valence, and tempo.",
+      "K-Nearest Neighbors (KNN) Cosine Distance vector matching engine across 18,154 normalized audio track vectors.",
+      "Automated Artist Diversity Filter pass ensuring varied, non-repetitive playlist recommendation flows.",
+      "Tactile Hi-Fi Analog Turntable Deck Stage with spinning vinyl disc, dynamic tonearm movement, timeline scrubber, and volume control.",
+      "Seamless background audio playback powered by YouTube IFrame API with Neon cloud PostgreSQL vector persistence."
+    ],
+    image: "/images/projects/sur-sangeet/sur-sangeet.png",
+    github: "https://github.com/JainamKhara/Sur-Sangeet",
+    liveUrl: "https://sur-sangeet.vercel.app",
+    featured: true
+  },
 ];
